@@ -2,8 +2,10 @@ import { Text, View, Button, StyleSheet, Image, TextInput, TouchableOpacity } fr
 import { useState } from "react";
 import { deepCopy, onlyNumber } from "../Services/Helper/common";
 import {API_URL} from '@env';
+
+import NetInfo from '@react-native-community/netinfo';
 export default function LoginScreen({ navigation }) {
-    console.log(API_URL);
+
     // state
     const [borderInput, setBorderInput] = useState({
         phoneNumber: {
@@ -93,8 +95,9 @@ export default function LoginScreen({ navigation }) {
         />
         {
             validate?.phoneNumber?.errorName
-            &&
+            ? 
             <Text style={{ color: 'red', width: '100%', fontSize: 12 }}>{validate?.phoneNumber?.errorName}</Text>
+            : <></>
         }
         <TextInput
             style={{
@@ -115,11 +118,12 @@ export default function LoginScreen({ navigation }) {
         />
         {
             validate?.password?.errorName
-            &&
+            ?
             <Text style={{ color: 'red', width: '100%', fontSize: 12 }}>{validate?.password?.errorName}</Text>
+            : <></>
         }
         <TouchableOpacity
-            // onPress={buttonClickedHandler}
+            onPress={() => navigation.navigate('about')}
             style={styles.btnLogin}>
             <Text style={{ color: 'white', fontWeight: 'bold' }}>ĐĂNG NHẬP</Text>
         </TouchableOpacity>

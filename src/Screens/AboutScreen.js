@@ -20,7 +20,7 @@ function AboutScreen() {
     console.log(userList);
     return (
         <View>
-            <Text>{userList[0]?.id}</Text>
+            <Text>Cái lon ma</Text>
         </View>
     );
 }
