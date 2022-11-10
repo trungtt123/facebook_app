@@ -1,14 +1,18 @@
 import { Text, View, Button, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { deepCopy, onlyNumber } from "../Services/Helper/common";
-import {API_URL} from '@env';
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../Redux/authSlice";
 
 import NetInfo from '@react-native-community/netinfo';
 export default function LoginScreen({ navigation }) {
-
+    const dispatch = useDispatch();
+    const { user, isAuthenticated } = useSelector(
+        (state) => state.auth
+      );
     // state
     const [borderInput, setBorderInput] = useState({
-        phoneNumber: {
+        phonenumber: {
             focus: false,
             defaultColor: '#afb1b3',
             focusColor: '#216fdb'
@@ -20,7 +24,7 @@ export default function LoginScreen({ navigation }) {
         }
     });
     const [validate, setValidate] = useState({
-        phoneNumber: {
+        phonenumber: {
             exactly: true,
             errorName: '',
         },
@@ -29,7 +33,7 @@ export default function LoginScreen({ navigation }) {
             errorName: ''
         }
     })
-    const [phoneNumber, setPhoneNumber] = useState();
+    const [phonenumber, setPhonenumber] = useState();
     const [password, setPassword] = useState();
 
     // function
@@ -38,17 +42,17 @@ export default function LoginScreen({ navigation }) {
         dataTmp[key].focus = type;
         setBorderInput(dataTmp);
     }
-    const handleSetPhoneNumber = (e) => {
+    const handlesetPhonenumber = (e) => {
         let dataTmp = deepCopy(validate);
-        setPhoneNumber(e);
+        setPhonenumber(e);
         if (!onlyNumber(e)) {
-            dataTmp['phoneNumber'] = {
+            dataTmp['phonenumber'] = {
                 exactly: false,
                 errorName: 'Số điện thoại không hợp lệ'
             }
         }
         else {
-            dataTmp['phoneNumber'] = {
+            dataTmp['phonenumber'] = {
                 exactly: true,
                 errorName: ''
             }
@@ -72,6 +76,12 @@ export default function LoginScreen({ navigation }) {
         }
         setValidate(dataTmp);
     }
+    const handleLogin = () => {
+        dispatch(login({phonenumber: phonenumber, password: password}));
+    }
+    useEffect(() => {
+        if (isAuthenticated) navigation.navigate('home');
+    }, [isAuthenticated])
     return <View style={styles.container}>
         <Image
             style={styles.logoFacebook}
@@ -84,19 +94,19 @@ export default function LoginScreen({ navigation }) {
                 borderBottomWidth: 1,
                 margin: 10,
                 padding: 10,
-                borderBottomColor: borderInput?.phoneNumber.focus
-                    ? borderInput?.phoneNumber.focusColor : borderInput?.phoneNumber.defaultColor
+                borderBottomColor: borderInput?.phonenumber.focus
+                    ? borderInput?.phonenumber.focusColor : borderInput?.phonenumber.defaultColor
             }}
-            onFocus={() => handleFocusInput('phoneNumber', true)}
-            onBlur={() => handleFocusInput('phoneNumber', false)}
-            onChangeText={(e) => handleSetPhoneNumber(e)}
-            value={phoneNumber}
+            onFocus={() => handleFocusInput('phonenumber', true)}
+            onBlur={() => handleFocusInput('phonenumber', false)}
+            onChangeText={(e) => handlesetPhonenumber(e)}
+            value={phonenumber}
             placeholder="Số điện thoại"
         />
         {
-            validate?.phoneNumber?.errorName
+            validate?.phonenumber?.errorName
             ? 
-            <Text style={{ color: 'red', width: '100%', fontSize: 12 }}>{validate?.phoneNumber?.errorName}</Text>
+            <Text style={{ color: 'red', width: '100%', fontSize: 12 }}>{validate?.phonenumber?.errorName}</Text>
             : <></>
         }
         <TextInput
@@ -122,8 +132,13 @@ export default function LoginScreen({ navigation }) {
             <Text style={{ color: 'red', width: '100%', fontSize: 12 }}>{validate?.password?.errorName}</Text>
             : <></>
         }
+        {
+            isAuthenticated === false ? 
+            <Text style={{ color: 'red', width: '100%', fontSize: 12, marginTop: 5, marginBottom: 5 }}>Thông tin đăng nhập không đúng</Text> : 
+            <></>
+        }
         <TouchableOpacity
-            onPress={() => navigation.navigate('about')}
+            onPress={() => handleLogin()}
             style={styles.btnLogin}>
             <Text style={{ color: 'white', fontWeight: 'bold' }}>ĐĂNG NHẬP</Text>
         </TouchableOpacity>
@@ -138,7 +153,7 @@ export default function LoginScreen({ navigation }) {
             <View style={{ flex: 1, height: 1, backgroundColor: '#8c8d90' }} />
         </View>
         <TouchableOpacity
-            // onPress={buttonClickedHandler}
+            onPress={() => navigation.navigate('signup')}
             style={styles.btnSignup}>
             <Text style={{ color: 'white', fontWeight: 'bold' }}>Tạo tài khoản Facebook mới</Text>
         </TouchableOpacity>

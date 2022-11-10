@@ -7,7 +7,7 @@ export default function SystemModal ({ icon, body }){
     useEffect(() => {
         const timer = setTimeout(() => {
             setModalVisible(false);
-        }, 3000);
+        }, 2000);
         return () => clearTimeout(timer);
       }, []);
     return (

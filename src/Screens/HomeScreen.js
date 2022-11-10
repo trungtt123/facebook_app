@@ -18,9 +18,12 @@ function HomeScreen({ navigation }) {
         (state) => state.user
     );
     const dispatch = useDispatch();
-
+    const getToken = async () => {
+        console.log(await _getCache('token'));
+    }
     useEffect(() => {
-        dispatch(fetchAllUsers());
+        //dispatch(fetchAllUsers());
+        getToken();
     }, []);
     console.log(userList);
     return (

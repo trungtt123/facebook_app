@@ -1,7 +1,7 @@
 import axios from "axios";
-
+import {API_URL} from '@env';
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,8 +18,8 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const token = localStorage.getItem("accessToken");
-    config.headers.Authorization = token ? `Bearer ${token}` : "";
+    //const token = localStorage.getItem("accessToken");
+    //config.headers.Authorization = token ? `Bearer ${token}` : "";
     return config;
   },
   function (error) {
