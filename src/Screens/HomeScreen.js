@@ -1,39 +1,39 @@
-import { useEffect } from 'react';
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Button
-} from 'react-native';
-import {
-    _getCache,
-    _setCache
-} from '../Services/Helper/common';
+import { Text, View, Button, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllUsers } from "../Redux/userSlice";
-
-function HomeScreen({ navigation }) {
-    const { userList, isLoading } = useSelector(
-        (state) => state.user
-    );
+import { logout } from "../Redux/authSlice";
+export default function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
-    const getToken = async () => {
-        console.log(await _getCache('token'));
-    }
-    useEffect(() => {
-        //dispatch(fetchAllUsers());
-        getToken();
-    }, []);
-    console.log(userList);
-    return (
-        <View>
-            <Text>HomeScreen</Text>
-        </View>
-    );
+    return <View style={styles.container}>
+
+        <Text style={{ fontWeight: 'bold', marginTop: 10, color: '#216fdb' }}>
+            HomeScreen
+        </Text>
+        
+        <Button 
+            onPress={() => dispatch(logout())}
+            title="Đăng xuất"
+            color="#841584"
+            accessibilityLabel="Learn more about this purple button"
+            />
+    </View>
 }
-
-
-
-
-export default HomeScreen;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 30
+    },
+    btnLogout: {
+        width: '100%',
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 5,
+        backgroundColor: '#216fdb',
+        marginTop: 5
+    },
+});

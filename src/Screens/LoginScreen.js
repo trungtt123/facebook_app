@@ -1,13 +1,12 @@
 import { Text, View, Button, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
-import { deepCopy, onlyNumber } from "../Services/Helper/common";
+import { deepCopy, onlyNumber, _getCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../Redux/authSlice";
-
 import NetInfo from '@react-native-community/netinfo';
 export default function LoginScreen({ navigation }) {
     const dispatch = useDispatch();
-    const { user, isAuthenticated } = useSelector(
+    const { user, loginType } = useSelector(
         (state) => state.auth
       );
     // state
@@ -80,8 +79,8 @@ export default function LoginScreen({ navigation }) {
         dispatch(login({phonenumber: phonenumber, password: password}));
     }
     useEffect(() => {
-        if (isAuthenticated) navigation.navigate('home');
-    }, [isAuthenticated])
+        if (loginType) navigation.navigate('home');
+    }, [loginType]);
     return <View style={styles.container}>
         <Image
             style={styles.logoFacebook}
@@ -133,7 +132,7 @@ export default function LoginScreen({ navigation }) {
             : <></>
         }
         {
-            isAuthenticated === false ? 
+            loginType === false ? 
             <Text style={{ color: 'red', width: '100%', fontSize: 12, marginTop: 5, marginBottom: 5 }}>Thông tin đăng nhập không đúng</Text> : 
             <></>
         }

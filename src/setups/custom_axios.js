@@ -1,7 +1,8 @@
 import axios from "axios";
-import {API_URL} from '@env';
+import { _getCache } from "../Services/Helper/common";
+import { REST_API_URL } from '../Services/Helper/constant';
 const instance = axios.create({
-  baseURL: API_URL,
+  baseURL: REST_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -16,10 +17,11 @@ const instance = axios.create({
 
 // Add a request interceptor
 instance.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    //const token = localStorage.getItem("accessToken");
-    //config.headers.Authorization = token ? `Bearer ${token}` : "";
+  async function (config) {
+    //Do something before request is sent
+    const token = await _getCache("token");
+    console.log('cache token', token);
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   function (error) {

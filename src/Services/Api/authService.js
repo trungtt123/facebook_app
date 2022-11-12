@@ -1,13 +1,17 @@
 import axios from "../../setups/custom_axios";
-import { _setCache } from "../Helper/common";
+import { _getCache, _setCache } from "../Helper/common";
 const login = async (phonenumber, password) => {
+  console.log(password, phonenumber);
   return axios.post("/users/login", { phonenumber, password });
 };
-const checkToken = async () => {
-  return await axios.get("/verify-token");
+const verifyToken = async () => {
+  return axios.get("/users/verifyToken");
+}
+const logout = async () => {
+  // remove token
+  await _setCache("token", "");
+  await _setCache("user", "")
+  // call api remove token
 };
-const logout = () => {
-  _setCache("token", "");
-};
-const AuthService = { checkToken, login, logout };
+const AuthService = { login, logout, verifyToken };
 export default AuthService;

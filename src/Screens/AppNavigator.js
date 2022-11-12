@@ -11,24 +11,30 @@ import { INTERNET_CONNECTION_FAILED, INTERNET_CONNECTION_SUCCESS } from '../Serv
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-
+import { verifyToken } from "../Redux/authSlice";
+import LoadingScreen from './LoadingScreen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
-    const { isAuthenticated } = useSelector(
+    const dispatch = useDispatch();
+    const { isLoading, isAuthenticated } = useSelector(
         (state) => state.auth
     );
+    useEffect(() => {
+        dispatch(verifyToken());
+    }, []);
+    console.log('isLoading', isLoading, 'isAuthen', isAuthenticated);
     return <>
         {
+            isLoading ? <LoadingScreen />
+            : 
             isAuthenticated ?
                 <NavigationContainer>
                     <Stack.Navigator>
-                        <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
-                        <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
                         <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="about" component={AboutScreen} options={{ headerShown: false }} />
                     </Stack.Navigator>
                 </NavigationContainer>
-                :
+                : 
                 <NavigationContainer>
                     <Stack.Navigator>
                         <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />

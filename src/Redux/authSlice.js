@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import authService from "../Services/API/authService";
+import authService from "../Services/Api/authService";
 import { _setCache, _getCache } from "../Services/Helper/common";
+import {delay} from '../Services/Helper/common'
 
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
   try {
@@ -11,6 +12,19 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
     return thunkAPI.rejectWithValue("something went wrong");
   }
 });
+export const verifyToken = createAsyncThunk(
+  "auth/verifyToken",
+  async (_, thunkAPI) => {
+    try {
+      await delay(3000);
+      return await authService.verifyToken();
+    } catch (e) {
+      console.log("error", e);
+      authService.logout();
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+);
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, thunkAPI) => {
@@ -43,7 +57,8 @@ const initialState = {
   user: null,
   isAuthenticated: null,
   isLoading: true,
-  token: null
+  token: null,
+  loginType: null
 };
 
 const authSlice = createSlice({
@@ -62,12 +77,14 @@ const authSlice = createSlice({
       state.user = payload?.data;
       state.isAuthenticated = true;
       state.token = payload.token;
+      state.loginType = true;
       setToken(payload?.token);
     },
     [login.rejected]: (state, action) => {
       console.log("action reject", action);
       state.isLoading = false;
       state.isAuthenticated = false;
+      state.loginType = false;
     },
     [loadUser.pending]: (state) => {
       console.log("pending");
@@ -87,8 +104,27 @@ const authSlice = createSlice({
       state.user = null;
       logout();
     },
+    [verifyToken.pending]: (state) => {
+      console.log("pending");
+      state.isLoading = true;
+    },
+    [verifyToken.fulfilled]: (state, action) => {
+      console.log("actiion ful", action);
+      state.isLoading = false;
+      if (action?.payload?.message == 'valid_token')
+      state.isAuthenticated = true;
+      else state.isAuthenticated = false;
+    },
+    [verifyToken.rejected]: (state, action) => {
+      console.log("action reject", action);
+      state.isLoading = false;
+      state.isAuthenticated = false;
+      state.user = null;
+      logout();
+    },
     [logout.fulfilled]: (state, action) => {
       state.isAuthenticated = false;
+      state.isLoading = false;
       state.user = null;
     },
   },

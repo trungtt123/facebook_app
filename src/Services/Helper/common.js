@@ -15,6 +15,14 @@ export const _getCache = async (key) => {
         console.log(error);  
     }
 };
+export const _removeItem = async (key) => {
+    try {
+        return await AsyncStorage.getItem(key);
+    }
+    catch (error) {
+        console.log(error);  
+    }
+}
 export const deepCopy = (data) => {
     return JSON.parse(JSON.stringify(data));
 }
@@ -22,3 +30,4 @@ export const deepCopy = (data) => {
 export const onlyNumber = (str) => {
     return /^\d+$/.test(str);
 }
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
