@@ -5,7 +5,7 @@ const instance = axios.create({
   baseURL: REST_API_URL,
   headers: {
     "Content-Type": "application/json",
-  },
+  }
 });
 // Alter defaults after instance has been created
 //Browser auto set withCredentials=false for security=> withCredentials=true to exchange cookie
@@ -21,7 +21,12 @@ instance.interceptors.request.use(
     //Do something before request is sent
     const token = await _getCache("token");
     console.log('cache token', token);
-    config.headers.Authorization = `Bearer ${token}`;
+    if (config.url.includes('?')){
+      config.url += `&token=${token}`
+    }
+    else {
+      config.url += `?token=${token}`;
+    }
     return config;
   },
   function (error) {

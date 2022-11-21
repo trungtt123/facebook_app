@@ -2,10 +2,10 @@ import axios from "../../setups/custom_axios";
 import { _getCache, _setCache } from "../Helper/common";
 const login = async (phonenumber, password) => {
   console.log(password, phonenumber);
-  return axios.post("/users/login", { phonenumber, password });
+  return axios.post(`/auth/login?phonenumber=${phonenumber}&password=${password}`);
 };
 const verifyToken = async () => {
-  return axios.get("/users/verifyToken");
+  return axios.get(`/auth/verifyToken`);
 }
 const logout = async () => {
   // remove token

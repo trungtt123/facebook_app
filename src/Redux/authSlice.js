@@ -76,9 +76,9 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.user = payload?.data;
       state.isAuthenticated = true;
-      state.token = payload.token;
+      state.token = payload?.data?.token;
       state.loginType = true;
-      setToken(payload?.token);
+      setToken(payload?.data?.token);
     },
     [login.rejected]: (state, action) => {
       console.log("action reject", action);
@@ -111,7 +111,7 @@ const authSlice = createSlice({
     [verifyToken.fulfilled]: (state, action) => {
       console.log("actiion ful", action);
       state.isLoading = false;
-      if (action?.payload?.message == 'valid_token')
+      if (action?.payload?.message == 'OK')
       state.isAuthenticated = true;
       else state.isAuthenticated = false;
     },
