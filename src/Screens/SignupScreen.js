@@ -5,6 +5,7 @@ import { deepCopy, onlyNumber } from "../Services/Helper/common";
 import { API_URL } from '@env';
 import NetInfo from '@react-native-community/netinfo';
 import DatePicker from "../Components/DatePicker";
+import { TabView, SceneMap } from 'react-native-tab-view';
 export default function SignupScreen({ navigation }) {
 
     // state
@@ -12,7 +13,8 @@ export default function SignupScreen({ navigation }) {
     const [stepIndex, setStepIndex] = useState(0);
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState(new Date());
+
     const [borderInput, setBorderInput] = useState({
         phoneNumber: {
             focus: false,
@@ -117,7 +119,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 30
+        padding: 30,
+        backgroundColor: 'white'
     },
     title: {
         marginTop: 16,

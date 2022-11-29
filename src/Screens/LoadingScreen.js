@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 30
+        padding: 30,
+        backgroundColor: 'white'
     },
     logoFacebook: {
         width: 70,
