@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -11,18 +11,19 @@ import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
-function NotificationScreen() {
+function AboutScreen() {
     const { userList, isLoading } = useSelector(
         (state) => state.user
     );
     useEffect(() => {
     }, []);
+    console.log(userList);
     return (
         <View>
-            <Text>Notification</Text>
+            <Text>Cái lon ma</Text>
         </View>
     );
 }
 
 
-export default memo(NotificationScreen);
+export default AboutScreen;
