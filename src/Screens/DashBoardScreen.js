@@ -23,7 +23,7 @@ export default function DashBoardScreen({ navigation }) {
     ]);
     const ThreeRoute = () => (
         <Text>Three</Text>
-     
+
     );
     const FourRoute = () => (
         <Text>Four</Text>
