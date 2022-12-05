@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }) {
         dispatch(login({phonenumber: phonenumber, password: password}));
     }
     useEffect(() => {
-        if (loginType) navigation.navigate('home');
+        if (loginType) navigation.navigate('dashboard');
     }, [loginType]);
     return <View style={styles.container}>
         <Image

@@ -16,41 +16,49 @@ import LoadingScreen from './LoadingScreen';
 import MessageScreen from './MessageScreen';
 import CreatePostScreen from './CreatePostScreen';
 import PostScreen from './PostScreen';
+import authService from '../Services/Api/authService';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
+    const [token, setToken] = useState();
     const { isLoading, isAuthenticated } = useSelector(
         (state) => state.auth
     );
-    useEffect(() => {
-        dispatch(verifyToken());
-    }, []);
-    console.log('isLoading', isLoading, 'isAuthen', isAuthenticated);
-    return <>
-        {
-            isLoading ? <LoadingScreen />
-                :
-                isAuthenticated ?
-                    <>
-                        <NavigationContainer>
-                            <Stack.Navigator>
-                                <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
-                                <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
-                                <Stack.Screen name="search" component={MessageScreen} options={{ title: 'Tìm kiếm' }} />
-                                <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
-                                <Stack.Screen name="post" component={PostScreen} options={{ title: 'Tạo bài viết' }} />
-                            </Stack.Navigator>
-                        </NavigationContainer>
-                    </>
-                    :
-                    <NavigationContainer>
-                        <Stack.Navigator>
-                            <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
-                            <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
-                        </Stack.Navigator>
-                    </NavigationContainer>
-        }
 
+    const getCacheToken = async () => {
+        const token = await authService.getToken();
+        setToken(token);
+    }
+    useEffect(() => {
+        if (netInfo.isConnected) dispatch(verifyToken());
+        getCacheToken();
+    }, [netInfo.isConnected]);
+    console.log('isLoading', isLoading, 'isAuthen', isAuthenticated);
+    if (netInfo.isConnected && isLoading) return <>
+        <LoadingScreen />
+        {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
+    </>
+    if ((token !== undefined && token !== null && token !== "") || isAuthenticated) return <>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
+                <Stack.Screen name="search" component={MessageScreen} options={{ title: 'Tìm kiếm' }} />
+                <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
+                <Stack.Screen name="post" component={PostScreen} options={{ title: 'Tạo bài viết' }} />
+            </Stack.Navigator>
+        </NavigationContainer>
+        {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
+    </>
+    return <>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
+            </Stack.Navigator>
+        </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
         {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
     </>

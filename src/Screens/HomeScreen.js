@@ -1,32 +1,70 @@
-import { Text, View, Button, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, useCallback } from "react-native";
 import { useState, useEffect, memo } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/authSlice";
 import { ScrollView, SafeAreaView } from "react-native";
 import PostScreen from "./PostScreen";
+import CenterModal from "../Components/modal/CenterModal";
 import axios from '../setups/custom_axios';
+import { fetchListPost } from "../Redux/postSlice";
+import { delay } from '../Services/Helper/common';
+//@trungtt123
 function HomeScreen({ navigation }) {
+    const defaultCount = 4;
+    const defaultIndex = 0;
+    const defaultLastId = 0;
     const dispatch = useDispatch();
-    const [listPost, setListPost] = useState();
-    const getListPost = () => {
-        axios.post('post/get_list_posts?last_id=0&index=0&count=20')
-            .then((res) => {
-                setListPost(res.data.posts);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    const { postList, isPostListLoading } = useSelector(
+        (state) => state.post
+    );
+    const [postListTotal, setPostListTotal] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        if (!isPostListLoading){
+            dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
+            setPostListTotal([]);
+        }
+        await delay(2000);
+        setRefreshing(false);
+    };
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        return layoutMeasurement.height + contentOffset.y >=
+            contentSize.height;
+    };
     useEffect(() => {
-        getListPost();
+        dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
     }, []);
+    useEffect(() => {
+        let newPostList = postListTotal;
+        newPostList = newPostList.concat(postList);
+        setPostListTotal(newPostList);
+    }, [postList]);
     return <View style={styles.container}>
+        {/* <CenterModal body={`Lỗi kết nối ${"\n"} Thử lại sau.`}/> */}
         <ScrollView showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false} >
-            {listPost?.map((item, index) => {
-                if (index === 0) console.log(item);
-                return <PostScreen key={index} postDetail={false} postData={item}/>
+            showsHorizontalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    colors={["#0f80f7"]}
+                />}
+            onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent)) {
+                    // đã đến cuối trang -> gọi api lấy bài tiếp theo
+                    // khi không load nữa
+                    if (!isPostListLoading)
+                        dispatch(fetchListPost({ lastId: postListTotal[postListTotal.length - 1]?.id, index: defaultIndex + 1, count: defaultCount }));
+                }
+            }}
+            scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
+        >
+            {postListTotal?.map((item, index) => {
+                //if (index === 0) console.log(item);
+                return <PostScreen key={index} postDetail={false} postData={item} />
             })}
             {/* <Button
                 onPress={() => setIndex(index + 1)}

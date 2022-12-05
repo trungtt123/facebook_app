@@ -13,5 +13,11 @@ const logout = async () => {
   await _setCache("user", "")
   // call api remove token
 };
-const AuthService = { login, logout, verifyToken };
+const setToken = async (token) => {
+  await _setCache("token", token);
+};
+const getToken = async () => {
+  return await _getCache("token");
+};
+const AuthService = { login, logout, verifyToken, setToken, getToken };
 export default AuthService;
