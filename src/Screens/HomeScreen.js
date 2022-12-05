@@ -2,13 +2,10 @@ import { Text, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity
 import { useState, useEffect, memo } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../Redux/authSlice";
 import { ScrollView, SafeAreaView } from "react-native";
-import PostScreen from "./PostScreen";
-import CenterModal from "../Components/modal/CenterModal";
-import axios from '../setups/custom_axios';
 import { fetchListPost } from "../Redux/postSlice";
 import { delay } from '../Services/Helper/common';
+import PostInHome from "../Components/PostInHome";
 //@trungtt123
 function HomeScreen({ navigation }) {
     const defaultCount = 4;
@@ -43,7 +40,6 @@ function HomeScreen({ navigation }) {
         setPostListTotal(newPostList);
     }, [postList]);
     return <View style={styles.container}>
-        {/* <CenterModal body={`Lỗi kết nối ${"\n"} Thử lại sau.`}/> */}
         <ScrollView showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             refreshControl={
@@ -64,7 +60,7 @@ function HomeScreen({ navigation }) {
         >
             {postListTotal?.map((item, index) => {
                 //if (index === 0) console.log(item);
-                return <PostScreen key={index} postDetail={false} postData={item} />
+                return <PostInHome key={index} postDetail={false} postData={item} />
             })}
             {/* <Button
                 onPress={() => setIndex(index + 1)}

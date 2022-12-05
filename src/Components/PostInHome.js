@@ -11,11 +11,10 @@ import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
-import { logout } from "../Redux/authSlice";
 import { Ionicons, Entypo, EvilIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { unixTimeConvert } from '../Services/Helper/common';
-function PostScreen({ navigation, postDetail, postData }) {
+function PostInHome({ navigation, postDetail, postData }) {
     const dispatch = useDispatch();
     const [isLiked, setIsLiked] = useState(+postData?.is_liked === 0 ? false : true);
     const LeftContent = () => {
@@ -112,4 +111,4 @@ function PostScreen({ navigation, postDetail, postData }) {
 }
 
 
-export default PostScreen;
+export default PostInHome;
