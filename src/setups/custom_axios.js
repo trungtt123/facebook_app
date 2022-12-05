@@ -20,7 +20,6 @@ instance.interceptors.request.use(
   async function (config) {
     //Do something before request is sent
     const token = await _getCache("token");
-    console.log('cache token', token);
     if (config.url.includes('?')){
       config.url += `&token=${token}`
     }
