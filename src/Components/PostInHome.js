@@ -14,11 +14,23 @@ import {
 import { Ionicons, Entypo, EvilIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { unixTimeConvert } from '../Services/Helper/common';
-function PostInHome({ navigation, postDetail, postData }) {
+import postService from '../Services/Api/postService';
+import CenterModal from './modal/CenterModal';
+function PostInHome({ navigation, postDetail, postData, isUpdated }) {
     const dispatch = useDispatch();
-    const [isLiked, setIsLiked] = useState(+postData?.is_liked === 0 ? false : true);
+    const [post, setPost] = useState(postData);
+    const [isError, setIsError] = useState(false);
+    const postUpdated = () => {
+        postService.getPost(post.id).then((result) => {
+            setPost(result.data);
+            // call back về home 
+            isUpdated();
+        }).catch((e) => {
+            console.log(e);
+        })
+    }
     const LeftContent = () => {
-        return <Avatar.Image size={45} source={{ uri: postData?.author?.avatar }} />
+        return <Avatar.Image size={45} source={{ uri: post?.author?.avatar }} />
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
@@ -28,10 +40,16 @@ function PostInHome({ navigation, postDetail, postData }) {
     }
     const handleLikePost = () => {
         // call api like post
-        setIsLiked(!isLiked);
+        postService.likePost(post?.id).then((data) => {
+            postUpdated();
+        }).catch((e) => {
+            console.log(e);
+            setIsError(true);
+        });
     }
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
+            {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."}/>}
             <Card>
                 <Card.Title
                     titleStyle={{ fontSize: 15, flexDirection: 'row' }}
@@ -39,9 +57,9 @@ function PostInHome({ navigation, postDetail, postData }) {
                         <Text>
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text numberOfLines={4}>
-                                    <Text style={{ fontWeight: 'bold' }}>{postData?.author?.username}</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>{post?.author?.username}</Text>
                                     <Text style={{ fontWeight: 'normal' }}>
-                                        {` đang cảm thấy ${postData?.state}`}
+                                        {` đang cảm thấy ${post?.state}`}
                                     </Text>
                                 </Text>
                             </View>
@@ -50,13 +68,13 @@ function PostInHome({ navigation, postDetail, postData }) {
                     subtitleNumberOfLines={2}
                     subtitle={
                         <Text>
-                            <Text>{unixTimeConvert(postData?.modified)}</Text>
+                            <Text>{unixTimeConvert(post?.modified)}</Text>
                         </Text>
                     } left={LeftContent}
                     right={RightContent}
                 />
                 <Card.Content>
-                    <Paragraph>{postData?.described}</Paragraph>
+                    <Paragraph>{post?.described}</Paragraph>
                 </Card.Content>
                 <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
                 <Card.Actions>
@@ -71,11 +89,11 @@ function PostInHome({ navigation, postDetail, postData }) {
 
                             <View style={{ flexDirection: "row", }}>
                                 <AntDesign name="like1" size={10} color="white" style={{top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0'}}/>
-                                <Text style={{ left: 5, color: "#626262" }}>{postData?.is_liked}</Text>
+                                <Text style={{ left: 5, color: "#626262" }}>{post?.is_liked}</Text>
                             </View>
                             
                             <TouchableOpacity style={{ flexDirection: "row", }}>
-                                <Text style={{ color: "#626262" }}>{postData?.comment} bình luận</Text>
+                                <Text style={{ color: "#626262" }}>{post?.comment} bình luận</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -89,7 +107,7 @@ function PostInHome({ navigation, postDetail, postData }) {
                         }}>
 
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
-                                <AntDesign name={isLiked ? 'like1' : 'like2'} size={22} color={isLiked ? '#30a4f0' : '#626262'} />
+                                <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? '#30a4f0' : '#626262'} />
                                 <Text style={{ top: 4, left: 2, color: "#626262" }}>Thích</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>

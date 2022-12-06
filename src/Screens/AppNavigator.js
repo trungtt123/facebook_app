@@ -39,7 +39,7 @@ export default function AppNavigator() {
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
         {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
     </>
-    if ((token !== undefined && token !== null && token !== "") || isAuthenticated) return <>
+    if ((token !== undefined && token !== null && token !== "" && !netInfo.isConnected) || isAuthenticated) return <>
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />

@@ -4,6 +4,7 @@ import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/c
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView, SafeAreaView } from "react-native";
 import { fetchListPost } from "../Redux/postSlice";
+import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 //@trungtt123
@@ -31,6 +32,9 @@ function HomeScreen({ navigation }) {
         return layoutMeasurement.height + contentOffset.y >=
             contentSize.height;
     };
+    const handlePostUpdate = (postId) => {
+        //update cache list post
+    }
     useEffect(() => {
         dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
     }, []);
@@ -60,7 +64,7 @@ function HomeScreen({ navigation }) {
         >
             {postListTotal?.map((item, index) => {
                 //if (index === 0) console.log(item);
-                return <PostInHome key={index} postDetail={false} postData={item} />
+                return <PostInHome isUpdated={() => handlePostUpdate(item?.id)} key={item?.id} postDetail={false} postData={item} />
             })}
             {/* <Button
                 onPress={() => setIndex(index + 1)}

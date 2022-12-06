@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-export default function CenterModal({ icon, body }) {
+export default function CenterModal({ icon, body, onClose }) {
     const [modalVisible, setModalVisible] = useState(true);
     useEffect(() => {
         // const timer = setTimeout(() => {
@@ -14,7 +14,7 @@ export default function CenterModal({ icon, body }) {
         <Modal
             animationType="slide"
             transparent={true}
-            visible={modalVisible}
+            visible={true}
         >
             <View style={styles.container}>
                 <View style={styles.modalView}>
@@ -29,7 +29,11 @@ export default function CenterModal({ icon, body }) {
                     <Text style={styles.modalText}>{body}</Text>
                     <Pressable
                         style={{ top: 3, right: 6, position: 'absolute' }}
-                        onPress={() => setModalVisible(!modalVisible)}
+                        onPress={() => {
+                                //setModalVisible(!modalVisible);
+                                onClose();
+                            }
+                        }
                     >
                         <Ionicons name="md-close" size={25} color="#626262" />
                     </Pressable>
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: 'rgba(0,0,0,0.5)'
+        backgroundColor: 'rgba(0,0,0,0.3)'
     },
     modalView: {
         width: '95%',
