@@ -36,8 +36,9 @@ function HomeScreen({ navigation }) {
         setRefreshing(false);
     };
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const paddingToBottom = 50;
         return layoutMeasurement.height + contentOffset.y >=
-            contentSize.height;
+            contentSize.height - paddingToBottom;
     };
     useEffect(() => {
         if (!isPostListLoading)
@@ -68,7 +69,7 @@ function HomeScreen({ navigation }) {
             scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
         >
             {postListTotal?.map((item, index) => {
-                //if (index === 0) console.log(item);
+                //if (index === 0) console.log(item.image);
                 return <PostInHome key={index} postData={item} />
             })}
         </ScrollView>

@@ -3,7 +3,9 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
+    Dimensions,
+    Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from "react-redux";
@@ -11,15 +13,17 @@ import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
-import { Ionicons, Entypo, EvilIcons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-import { unixTimeConvert } from '../Services/Helper/common';
+import { getTimeUpdatePostFromUnixTime } from '../Services/Helper/common';
 import postService from '../Services/Api/postService';
 import CenterModal from './modal/CenterModal';
-function PostInHome({ navigation, postData}) {
+function PostInHome({ navigation, postData }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
+    const [seemore, setSeemore] = useState(postData?.described && postData?.described?.length <= 200);
     const [isError, setIsError] = useState(false);
+    const widthLayout = Dimensions.get('window').width;
     const postUpdated = () => {
         postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
@@ -48,37 +52,76 @@ function PostInHome({ navigation, postData}) {
     }
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
-            {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."}/>}
+            {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."} />}
             <Card>
                 <Card.Title
-                    titleStyle={{ fontSize: 15, flexDirection: 'row' }}
+                    titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
                             <View style={{ flexDirection: 'row', width: 200 }}>
-                                <Text numberOfLines={4}>
-                                    <Text style={{ fontWeight: 'bold' }}>{post?.author?.username}</Text>
-                                    <Text style={{ fontWeight: 'normal' }}>
+                                <Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username}</Text>
+                                    {postData?.status && <Text style={{ fontWeight: 'normal' }}>
                                         {` đang cảm thấy ${post?.state}`}
-                                    </Text>
+                                    </Text>}
                                 </Text>
                             </View>
                         </Text>
                     }
-                    subtitleNumberOfLines={2}
+                    titleNumberOfLines={4}
+                    subtitleNumberOfLines={1}
                     subtitle={
                         <Text>
-                            <Text>{unixTimeConvert(post?.modified)}</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={{fontSize: 12, color: '#606060'}}>{getTimeUpdatePostFromUnixTime(post?.modified)}</Text>
+                                <Text style={{ fontSize: 10, marginHorizontal: 2, top: 1, color: '#606060' }}>{" • "}</Text>
+                                <Image style={{width: 12, height: 12, top: 2, opacity: 0.6}}source={require('../../assets/icons/public-icon-facebook.png')} />
+                            </View>
                         </Text>
                     } left={LeftContent}
                     right={RightContent}
                 />
                 <Card.Content>
-                    <Paragraph>{post?.described}</Paragraph>
+                    <Paragraph style={{fontSize: 15}}>
+                        <Text>{seemore ? post?.described : post?.described?.slice(0, 200) + "... "}</Text>
+                        {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
+                    </Paragraph>
                 </Card.Content>
-                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+
+                {seemore && <View style={{ marginTop: 5 }}>
+                    {postData?.image && postData?.image?.length > 0 &&
+                        <View style={{ height: widthLayout - 40, width: '100%', flexDirection: 'row' }}>
+                            {postData?.image[0]?.url
+                                && <View style={{ flex: 1, paddingRight: postData?.image[1]?.url ? 1 : 0 }}>
+                                    <Image style={{ width: '100%', height: '100%' }} source={{ uri: postData?.image[0]?.url }} />
+                                </View>
+                            }
+                            {postData?.image[1]?.url && <View style={{ flex: 1, flexDirection: 'column', paddingLeft: 1 }}>
+                                <View style={{ flex: 1, paddingBottom: postData?.image[2]?.url ? 1 : 0 }}>
+                                    <Image style={{ width: '100%', height: '100%' }} source={{ uri: postData?.image[1]?.url }} />
+                                </View>
+
+                                {postData?.image[2]?.url &&
+                                    <View style={{ flex: 1, paddingTop: 1 }}>
+                                        <Image style={{ width: '100%', height: '100%' }} source={{ uri: postData?.image[2]?.url }} />
+                                        <View style={{
+                                            width: '100%', height: '100%', position: 'absolute',
+                                            justifyContent: 'center', alignItems: 'center',
+                                            backgroundColor: 'black', top: 1, opacity: 0.5
+                                        }}>
+                                            <Text style={{ color: 'white', fontSize: 30 }}>+1</Text>
+                                        </View>
+                                    </View>
+                                }
+                            </View>
+                            }
+                        </View>
+                    }
+                </View>
+                }
                 <Card.Actions>
                     <View style={{ flexDirection: 'column', flex: 1 }}>
-                    <View style={{
+                        <View style={{
                             flex: 1,
                             marginLeft: 5,
                             marginRight: 5,
@@ -87,16 +130,16 @@ function PostInHome({ navigation, postData}) {
                         }}>
 
                             <View style={{ flexDirection: "row", }}>
-                                <AntDesign name="like1" size={10} color="white" style={{top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0'}}/>
+                                <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0' }} />
                                 <Text style={{ left: 5, color: "#626262" }}>{post?.is_liked}</Text>
                             </View>
-                            
+
                             <TouchableOpacity style={{ flexDirection: "row", }}>
                                 <Text style={{ color: "#626262" }}>{post?.comment} bình luận</Text>
                             </TouchableOpacity>
 
                         </View>
-                        <View style={{ height: 1, backgroundColor: '#e7e7e7', marginVertical: 15, marginHorizontal: 5}} />
+                        <View style={{ height: 1, backgroundColor: '#e7e7e7', marginVertical: 15, marginHorizontal: 5 }} />
                         <View style={{
                             flex: 1,
                             marginHorizontal: 20,
