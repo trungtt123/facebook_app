@@ -16,15 +16,14 @@ import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { unixTimeConvert } from '../Services/Helper/common';
 import postService from '../Services/Api/postService';
 import CenterModal from './modal/CenterModal';
-function PostInHome({ navigation, postDetail, postData, isUpdated }) {
+function PostInHome({ navigation, postData}) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
     const [isError, setIsError] = useState(false);
     const postUpdated = () => {
-        postService.getPost(post.id).then((result) => {
+        postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
-            // call back về home 
-            isUpdated();
+            await postService.updateListPostsCache([result.data]);
         }).catch((e) => {
             console.log(e);
         })

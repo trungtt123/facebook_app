@@ -7,12 +7,14 @@ import { fetchListPost } from "../Redux/postSlice";
 import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
+import { useNetInfo } from '@react-native-community/netinfo';
 //@trungtt123
 function HomeScreen({ navigation }) {
     const defaultCount = 4;
     const defaultIndex = 0;
     const defaultLastId = 0;
     const dispatch = useDispatch();
+    const netInfo = useNetInfo();
     const { postList, isPostListLoading } = useSelector(
         (state) => state.post
     );
@@ -21,9 +23,14 @@ function HomeScreen({ navigation }) {
 
     const onRefresh = async () => {
         setRefreshing(true);
-        if (!isPostListLoading){
-            dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
-            setPostListTotal([]);
+        if (!isPostListLoading) {
+            if (netInfo.isConnected) {
+                setPostListTotal([]);
+                dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
+            }
+            else {
+                setPostListTotal(await postService.getListPostsCache());
+            }
         }
         await delay(2000);
         setRefreshing(false);
@@ -32,11 +39,9 @@ function HomeScreen({ navigation }) {
         return layoutMeasurement.height + contentOffset.y >=
             contentSize.height;
     };
-    const handlePostUpdate = (postId) => {
-        //update cache list post
-    }
     useEffect(() => {
-        dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
+        if (!isPostListLoading)
+            dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
     }, []);
     useEffect(() => {
         let newPostList = postListTotal;
@@ -64,25 +69,14 @@ function HomeScreen({ navigation }) {
         >
             {postListTotal?.map((item, index) => {
                 //if (index === 0) console.log(item);
-                return <PostInHome isUpdated={() => handlePostUpdate(item?.id)} key={item?.id} postDetail={false} postData={item} />
+                return <PostInHome key={index} postData={item} />
             })}
-            {/* <Button
-                onPress={() => setIndex(index + 1)}
-                title="TAPPING"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-                style={{ marginBottom: 5 }}
-            /> */}
-
-
         </ScrollView>
     </View>
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center'
+        flex: 1
     },
     scrollView: {
         marginHorizontal: 20,

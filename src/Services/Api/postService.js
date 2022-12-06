@@ -1,4 +1,5 @@
 import axios from "../../setups/custom_axios";
+import { deepCopy, _getCache, _setCache } from "../Helper/common";
 
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
@@ -9,9 +10,38 @@ const likePost = (postId) => {
 const getPost = (postId) => {
   return axios.post(`post/get_post?id=${postId}`);
 }
+const updateListPostsCache = async (newlistPosts) => {
+  let listPosts = JSON.parse(await _getCache("listPosts"));
+  //console.log('start list post', JSON.stringify(listPosts));
+  if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
+  for (let i = 0; i < newlistPosts.length; i++){
+    let ids = listPosts.map(o => o.id);
+    let index = ids.indexOf(newlistPosts[i].id);
+    //console.log(index);
+    if (index === -1){
+      listPosts.push(newlistPosts[i]);
+    }
+    else {
+      listPosts[index] = newlistPosts[i];
+    }
+  }
+  //console.log('update', JSON.stringify(listPosts));
+  // remove cache
+  //await _setCache("listPosts", "");
+  await _setCache("listPosts", JSON.stringify(listPosts));
+}
+const getListPostsCache = async () => {
+  console.log('get cache post');
+  let listPosts = JSON.parse(await _getCache("listPosts"))
+  if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
+  console.log(listPosts);
+  return listPosts;
+}
 const postService = {
   getListPosts,
   likePost,
-  getPost
+  getPost,
+  updateListPostsCache,
+  getListPostsCache
 };
 export default postService;

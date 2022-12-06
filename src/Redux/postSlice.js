@@ -13,7 +13,6 @@ export const fetchListPost = createAsyncThunk(
   }
 );
 
-
 const initialState = {
   postList: [],
   isPostListLoading: false,
@@ -32,10 +31,12 @@ const postSlice = createSlice({
       console.log("fetchListPost actiion ful", action);
       state.isPostListLoading = false;
       state.postList = action?.payload?.data?.posts;
+      postService.updateListPostsCache(action?.payload?.data?.posts);
     },
     [fetchListPost.rejected]: (state, action) => {
       console.log("fetchListPost action rej", action);
       state.isPostListLoading = false;
+      state.postList = [];
     },
   },
 });
