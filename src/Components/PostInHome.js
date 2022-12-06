@@ -107,15 +107,15 @@ function PostInHome({ navigation, postData}) {
 
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? '#30a4f0' : '#626262'} />
-                                <Text style={{ top: 4, left: 2, color: "#626262" }}>Thích</Text>
+                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>
-                                <EvilIcons name="comment" size={30} color="#626262" />
-                                <Text style={{ top: 4, left: 2, color: "#626262" }}>Bình luận</Text>
+                                <Ionicons style={{ top: 3 }} name="chatbox-outline" size={22} color="#626262" />
+                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Bình luận</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>
-                                <Ionicons name="share-social-outline" size={22} color="#626262" />
-                                <Text style={{ top: 4, left: 2, color: "#626262" }}>Chia sẻ</Text>
+                                <Ionicons style={{ top: 2 }} name="share-social-outline" size={22} color="#626262" />
+                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Chia sẻ</Text>
                             </TouchableOpacity>
 
                         </View>
