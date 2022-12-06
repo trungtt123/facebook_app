@@ -36,7 +36,7 @@ export const getTimeUpdatePostFromUnixTime = (unix) => {
     const today = new Date();
     const before = today.getTime()/1000 - unix;
     const d = new Date(unix * 1000);
-    if (0 <= before && before <= 59) return `${before} giây`;
+    if (0 <= before && before <= 59) return `${Math.floor(before)} giây`;
     if (60 <= before && before <= 60 * 60 - 1) return `${Math.floor(before / 60)} phút`;
     if (60 * 60 <= before && before <= 24 * 60 * 60 - 1) return `${Math.floor(before / 3600)} giờ`;
     if (24 * 60 * 60 <= before && before <= 5 * 24 * 60 * 60 - 1) return `${Math.floor(before / 86400)} ngày`;
