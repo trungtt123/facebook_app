@@ -57,7 +57,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
         >
             <ScrollView showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false} style={styles.container}>
-                {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."} />}
+                {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
                 <Card>
                     <Card.Title
                         titleStyle={{ flexDirection: 'row' }}
