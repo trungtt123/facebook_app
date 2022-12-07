@@ -21,20 +21,31 @@ export default function DashBoardScreen({ navigation }) {
         { key: 'five', title: 'notification', index: 4 },
         { key: 'six', title: 'me', index: 5 }
     ]);
+    const FirstRoute = () => (
+        <HomeScreen navigation={navigation}/>
+    );
+    const SecondRoute = () => (
+        <VideoScreen navigation={navigation}/>
+    );
     const ThreeRoute = () => (
         <Text>Three</Text>
-     
-    );
+    )
     const FourRoute = () => (
         <Text>Four</Text>
     );
+    const FiveRoute = () => (
+        <NotificationScreen />
+    )
+    const SixRoute = () => (
+        <MenuScreen />
+    )
     const renderScene = SceneMap({
-        first: HomeScreen,
-        second: VideoScreen,
+        first: FirstRoute,
+        second: SecondRoute,
         three: ThreeRoute,
         four: FourRoute,
-        five: NotificationScreen,
-        six: MenuScreen
+        five: FiveRoute,
+        six: SixRoute
     })
     return <>
         <View style={styles.header}>

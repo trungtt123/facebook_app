@@ -70,7 +70,7 @@ function HomeScreen({ navigation }) {
         >
             {postListTotal?.map((item, index) => {
                 //if (index === 0) console.log(item.image);
-                return <PostInHome key={index} postData={item} />
+                return <PostInHome navigation={navigation} key={index} postData={item} />
             })}
         </ScrollView>
     </View>

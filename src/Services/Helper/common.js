@@ -36,11 +36,18 @@ export const getTimeUpdatePostFromUnixTime = (unix) => {
     const today = new Date();
     const before = today.getTime()/1000 - unix;
     const d = new Date(unix * 1000);
-    if (0 <= before && before <= 59) return `${Math.floor(before)} giây`;
+    if (0 <= before && before <= 59) return `Vừa xong`;
     if (60 <= before && before <= 60 * 60 - 1) return `${Math.floor(before / 60)} phút`;
     if (60 * 60 <= before && before <= 24 * 60 * 60 - 1) return `${Math.floor(before / 3600)} giờ`;
-    if (24 * 60 * 60 <= before && before <= 5 * 24 * 60 * 60 - 1) return `${Math.floor(before / 86400)} ngày`;
+    if (24 * 60 * 60 <= before && before <= 7 * 24 * 60 * 60 - 1) return `${Math.floor(before / 86400)} ngày`;
     let datestring = ("0" + d.getDate()).slice(-2) + " thg " + ("0" + (d.getMonth() + 1)).slice(-2) + `${d.getFullYear !== today.getFullYear ? ", " +
         d.getFullYear() : ""}`;
+    return datestring;
+}
+export const getTimeUpdateDetailPostFromUnixTime = (unix) => {
+    const today = new Date();
+    const d = new Date(unix * 1000);
+    let datestring = ("0" + d.getDate()).slice(-2) + " THG " + ("0" + (d.getMonth() + 1)).slice(-2) + `${d.getFullYear !== today.getFullYear ? ", " +
+        d.getFullYear() : ""} LÚC ${("0" + d.getHours()).slice(-2)}:${("0" + d.getMinutes()).slice(-2)}`;
     return datestring;
 }
