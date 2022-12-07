@@ -71,7 +71,7 @@ function PostInHome({ navigation, postData }) {
                     setIndexViewImage(index);
                 }
                 } />}
-            {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."} />}
+            {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
             <Card>
                 <Card.Title

@@ -54,7 +54,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
             onRequestClose={() => onClose()}
         >
             <View style={styles.container}>
-                {isError && <CenterModal onClose={() => setIsError(false)} body={"Không có kết nối Internet \n Hãy thử lại sau."} />}
+                {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
                 <View style={{ marginTop: 5 }}>
                     <ScaledImage uri={post?.image[0].url} onPress={() => viewImage(0)} />
                 </View>
@@ -98,6 +98,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                     marginBottom: 5,
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    marginBottom: 20
                 }}>
 
                     <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     },
     bottomView: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 0,
         width: '100%',
         justifyContent: 'flex-end',
         flexDirection: 'column'
