@@ -23,14 +23,14 @@ import { getTimeUpdatePostFromUnixTime } from '../../Services/Helper/common';
 import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
-function DetailPostModal({ postData, onClose, viewImage }) {
+function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
     const [isError, setIsError] = useState(false);
     const postUpdated = () => {
         postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
-            await postService.updateListPostsCache([result.data]);
+            callBackPostUpdated();
         }).catch((e) => {
             console.log(e);
         })

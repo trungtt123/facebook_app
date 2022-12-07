@@ -23,7 +23,7 @@ import { getTimeUpdateDetailPostFromUnixTime } from '../../Services/Helper/commo
 import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
-export default function PostModalOneImage({ postData, onClose, viewImage }) {
+export default function PostModalOneImage({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
     const [isError, setIsError] = useState(false);
@@ -32,7 +32,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage }) {
     const postUpdated = () => {
         postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
-            await postService.updateListPostsCache([result.data]);
+            callBackPostUpdated();
         }).catch((e) => {
             console.log(e);
         })
