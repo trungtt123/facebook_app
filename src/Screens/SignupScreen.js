@@ -99,7 +99,7 @@ export default function SignupScreen({ navigation }) {
                     : stepIndex === 2 ?
                         <View>
                             <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-                                Sinh nhật của bạn khi nào?
+                                Ngày sinh của bạn khi nào?
                             </Text>
                             <DatePicker />
                         </View>

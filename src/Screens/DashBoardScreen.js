@@ -1,5 +1,5 @@
 import { Text, View, Button, StyleSheet, ScrollView, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/authSlice";
@@ -21,24 +21,24 @@ export default function DashBoardScreen({ navigation }) {
         { key: 'five', title: 'notification', index: 4 },
         { key: 'six', title: 'me', index: 5 }
     ]);
-    const FirstRoute = () => (
+    const FirstRoute = useCallback(() => (
         <HomeScreen navigation={navigation}/>
-    );
-    const SecondRoute = () => (
+    ), []);
+    const SecondRoute = useCallback(() => (
         <VideoScreen navigation={navigation}/>
-    );
-    const ThreeRoute = () => (
+    ), []);
+    const ThreeRoute = useCallback(() => (
         <Text>Three</Text>
-    )
-    const FourRoute = () => (
+    ), []);
+    const FourRoute = useCallback(() => (
         <Text>Four</Text>
-    );
-    const FiveRoute = () => (
+    ), []);
+    const FiveRoute = useCallback(() => (
         <NotificationScreen />
-    )
-    const SixRoute = () => (
+    ), []);
+    const SixRoute = useCallback(() => (
         <MenuScreen />
-    )
+    ), []);
     const renderScene = SceneMap({
         first: FirstRoute,
         second: SecondRoute,
