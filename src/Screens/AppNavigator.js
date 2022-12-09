@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyToken } from "../Redux/authSlice";
 import LoadingScreen from './LoadingScreen';
 import MessageScreen from './MessageScreen';
+import SearchScreen from './SearchScreen';
 import CreatePostScreen from './CreatePostScreen';
 import authService from '../Services/Api/authService';
 export default function AppNavigator() {
@@ -43,7 +44,7 @@ export default function AppNavigator() {
             <Stack.Navigator>
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
-                <Stack.Screen name="search" component={MessageScreen} options={{ title: 'Tìm kiếm' }} />
+                <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
             </Stack.Navigator>
         </NavigationContainer>

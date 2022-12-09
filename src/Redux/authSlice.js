@@ -32,7 +32,7 @@ const initialState = {
   isAuthenticated: null,
   isLoading: null,
   token: null,
-  loginType: null
+  loginType: null,
 };
 
 const authSlice = createSlice({
@@ -43,6 +43,10 @@ const authSlice = createSlice({
     [login.pending]: (state) => {
       console.log("pending");
       state.isLoading = true;
+      state.user = null;
+      state.isAuthenticated = null;
+      state.token = null;
+      state.loginType = null;
     },
     [login.fulfilled]: (state, action) => {
       console.log("actiion ful", action.payload);
@@ -82,7 +86,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isLoading = false;
       state.user = null;
-    },
+    }
   },
 });
 

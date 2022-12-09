@@ -51,3 +51,20 @@ export const getTimeUpdateDetailPostFromUnixTime = (unix) => {
         d.getFullYear() : ""} LÚC ${("0" + d.getHours()).slice(-2)}:${("0" + d.getMinutes()).slice(-2)}`;
     return datestring;
 }
+export const checkNamNhuan = (year) => {
+    if (year % 100 === 0){
+        return year % 400 === 0;
+    }
+    return year % 4 === 0;
+}
+export const getAge = (birthday)  => 
+{
+    var today = new Date();
+    var age = today.getFullYear() - birthday.getFullYear();
+    var m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) 
+    {
+        age--;
+    }
+    return age;
+}
