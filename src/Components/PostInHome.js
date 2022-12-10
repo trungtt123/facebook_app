@@ -40,7 +40,9 @@ function PostInHome({ navigation, postData }) {
         })
     }
     const LeftContent = () => {
-        return <Avatar.Image size={45} source={{ uri: post?.author?.avatar }} />
+        return <Avatar.Image size={45} source={
+            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg'): { uri: post?.author?.avatar }
+        } />
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>

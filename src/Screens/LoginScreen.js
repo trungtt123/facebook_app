@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
 import { TextInput, Button } from "@react-native-material/core";
 import { useState, useEffect } from "react";
 import { deepCopy, onlyNumber, _getCache } from "../Services/Helper/common";
@@ -8,6 +8,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { useRef } from "react";
 import { Ionicons, Entypo, MaterialIcons, EvilIcons, AntDesign } from '@expo/vector-icons';
 import authService from "../Services/Api/authService";
+import RemoveLoginInfoModal from "../Components/modal/RemoveLoginInfoModal";
 export default function LoginScreen({ navigation }) {
     const dispatch = useDispatch();
     const { loginPhonenumber, loginPassword, loginType } = useSelector(
@@ -30,12 +31,14 @@ export default function LoginScreen({ navigation }) {
     })
     // state
     const [loginWithCache, setLoginWithCache] = useState(true);
+    const [showRemoveLoginModal, setShowRemoveLoginModal] = useState(false);
     const [loginInfo, setLoginInfo] = useState();
     const [phonenumber, setPhonenumber] = useState();
     const [password, setPassword] = useState();
     const [verifyCode, setVerifyCode] = useState();
     const [verifyCodeServer, setVerifyCodeServer] = useState();
     const [awaitCode, setAwaitCode] = useState();
+    const loginInfoSelected = useRef();
     // function
     const handleSetPhonenumber = (e) => {
         if (e === undefined || !onlyNumber(e)) {
@@ -117,6 +120,14 @@ export default function LoginScreen({ navigation }) {
         dispatch(removeLoginInfoInRedux());
         dispatch(changeLoginWithCache(true));
     }
+    const handleInfoLoginCache = (data) => {
+        setShowRemoveLoginModal(true);
+        loginInfoSelected.current = data;
+    }
+    const handleRemoveLoginInfo = async () => {
+        await authService.removeLoginInfo(loginInfoSelected.current);
+        handleGetListLoginInfo();
+    }
     useEffect(() => {
         if (loginType === 1) {
             navigation.navigate('saveLoginInfo');
@@ -132,6 +143,11 @@ export default function LoginScreen({ navigation }) {
     }, []);
     if (loginWithCache && loginType !== 2) {
         return <View style={styles.container}>
+            {showRemoveLoginModal && 
+            <RemoveLoginInfoModal user={loginInfoSelected.current}
+            onClose={() => setShowRemoveLoginModal(false)}
+            onRemoveLoginInfo={() => handleRemoveLoginInfo()}
+            />}
             <Image
                 style={styles.logoFacebook}
                 source={require('../../assets/images/logo_facebook.png')}
@@ -147,13 +163,16 @@ export default function LoginScreen({ navigation }) {
                                     borderWidth: 1,
                                     borderColor: "#ccc"
                                 }}
-                                source={{ uri: item.avatar }}
+                                source={
+                                    item.avatar === null ? require('../../assets/images/default_avatar.jpg'): { uri: item.avatar }
+                                }
                             />
                             <Text style={{ marginTop: 20, marginLeft: 10, fontWeight: 'bold' }}>{item.username}</Text>
                         </TouchableOpacity>
-                        <View>
-                            <Entypo style={{ marginTop: 20 }} name="dots-three-vertical" size={18} color="#626262" />
-                        </View>
+                        <TouchableOpacity onPress={() =>handleInfoLoginCache(item)}>
+                            <Entypo style={{ marginTop: 20 }} 
+                            name="dots-three-vertical" size={18} color="#626262" />
+                        </TouchableOpacity>
                     </View>
                 })}
             </View>

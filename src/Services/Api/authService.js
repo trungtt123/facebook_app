@@ -79,9 +79,23 @@ const getListLoginInfo = async () => {
     console.log(e);
   }
 }
+const removeLoginInfo = async (user) => {
+  try {
+    let loginInfo = await getListLoginInfo();
+    let index = loginInfo.map(o => o.phonenumber).indexOf(user.phonenumber);
+    if (index !== -1){
+      loginInfo.splice(index, 1);
+    }
+    await _setCache("loginInfo", JSON.stringify(loginInfo));
+  }
+  catch(e){
+    console.log(e);
+  }
+}
 const authService = {
   login, logout, verifyToken, setToken,
   getToken, signup, checkExistPhoneNumber, checkVerifyCode,
-  getVerifyCode, saveLoginInfo, getListLoginInfo
+  getVerifyCode, saveLoginInfo, getListLoginInfo,
+  removeLoginInfo
 };
 export default authService;

@@ -1,6 +1,9 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
+import {
+    Text, View, StyleSheet, Image, BackHandler, Alert,
+    TouchableOpacity, Dimensions
+} from "react-native";
 import { Button, TextInput } from "@react-native-material/core";
-import { useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { deepCopy, onlyNumber } from "../Services/Helper/common";
 import { REST_API_URL } from "../Services/Helper/constant";
 import NetInfo from '@react-native-community/netinfo';
@@ -13,11 +16,13 @@ import { WebView } from 'react-native-webview';
 import { useDispatch, useSelector } from "react-redux";
 import authService from '../Services/Api/authService';
 import { login, changeLoginWithCache } from "../Redux/authSlice";
+import { AntDesign } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
 export default function SignupScreen({ navigation }) {
     const dispatch = useDispatch();
     // state
-    const step = ['Tạo tài khoản', 'Tên', 'Ngày sinh', 'Số di động', 
-    'Mật khẩu', 'Điều khoản & quyền riêng tư', 'Xác nhận tài khoản', 'Tạo tài khoản thành công'];
+    const step = ['Tạo tài khoản', 'Tên', 'Ngày sinh', 'Số di động',
+        'Mật khẩu', 'Điều khoản & quyền riêng tư', 'Xác nhận tài khoản', 'Tạo tài khoản thành công'];
     const [stepIndex, setStepIndex] = useState(0);
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
@@ -209,7 +214,7 @@ export default function SignupScreen({ navigation }) {
         setCheckValidate(validate + 1);
     }
     const handleVerifyCode = () => {
-        
+
         authService.checkVerifyCode(phoneNumber, verifyCode).then(() => {
             validate.current.verifyCode.exactly = true;
             validate.current.verifyCode.errorName = '';
@@ -247,6 +252,41 @@ export default function SignupScreen({ navigation }) {
             console.log(e);
         })
     }
+    const handleBack = stepIndex => {
+        console.log(stepIndex);
+        if (0 < step && step < 7) {
+            Alert.alert("Bạn có muốn dừng tạo tài khoản không?", "Nếu dừng bây giờ, bạn sẽ tất toàn bộ tiến trình cho đến nay.", [
+                {
+                    text: "Tiếp tục tạo tài khoản",
+                    onPress: () => null,
+                },
+                { text: "Dừng tạo tài khoản", onPress: () => navigation.goBack() }
+            ]);
+        }
+        else {
+            navigation.goBack();
+        }
+        return true;
+    }
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                stepIndex !== 7 ? <TouchableOpacity
+                    style={{ marginRight: 10, marginTop: 5 }}
+                    onPress={() => handleBack(stepIndex)}>
+                    <AntDesign name="arrowleft" size={25} />
+                </TouchableOpacity> : <></>
+            )
+        });
+    }, [navigation, stepIndex]);
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            () => handleBack(stepIndex)
+        );
+        return () => backHandler.remove();
+    }, [stepIndex]);
     return <View style={styles.container}>
         {
             stepIndex === 0
@@ -408,21 +448,41 @@ export default function SignupScreen({ navigation }) {
                                                 onPress={() => handleVerifyCode()}
                                             />
                                         </View>
-                                        : stepIndex === 7 ? 
-                                        <View>
-                                            <Text>Tạo tài khoản thành công</Text>
-                                            <Button title="Nhấn để tiếp tục"
-                                                uppercase={false}
-                                                color="#216fdb"
-                                                style={{ marginTop: 50, width: '100%' }}
-                                                onPress={() => {
-                                                    dispatch(login({phonenumber: phoneNumber, password: password}));
-                                                    dispatch(changeLoginWithCache(false))
-                                                }
-                                            }
-                                            />
-                                        </View>
-                                        :<></>
+                                        : stepIndex === 7 ?
+                                            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Animatable.View animation='zoomIn'>
+                                                        <Animatable.View delay={1000} animation='rotate'>
+                                                            <Animatable.View
+                                                                delay={2000}
+                                                                iterationCount={3}
+                                                                animation='rubberBand'>
+                                                                <View >
+                                                                    <Image style={{ width: 250, height: 250 }}
+                                                                        source={require('../../assets/images/logo_sign_up.png')}
+                                                                    />
+
+                                                                </View>
+                                                            </Animatable.View>
+                                                        </Animatable.View>
+                                                    </Animatable.View>
+                                                    <Animatable.View animation='zoomIn'>
+                                                        <Text style={{marginTop: 50, fontWeight: 'bold', color: '#216fdb'}}>ĐĂNG KÝ THÀNH CÔNG</Text>
+                                                    </Animatable.View>
+                                                </View>
+
+                                                <Button title="Nhấn để tiếp tục"
+                                                    uppercase={false}
+                                                    color="#216fdb"
+                                                    style={{ marginTop: 50, width: '70%' }}
+                                                    onPress={() => {
+                                                        dispatch(login({ phonenumber: phoneNumber, password: password }));
+                                                        dispatch(changeLoginWithCache(false))
+                                                    }
+                                                    }
+                                                />
+                                            </View>
+                                            : <></>
 
         }
 
