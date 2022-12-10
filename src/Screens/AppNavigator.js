@@ -15,6 +15,7 @@ import { verifyToken } from "../Redux/authSlice";
 import LoadingScreen from './LoadingScreen';
 import MessageScreen from './MessageScreen';
 import CreatePostScreen from './CreatePostScreen';
+import Messager from './messenger/screen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export default function AppNavigator() {
                         <NavigationContainer>
                             <Stack.Navigator>
                                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
-                                <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
+                                <Stack.Screen name="message" component={ Messager } options={{ title: 'Tin nhắn' }} />
                                 <Stack.Screen name="search" component={MessageScreen} options={{ title: 'Tìm kiếm' }} />
                                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                             </Stack.Navigator>
