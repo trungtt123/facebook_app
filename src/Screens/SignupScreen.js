@@ -253,8 +253,7 @@ export default function SignupScreen({ navigation }) {
         })
     }
     const handleBack = stepIndex => {
-        console.log(stepIndex);
-        if (0 < step && step < 7) {
+        if (0 < stepIndex && stepIndex < 7) {
             Alert.alert("Bạn có muốn dừng tạo tài khoản không?", "Nếu dừng bây giờ, bạn sẽ tất toàn bộ tiến trình cho đến nay.", [
                 {
                     text: "Tiếp tục tạo tài khoản",
