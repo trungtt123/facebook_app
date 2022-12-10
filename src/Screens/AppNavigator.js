@@ -17,6 +17,7 @@ import MessageScreen from './MessageScreen';
 import SearchScreen from './SearchScreen';
 import CreatePostScreen from './CreatePostScreen';
 import authService from '../Services/Api/authService';
+import SaveLoginInfoScreen from './SaveLoginInfo';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -42,6 +43,7 @@ export default function AppNavigator() {
     if ((token !== undefined && token !== null && token !== "" && !netInfo.isConnected) || isAuthenticated) return <>
         <NavigationContainer>
             <Stack.Navigator>
+            <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
                 <Stack.Screen name="search" component={SearchScreen} />

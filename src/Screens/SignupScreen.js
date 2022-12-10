@@ -12,12 +12,12 @@ import { useRef } from "react";
 import { WebView } from 'react-native-webview';
 import { useDispatch, useSelector } from "react-redux";
 import authService from '../Services/Api/authService';
-import { login } from "../Redux/authSlice";
+import { login, changeLoginWithCache } from "../Redux/authSlice";
 export default function SignupScreen({ navigation }) {
     const dispatch = useDispatch();
     // state
     const step = ['Tạo tài khoản', 'Tên', 'Ngày sinh', 'Số di động', 
-    'Mật khẩu', 'Điều khoản & quyền riêng tư', 'Xác nhận tài khoản', 'Lưu thông tin đăng nhập'];
+    'Mật khẩu', 'Điều khoản & quyền riêng tư', 'Xác nhận tài khoản', 'Tạo tài khoản thành công'];
     const [stepIndex, setStepIndex] = useState(0);
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
@@ -223,7 +223,7 @@ export default function SignupScreen({ navigation }) {
     }
     const handleSignUp = () => {
         let date = dataBirthDay.getFullYear() + '-' + (dataBirthDay.getMonth() + 1) + '-' + dataBirthDay.getDate();
-        authService.signup(phoneNumber, password, firstName + lastName, date).then((result) => {
+        authService.signup(phoneNumber, password, firstName + ' ' + lastName, date).then((result) => {
             console.log(result);
             setVerifyCodeServer(result.data.verifyCode);
             handleNextStep();
@@ -401,27 +401,28 @@ export default function SignupScreen({ navigation }) {
                                                         {validate.current.verifyCode.errorName}
                                                     </Text>}
                                             </View>
-                                            <Button title="Tiếp"
+                                            <Button title="Xác nhận"
                                                 uppercase={false}
                                                 color="#216fdb"
                                                 style={{ marginTop: 50, width: '100%' }}
                                                 onPress={() => handleVerifyCode()}
                                             />
                                         </View>
-                                        : stepIndex === 7 ?
+                                        : stepIndex === 7 ? 
                                         <View>
-                                            <Button title="OK"
+                                            <Text>Tạo tài khoản thành công</Text>
+                                            <Button title="Nhấn để tiếp tục"
+                                                uppercase={false}
                                                 color="#216fdb"
                                                 style={{ marginTop: 50, width: '100%' }}
-                                                onPress={() => dispatch(login({phonenumber: phoneNumber, password: password}))}
-                                            />
-                                            <Button title="LÚC KHÁC"
-                                                color="#216fdb"
-                                                style={{ marginTop: 50, width: '100%' }}
-                                                onPress={() => dispatch(login({phonenumber: phoneNumber, password: password}))}
+                                                onPress={() => {
+                                                    dispatch(login({phonenumber: phoneNumber, password: password}));
+                                                    dispatch(changeLoginWithCache(false))
+                                                }
+                                            }
                                             />
                                         </View>
-                                        : <></>
+                                        :<></>
 
         }
 
