@@ -1,5 +1,6 @@
 import axios from "../../setups/custom_axios";
 import { _getCache, _setCache } from "../Helper/common";
+import postService from "./postService";
 const login = async (phonenumber, password) => {
   console.log(password, phonenumber);
   return axios.post(`/auth/login?phonenumber=${phonenumber}&password=${password}`);
@@ -28,6 +29,8 @@ const logout = async () => {
   try {
     await _setCache("token", "");
     await _setCache("user", "");
+    await postService.removePostsCache();
+    return axios.post(`/auth/logout`);
   }
   catch (e) {
     console.log(e);

@@ -20,13 +20,18 @@ export const verifyToken = createAsyncThunk(
       return await authService.verifyToken();
     } catch (e) {
       console.log("error", e);
-      authService.logout();
+      await authService.logout();
       return thunkAPI.rejectWithValue("something went wrong");
     }
   }
 );
 export const logout = createAsyncThunk("auth/logout", async () => {
-  authService.logout();
+  try {
+  return await authService.logout();
+  }
+  catch(e){
+    console.log(e);
+  }
 });
 // actions
 export const changeFirstLogin = createAction('changeFirstLogin');
@@ -103,7 +108,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.loginWithCache = false;
-      postService.removePostsCache();
       logout();
     },
     [logout.fulfilled]: (state, action) => {
@@ -121,7 +125,7 @@ const authSlice = createSlice({
       state.loginPhonenumber = null;
       state.loginPassword = null;
     },
-    [changeLoginWithCache] : (state, action) => {
+    [changeLoginWithCache]: (state, action) => {
       state.loginWithCache = action.payload;
     }
   },

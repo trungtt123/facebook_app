@@ -12,6 +12,7 @@ const getPost = (postId) => {
 }
 const updateListPostsCache = async (newlistPosts) => {
   let listPosts = JSON.parse(await _getCache("listPosts"));
+  console.log('listPosts', listPosts);
   //console.log('start list post', JSON.stringify(listPosts));
   if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
   for (let i = 0; i < newlistPosts.length; i++){
@@ -27,7 +28,7 @@ const updateListPostsCache = async (newlistPosts) => {
   }
   //console.log('update', JSON.stringify(listPosts));
   // remove cache
-  //await _setCache("listPosts", "");
+  // await _setCache("listPosts", "");
   await _setCache("listPosts", JSON.stringify(listPosts));
 }
 const getListPostsCache = async () => {
