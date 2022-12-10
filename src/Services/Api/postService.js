@@ -37,11 +37,15 @@ const getListPostsCache = async () => {
   console.log(listPosts);
   return listPosts;
 }
+const removePostsCache = async () => {
+  await _setCache("listPosts", "");
+}
 const postService = {
   getListPosts,
   likePost,
   getPost,
   updateListPostsCache,
-  getListPostsCache
+  getListPostsCache,
+  removePostsCache
 };
 export default postService;

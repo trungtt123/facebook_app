@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import authService from "../Services/Api/authService";
+import postService from "../Services/Api/postService";
 import { delay } from '../Services/Helper/common'
 
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
@@ -102,6 +103,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.loginWithCache = false;
+      postService.removePostsCache();
       logout();
     },
     [logout.fulfilled]: (state, action) => {

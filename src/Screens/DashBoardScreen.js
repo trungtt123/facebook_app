@@ -1,4 +1,4 @@
-import { Text, View, Button, StyleSheet, ScrollView, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
+import { Text, View, Button, StyleSheet, ScrollView, TextInput, BackHandler, useWindowDimensions } from "react-native";
 import { useState, useEffect, useCallback } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,10 +22,10 @@ export default function DashBoardScreen({ navigation }) {
         { key: 'six', title: 'me', index: 5 }
     ]);
     const FirstRoute = useCallback(() => (
-        <HomeScreen navigation={navigation}/>
+        <HomeScreen navigation={navigation} />
     ), []);
     const SecondRoute = useCallback(() => (
-        <VideoScreen navigation={navigation}/>
+        <VideoScreen navigation={navigation} />
     ), []);
     const ThreeRoute = useCallback(() => (
         <Text>Three</Text>
@@ -46,17 +46,17 @@ export default function DashBoardScreen({ navigation }) {
         four: FourRoute,
         five: FiveRoute,
         six: SixRoute
-    })
+    });
     return <>
         <View style={styles.header}>
             <Text style={styles.textLogoFacebook}>facebook</Text>
             <View style={styles.viewBtnRight}>
                 <Fontisto onPress={() => navigation.navigate('createPost')}
-                style={styles.btnRight} name="plus-a" size={20} color="black" />
+                    style={styles.btnRight} name="plus-a" size={20} color="black" />
                 <FontAwesome onPress={() => navigation.navigate('search')}
-                style={styles.btnRight} name="search" size={22} color="black" />
+                    style={styles.btnRight} name="search" size={22} color="black" />
                 <Fontisto onPress={() => navigation.navigate('message')}
-                style={styles.btnRight} name="messenger" size={22} color="black" />
+                    style={styles.btnRight} name="messenger" size={22} color="black" />
             </View>
         </View>
         <TabView

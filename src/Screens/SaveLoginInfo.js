@@ -14,17 +14,25 @@ import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
-import { changeFirstLogin, removeLoginInfoInRedux, changeLoginWithCache } from '../Redux/authSlice';
+import {  removeLoginInfoInRedux, changeLoginWithCache } from '../Redux/authSlice';
 import authService from '../Services/Api/authService';
 import * as Animatable from 'react-native-animatable';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 function SaveLoginInfoScreen({ navigation }) {
-    const { firstLogin, loginWithCache, loginPhonenumber, loginPassword, user } = useSelector(
+    const { firstLogin, loginWithCache, loginPhonenumber, loginPassword, user, isAuthenticated } = useSelector(
         (state) => state.auth
     );
     const dispatch = useDispatch();
     useEffect(() => {
         if (loginWithCache) {
-            navigation.navigate('dashboard');
+            navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [
+                    { name: 'dashboard' },
+                  ],
+                })
+              )
         }
     }, [loginWithCache]);
     const handleSaveLoginInfo = async () => {
@@ -119,4 +127,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SaveLoginInfoScreen;
+export default memo(SaveLoginInfoScreen);

@@ -41,7 +41,7 @@ function PostInHome({ navigation, postData }) {
     }
     const LeftContent = () => {
         return <Avatar.Image size={45} source={
-            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg'): { uri: post?.author?.avatar }
+            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
         } />
     }
     const RightContent = () => {
@@ -156,7 +156,9 @@ function PostInHome({ navigation, postData }) {
 
                             <View style={{ flexDirection: "row", }}>
                                 <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0' }} />
-                                <Text style={{ left: 5, color: "#626262" }}>{post?.like}</Text>
+                                <Text style={{ left: 5, color: "#626262" }}>
+                                    {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${post?.like - 1} người khác` : ''}` : post?.like}
+                                </Text>
                             </View>
 
                             <TouchableOpacity style={{ flexDirection: "row", }}>

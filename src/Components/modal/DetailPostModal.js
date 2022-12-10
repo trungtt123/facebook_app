@@ -112,7 +112,9 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
 
                                 <View style={{ flexDirection: "row", }}>
                                     <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0' }} />
-                                    <Text style={{ left: 5, color: "#626262" }}>{post?.like}</Text>
+                                    <Text style={{ left: 5, color: "#626262" }}>
+                                    {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${post?.like - 1} người khác` : ''}` : post?.like}
+                                    </Text>
                                 </View>
 
                                 <TouchableOpacity style={{ flexDirection: "row", }}>
