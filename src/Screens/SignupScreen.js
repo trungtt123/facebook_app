@@ -18,6 +18,7 @@ import authService from '../Services/Api/authService';
 import { login, changeLoginWithCache } from "../Redux/authSlice";
 import { AntDesign } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { COMMON_COLOR } from "../Services/Helper/constant";
 export default function SignupScreen({ navigation }) {
     const dispatch = useDispatch();
     // state
@@ -298,7 +299,7 @@ export default function SignupScreen({ navigation }) {
                     </Text>
                     <Button title="Tiếp"
                         uppercase={false}
-                        color="#216fdb"
+                        color={COMMON_COLOR.BLUE_COLOR}
                         style={{ marginTop: 50, width: '100%' }}
                         onPress={() => handleNextStep()}
                     />
@@ -316,7 +317,7 @@ export default function SignupScreen({ navigation }) {
                                         style={{
                                             padding: 2,
                                             width: '100%', marginTop: 30
-                                        }} variant="standard" color="#216fdb" />
+                                        }} variant="standard" color={validate.current.lastName.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                     {validate.current && !validate.current.lastName.exactly &&
                                         <Text style={{ color: 'red', marginTop: 10 }}>
                                             {validate.current.lastName.errorName}
@@ -325,7 +326,8 @@ export default function SignupScreen({ navigation }) {
                                 <View style={{ flexDirection: 'column', flex: 1 }}>
                                     <TextInput value={firstName} label="Tên"
                                         onChangeText={(e) => handleSetFirstName(e)}
-                                        style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard" color="#216fdb" />
+                                        style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard" 
+                                        color={validate.current.firstName.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                     {validate.current && !validate.current.firstName.exactly &&
                                         <Text style={{ color: 'red', marginTop: 10 }}>
                                             {validate.current.firstName.errorName}
@@ -335,7 +337,7 @@ export default function SignupScreen({ navigation }) {
                         </View>
                         <Button title="Tiếp"
                             uppercase={false}
-                            color="#216fdb"
+                            color={COMMON_COLOR.BLUE_COLOR}
                             style={{ marginTop: 50, width: '100%' }}
                             onPress={() => handleNextStep()}
                         />
@@ -358,7 +360,7 @@ export default function SignupScreen({ navigation }) {
                             >{`${getAge(dataBirthDay)} tuổi`}</Text>
                             <Button title="Tiếp"
                                 uppercase={false}
-                                color="#216fdb"
+                                color={COMMON_COLOR.BLUE_COLOR}
                                 style={{ marginTop: 50, width: '100%' }}
                                 onPress={() => handleNextStep()}
                             />
@@ -371,7 +373,8 @@ export default function SignupScreen({ navigation }) {
                                     </Text>
                                     <TextInput value={phoneNumber} label="Số điện thoại"
                                         onChangeText={(e) => handleSetPhoneNumber(e)}
-                                        style={{ width: '100%', marginTop: 30 }} variant="outlined" color={validate.current.phoneNumber.exactly ? "#216fdb" : 'red'} />
+                                        style={{ width: '100%', marginTop: 30 }} variant="outlined" 
+                                        color={validate.current.phoneNumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                     {!validate.current.phoneNumber.exactly &&
                                         <Text style={{ color: 'red', marginTop: 10 }}>
                                             {validate.current.phoneNumber.errorName}
@@ -379,7 +382,7 @@ export default function SignupScreen({ navigation }) {
                                 </View>
                                 <Button title="Tiếp"
                                     uppercase={false}
-                                    color="#216fdb"
+                                    color={COMMON_COLOR.BLUE_COLOR}
                                     style={{ marginTop: 50, width: '100%' }}
                                     onPress={() => handleCheckPhoneNumber()}
                                 />
@@ -392,14 +395,16 @@ export default function SignupScreen({ navigation }) {
                                         </Text>
                                         <TextInput value={password} label="Mật khẩu" secureTextEntry={true}
                                             onChangeText={(e) => handleSetPassword(e)}
-                                            style={{ width: '100%', marginTop: 30 }} variant="outlined" color="#216fdb" />
+                                            style={{ width: '100%', marginTop: 30 }} variant="outlined" 
+                                            color={validate.current.password.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                         {!validate.current.password.exactly &&
                                             <Text style={{ color: 'red', marginTop: 10 }}>
                                                 {validate.current.password.errorName}
                                             </Text>}
                                         <TextInput value={confirmPassword} label="Xác nhận mật khẩu" secureTextEntry={true}
                                             onChangeText={(e) => handleSetConfirmPassword(e)}
-                                            style={{ width: '100%', marginTop: 10 }} variant="outlined" color="#216fdb" />
+                                            style={{ width: '100%', marginTop: 10 }} variant="outlined" 
+                                            color={validate.current.confirmPassword.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                         {!validate.current.confirmPassword.exactly &&
                                             <Text style={{ color: 'red', marginTop: 10 }}>
                                                 {validate.current.confirmPassword.errorName}
@@ -407,7 +412,7 @@ export default function SignupScreen({ navigation }) {
                                     </View>
                                     <Button title="Tiếp"
                                         uppercase={false}
-                                        color="#216fdb"
+                                        color={COMMON_COLOR.BLUE_COLOR}
                                         style={{ marginTop: 50, width: '100%' }}
                                         onPress={() => handleNextStep()}
                                     />
@@ -417,7 +422,7 @@ export default function SignupScreen({ navigation }) {
                                         <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 30 }}>
                                             <Button title="Đăng ký"
                                                 uppercase={false}
-                                                color="#216fdb"
+                                                color={COMMON_COLOR.BLUE_COLOR}
                                                 style={{ width: '100%', position: 'absolute', top: height / 2, zIndex: 9999 }}
                                                 onPress={() => handleSignUp()}
                                             />
@@ -434,7 +439,8 @@ export default function SignupScreen({ navigation }) {
                                                 </Text>
                                                 <TextInput value={verifyCode} label="Mã code"
                                                     onChangeText={(e) => handleSetVerifyCode(e)}
-                                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 50 }} variant="outlined" color={validate.current.phoneNumber.exactly ? "#216fdb" : 'red'} />
+                                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 50 }} variant="outlined" 
+                                                    color={validate.current.verifyCode.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                                 {!validate.current.verifyCode.exactly &&
                                                     <Text style={{ color: 'red', marginTop: 10, textAlign: 'center' }}>
                                                         {validate.current.verifyCode.errorName}
@@ -442,7 +448,7 @@ export default function SignupScreen({ navigation }) {
                                             </View>
                                             <Button title="Xác nhận"
                                                 uppercase={false}
-                                                color="#216fdb"
+                                                color={COMMON_COLOR.BLUE_COLOR}
                                                 style={{ marginTop: 50, width: '100%' }}
                                                 onPress={() => handleVerifyCode()}
                                             />
@@ -466,13 +472,13 @@ export default function SignupScreen({ navigation }) {
                                                         </Animatable.View>
                                                     </Animatable.View>
                                                     <Animatable.View animation='zoomIn'>
-                                                        <Text style={{marginTop: 50, fontWeight: 'bold', color: '#216fdb'}}>ĐĂNG KÝ THÀNH CÔNG</Text>
+                                                        <Text style={{marginTop: 50, fontWeight: 'bold', color: COMMON_COLOR.BLUE_COLOR}}>ĐĂNG KÝ THÀNH CÔNG</Text>
                                                     </Animatable.View>
                                                 </View>
 
                                                 <Button title="Nhấn để tiếp tục"
                                                     uppercase={false}
-                                                    color="#216fdb"
+                                                    color={COMMON_COLOR.BLUE_COLOR}
                                                     style={{ marginTop: 50, width: '70%' }}
                                                     onPress={() => {
                                                         dispatch(login({ phonenumber: phoneNumber, password: password }));
@@ -497,18 +503,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 30,
         backgroundColor: 'white'
-    },
-    title: {
-        marginTop: 16,
-        paddingVertical: 8,
-        borderWidth: 4,
-        borderColor: "#20232a",
-        borderRadius: 6,
-        backgroundColor: "#61dafb",
-        color: "#20232a",
-        textAlign: "center",
-        fontSize: 30,
-        fontWeight: "bold"
     },
     logoFacebook: {
         width: 50,

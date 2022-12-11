@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { Ionicons, Entypo, MaterialIcons, EvilIcons, AntDesign } from '@expo/vector-icons';
 import authService from "../Services/Api/authService";
 import RemoveLoginInfoModal from "../Components/modal/RemoveLoginInfoModal";
+import { COMMON_COLOR } from "../Services/Helper/constant";
 export default function LoginScreen({ navigation }) {
     const dispatch = useDispatch();
     const { loginPhonenumber, loginPassword, loginType } = useSelector(
@@ -178,14 +179,14 @@ export default function LoginScreen({ navigation }) {
             </View>
             <View style={{ width: '100%', marginTop: 10 }}>
                 <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => setLoginWithCache(false)}>
-                    <Ionicons name="add" size={25} color="#2172d8"
+                    <Ionicons name="add" size={25} color={COMMON_COLOR.BLUE_COLOR}
                         style={{ backgroundColor: '#e7f3fe', borderRadius: 5, padding: 2 }} />
-                    <Text style={{ color: '#2172d8', fontWeight: 'bold', marginLeft: 10, marginTop: 5 }}>Đăng nhập bằng tài khoản khác</Text>
+                    <Text style={{ color: COMMON_COLOR.BLUE_COLOR, fontWeight: 'bold', marginLeft: 10, marginTop: 5 }}>Đăng nhập bằng tài khoản khác</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <AntDesign name="search1" size={20} color="#2172d8"
+                    <AntDesign name="search1" size={20} color={COMMON_COLOR.BLUE_COLOR}
                         style={{ backgroundColor: '#e7f3fe', borderRadius: 5, padding: 5}} />
-                    <Text style={{ color: '#2172d8', fontWeight: 'bold', marginLeft: 10, marginTop: 5 }}>Tìm kiếm tài khoản</Text>
+                    <Text style={{ color: COMMON_COLOR.BLUE_COLOR, fontWeight: 'bold', marginLeft: 10, marginTop: 5 }}>Tìm kiếm tài khoản</Text>
                 </TouchableOpacity>
             </View>
             <View style={{position: 'absolute', bottom: 30}}>
@@ -201,7 +202,7 @@ export default function LoginScreen({ navigation }) {
                         backgroundColor: '#e7f3fe',
                     }}>
                     <Text uppercase={false}
-                        style={{ color: '#2172d8', fontWeight: 'bold' }}>TẠO TÀI KHOẢN FACEBOOK MỚI</Text>
+                        style={{ color: COMMON_COLOR.BLUE_COLOR, fontWeight: 'bold' }}>TẠO TÀI KHOẢN FACEBOOK MỚI</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -215,7 +216,8 @@ export default function LoginScreen({ navigation }) {
                 />
                 <TextInput value={phonenumber} label="Số điện thoại"
                     onChangeText={(e) => handleSetPhonenumber(e)}
-                    style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard" color="#216fdb" />
+                    style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard" 
+                    color={validate.current.phonenumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                 {
                     !validate.current.phonenumber.exactly
                         ?
@@ -224,7 +226,8 @@ export default function LoginScreen({ navigation }) {
                 }
                 <TextInput value={password} label="Mật khẩu" secureTextEntry={true}
                     onChangeText={(e) => handleSetPassword(e)}
-                    style={{ width: '100%', padding: 2, marginTop: 10 }} variant="standard" color="#216fdb" />
+                    style={{ width: '100%', padding: 2, marginTop: 10 }} variant="standard" 
+                    color={validate.current.password.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                 {
                     !validate.current.password.exactly
                         ?
@@ -241,7 +244,7 @@ export default function LoginScreen({ navigation }) {
                     style={styles.btnLogin}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>ĐĂNG NHẬP</Text>
                 </TouchableOpacity>
-                <Text style={{ fontWeight: 'bold', marginTop: 10, color: '#216fdb' }}>
+                <Text style={{ fontWeight: 'bold', marginTop: 10, color: COMMON_COLOR.BLUE_COLOR }}>
                     Quên mật khẩu?
                 </Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 50 }}>
@@ -269,21 +272,22 @@ export default function LoginScreen({ navigation }) {
                             <>
                                 <TextInput value={verifyCode} label="Mã code"
                                     onChangeText={(e) => handleSetVerifyCode(e)}
-                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 10 }} variant="outlined" color={validate.current.phonenumber.exactly ? "#216fdb" : 'red'} />
+                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 10 }} variant="outlined" 
+                                    color={validate.current.phonenumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                 {!validate.current.verifyCode.exactly &&
                                     <Text style={{ color: 'red', marginHorizontal: 10, textAlign: 'center' }}>
                                         {validate.current.verifyCode.errorName}
                                     </Text>}
                                 <Button title="Xác nhận"
                                     uppercase={false}
-                                    color="#216fdb"
+                                    color={COMMON_COLOR.BLUE_COLOR}
                                     style={{ marginTop: 30 }}
                                     onPress={() => handleVerifyCode()}
                                 />
                             </>
                             : <Button title="Lấy lại mã xác nhận"
                                 uppercase={false}
-                                color="#216fdb"
+                                color={COMMON_COLOR.BLUE_COLOR}
                                 style={{ marginTop: 30 }}
                                 onPress={() => handleGetVerifyCode()}
                             />
@@ -302,18 +306,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 30,
         backgroundColor: 'white'
-    },
-    title: {
-        marginTop: 16,
-        paddingVertical: 8,
-        borderWidth: 4,
-        borderColor: "#20232a",
-        borderRadius: 6,
-        backgroundColor: "#61dafb",
-        color: "#20232a",
-        textAlign: "center",
-        fontSize: 30,
-        fontWeight: "bold"
     },
     viewIndex: {
         flex: 1,
@@ -334,7 +326,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         borderRadius: 5,
-        backgroundColor: '#216fdb',
+        backgroundColor: COMMON_COLOR.BLUE_COLOR,
         marginTop: 10
     },
     btnSignup: {

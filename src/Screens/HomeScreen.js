@@ -104,17 +104,7 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         marginHorizontal: 20,
-    },
-    btnLogout: {
-        width: '100%',
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10,
-        borderRadius: 5,
-        backgroundColor: '#216fdb',
-        marginTop: 5
-    },
+    }
 });
 
 export default memo(HomeScreen)

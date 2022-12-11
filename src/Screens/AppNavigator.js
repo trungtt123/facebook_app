@@ -7,7 +7,7 @@ import SignupScreen from './SignupScreen';
 import SystemModal from '../Components/modal/SystemModal';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
-import { INTERNET_CONNECTION_FAILED, INTERNET_CONNECTION_SUCCESS } from '../Services/Helper/constant';
+import { COMMON_MESSAGE } from '../Services/Helper/constant';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -35,10 +35,11 @@ export default function AppNavigator() {
         getCacheToken();
     }, [netInfo.isConnected]);
     console.log('isLoading', isLoading, 'isAuthen', isAuthenticated);
+    console.log('network connected is', netInfo.isConnected);
     if (netInfo.isConnected && isLoading) return <>
         <LoadingScreen />
-        {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
-        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
+        {/* {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />} */}
     </>
     if ((token !== undefined && token !== null && token !== "" && !netInfo.isConnected) || isAuthenticated) return <>
         <NavigationContainer>
@@ -50,8 +51,8 @@ export default function AppNavigator() {
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
             </Stack.Navigator>
         </NavigationContainer>
-        {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
-        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
+        {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />}
     </>
     return <>
         <NavigationContainer>
@@ -60,7 +61,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
             </Stack.Navigator>
         </NavigationContainer>
-        {netInfo.isConnected && <SystemModal icon={'wifi'} body={INTERNET_CONNECTION_SUCCESS} />}
-        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={INTERNET_CONNECTION_FAILED} />}
+        {/* {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />} */}
     </>
 }

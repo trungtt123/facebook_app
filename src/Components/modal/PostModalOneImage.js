@@ -24,6 +24,7 @@ import { getTimeUpdateDetailPostFromUnixTime } from '../../Services/Helper/commo
 import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
+import { COMMON_COLOR } from '../../Services/Helper/constant';
 export default function PostModalOneImage({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
@@ -83,7 +84,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                 }}>
 
                     <View style={{ flexDirection: "row", }}>
-                        <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 20, backgroundColor: '#30a4f0' }} />
+                        <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 20, backgroundColor: COMMON_COLOR.LIKE_BLUE_COLOR }} />
                         <Text style={{ left: 5, color: "white" }}>
                         {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                         </Text>
@@ -105,7 +106,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                 }}>
 
                     <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
-                        <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? '#30a4f0' : 'white'} />
+                        <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : 'white'} />
                         <Text style={{ top: 4, left: 3, color: "white" }}>Thích</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>

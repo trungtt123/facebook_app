@@ -18,6 +18,7 @@ import {  removeLoginInfoInRedux, changeLoginWithCache } from '../Redux/authSlic
 import authService from '../Services/Api/authService';
 import * as Animatable from 'react-native-animatable';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import { COMMON_COLOR } from '../Services/Helper/constant';
 function SaveLoginInfoScreen({ navigation }) {
     const { firstLogin, loginWithCache, loginPhonenumber, loginPassword, user, isAuthenticated } = useSelector(
         (state) => state.auth
@@ -87,7 +88,7 @@ function SaveLoginInfoScreen({ navigation }) {
                 <TouchableOpacity style={{ flex: 1, borderLeftColor: '#ccc', borderLeftWidth: 1 }} onPress={() => handleSaveLoginInfo()}>
                     <Text style={{
                         textAlign: 'center', fontSize: 15,
-                        color: '#216fdb', fontWeight: 'bold'
+                        color: COMMON_COLOR.BLUE_COLOR, fontWeight: 'bold'
                     }}>OK</Text>
                 </TouchableOpacity>
             </View>
@@ -100,30 +101,9 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         backgroundColor: 'white'
     },
-    title: {
-        marginTop: 16,
-        paddingVertical: 8,
-        borderWidth: 4,
-        borderColor: "#20232a",
-        borderRadius: 6,
-        backgroundColor: "#61dafb",
-        color: "#20232a",
-        textAlign: "center",
-        fontSize: 30,
-        fontWeight: "bold"
-    },
     logoFacebook: {
         width: 50,
         height: 50
-    },
-    btnSignup: {
-        width: '100%',
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 100
     }
 });
 

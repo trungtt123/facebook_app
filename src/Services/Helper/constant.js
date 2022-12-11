@@ -1,5 +1,16 @@
 import {API_URL} from '@env';
-export const REST_API_URL = 'https://a760-2405-4802-13d-c690-e040-1f27-4b09-9db9.ap.ngrok.io/it4788';
+export const REST_API_URL = 'https://b1f0-2405-4802-13d-c690-9d8c-61cc-1e6d-df29.ap.ngrok.io/it4788';
 //export const REST_API_URL = API_URL;
-export const INTERNET_CONNECTION_FAILED = 'Đường truyền của bạn không ổn định';
-export const INTERNET_CONNECTION_SUCCESS = 'Kết nối đã được khôi phục';
+const INTERNET_CONNECTION_FAILED = 'Bạn đang offline';
+const INTERNET_CONNECTION_SUCCESS = 'Bạn đang online';
+const BLUE_COLOR = "#216fdb";
+const LIKE_BLUE_COLOR = "#30a4f0"
+
+export const COMMON_MESSAGE = {
+    INTERNET_CONNECTION_FAILED,
+    INTERNET_CONNECTION_SUCCESS
+}
+export const COMMON_COLOR = {
+    BLUE_COLOR,
+    LIKE_BLUE_COLOR
+}

@@ -24,6 +24,7 @@ import { getTimeUpdatePostFromUnixTime } from '../../Services/Helper/common';
 import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
+import { COMMON_COLOR } from '../../Services/Helper/constant';
 function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
@@ -112,7 +113,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                             }}>
 
                                 <View style={{ flexDirection: "row", }}>
-                                    <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0' }} />
+                                    <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: COMMON_COLOR.LIKE_BLUE_COLOR }} />
                                     <Text style={{ left: 5, color: "#626262" }}>
                                     {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                                     </Text>
@@ -133,7 +134,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                             }}>
 
                                 <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
-                                    <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? '#30a4f0' : '#626262'} />
+                                    <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                     <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>
