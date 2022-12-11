@@ -43,18 +43,18 @@ function HomeScreen({ navigation }) {
         return layoutMeasurement.height + contentOffset.y >=
             contentSize.height - paddingToBottom;
     };
-    // useEffect(() => {
-    //     console.log('is', !isPostListLoading);
-    //     if (!isPostListLoading)
-    //         dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
-    // }, []);
-    // useEffect(() => {
-    //     console.log('run', postList?.length);
-    //     let newPostList = postListTotal;
-    //     newPostList = newPostList.concat(postList);
-    //     setPostListTotal(newPostList);
-    // }, [postList]);
-    // console.log('newPostList', postListTotal.length);
+    useEffect(() => {
+        console.log('is', !isPostListLoading);
+        if (!isPostListLoading)
+            dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
+    }, []);
+    useEffect(() => {
+        console.log('run', postList?.length);
+        let newPostList = postListTotal;
+        newPostList = newPostList.concat(postList);
+        setPostListTotal(newPostList);
+    }, [postList]);
+    console.log('newPostList', postListTotal.length);
     return <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
