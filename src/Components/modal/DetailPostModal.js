@@ -15,7 +15,8 @@ import { connect } from 'react-redux';
 import { useDispatch, useSelector } from "react-redux";
 import {
     _getCache,
-    _setCache
+    _setCache,
+    converNumberLikeAndComment
 } from '../../Services/Helper/common';
 import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
@@ -113,7 +114,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                                 <View style={{ flexDirection: "row", }}>
                                     <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: '#30a4f0' }} />
                                     <Text style={{ left: 5, color: "#626262" }}>
-                                    {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${post?.like - 1} người khác` : ''}` : post?.like}
+                                    {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                                     </Text>
                                 </View>
 
