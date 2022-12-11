@@ -97,9 +97,12 @@ const authSlice = createSlice({
     },
     [verifyToken.fulfilled]: (state, action) => {
       console.log("actiion ful", action);
+      const payload = action.payload;
       state.isLoading = false;
-      if (action?.payload?.message == 'OK')
+      if (action?.payload?.message == 'OK'){
+        state.user = payload?.data;
         state.isAuthenticated = true;
+      }
       else state.isAuthenticated = false;
       state.loginWithCache = true;
     },

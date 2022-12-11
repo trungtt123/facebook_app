@@ -1,4 +1,4 @@
-import { Text, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, useCallback } from "react-native";
+import { Text, TextInput, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, useCallback } from "react-native";
 import { useState, useEffect, memo } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,9 @@ function HomeScreen({ navigation }) {
     const netInfo = useNetInfo();
     const { postList, isPostListLoading } = useSelector(
         (state) => state.post
+    );
+    const { user } = useSelector(
+        (state) => state.auth
     );
     const [postListTotal, setPostListTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -71,6 +74,21 @@ function HomeScreen({ navigation }) {
             }}
             scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
         >
+            <View style={{ width: '100%', height: 70, backgroundColor: 'white', flexDirection: 'row', padding: 15 }}>
+                <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
+                    user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }
+                } />
+                <TextInput selectTextOnFocus={false}
+                    onPressIn={() => navigation.navigate('createPost')}
+                    style={{
+                        width: '80%', borderWidth: 1, placeholderTextColor: 'black',
+                        borderColor: '#ccc', height: 40, fontSize: 15, marginTop: 3,
+                        marginLeft: 10, borderRadius: 30, paddingLeft: 18
+                    }}
+                    placeholderTextColor="black"
+                    placeholder="Bạn đang nghĩ gì ?"
+                />
+            </View>
             {postListTotal?.map((item, index) => {
                 //if (index === 0) console.log(item.image);
                 return <PostInHome navigation={navigation} key={index} postData={item} />
