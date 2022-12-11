@@ -37,6 +37,7 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 export const changeFirstLogin = createAction('changeFirstLogin');
 export const removeLoginInfoInRedux = createAction('removeLoginInfoInRedux');
 export const changeLoginWithCache = createAction('changeLoginWithCache');
+export const resetAuthSlice = createAction('resetAuthSlice');
 
 const initialState = {
   user: null,
@@ -127,7 +128,8 @@ const authSlice = createSlice({
     },
     [changeLoginWithCache]: (state, action) => {
       state.loginWithCache = action.payload;
-    }
+    },
+    [resetAuthSlice]: () => initialState
   },
 });
 

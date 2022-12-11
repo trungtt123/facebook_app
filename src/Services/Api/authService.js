@@ -29,6 +29,7 @@ const logout = async () => {
   try {
     await _setCache("token", "");
     await _setCache("user", "");
+    // clear cache
     await postService.removePostsCache();
     return axios.post(`/auth/logout`);
   }

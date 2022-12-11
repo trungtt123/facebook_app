@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import postService from "../Services/Api/postService";
 export const fetchListPost = createAsyncThunk(
   "post/fetchListPost",
   async (data, thunkAPI) => {
     try {
-      const {lastId, index, count} = data;
+      const { lastId, index, count } = data;
       return await postService.getListPosts(lastId, index, count);
     } catch (e) {
       console.log("error", e);
@@ -12,7 +12,7 @@ export const fetchListPost = createAsyncThunk(
     }
   }
 );
-
+export const resetPostSlice = createAction('resetPostSlice');
 const initialState = {
   postList: [],
   isPostListLoading: false,
@@ -38,6 +38,7 @@ const postSlice = createSlice({
       state.isPostListLoading = false;
       state.postList = [];
     },
+    [resetPostSlice]: () => initialState
   },
 });
 

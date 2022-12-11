@@ -12,19 +12,21 @@ import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
-import { logout } from "../Redux/authSlice";
+import { logout, resetAuthSlice } from "../Redux/authSlice";
+import { resetPostSlice } from '../Redux/postSlice';
 function MenuScreen() {
     const dispatch = useDispatch();
-    const { userList, isLoading } = useSelector(
-        (state) => state.user
-    );
-    useEffect(() => {
-    }, []);
+    const handleLogout = () => {
+        // reset store
+        dispatch(resetPostSlice());
+        dispatch(resetAuthSlice());
+        dispatch(logout());
+    }   
     return (
         <View style={{flex: 1}}>
             <Text>Setting</Text>
             <Button
-                onPress={() => dispatch(logout())}
+                onPress={() => handleLogout()}
                 title="Đăng xuất"
                 color="#841584"
                 accessibilityLabel="Learn more about this purple button"
