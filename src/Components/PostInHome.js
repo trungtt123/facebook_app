@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     _getCache,
     _setCache,
-    converNumberLikeAndComment
+    converNumberLikeAndComment,
+    getTextWithIcon
 } from '../Services/Helper/common';
 import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
@@ -24,6 +25,7 @@ import DetailPostModal from './modal/DetailPostModal';
 import PostModalOneImage from './modal/PostModalOneImage';
 import ViewImage from './image/ViewImage';
 import { COMMON_COLOR } from '../Services/Helper/constant';
+import ViewWithIcon from './ViewWithIcon';
 function PostInHome({ navigation, postData }) {
     const dispatch = useDispatch();
     const [isShowDetailPost, setIsShowDetailPost] = useState(false);
@@ -85,14 +87,14 @@ function PostInHome({ navigation, postData }) {
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username}</Text>
-                                    {post?.status && <Text style={{ fontWeight: 'normal' }}>
+                                    {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
                                 </Text>
                             </View>
                         </Text>
                     }
-                    titleNumberOfLines={4}
+                    titleNumberOfLines={1}
                     subtitleNumberOfLines={1}
                     subtitle={
                         <Text>
@@ -107,7 +109,10 @@ function PostInHome({ navigation, postData }) {
                 />
                 <Card.Content>
                     <Paragraph style={{ fontSize: 15 }}>
-                        <Text>{seemore ? post?.described : post?.described?.slice(0, 200) + "... "}</Text>
+                        <Text>{seemore ?
+                            <ViewWithIcon value={post?.described} iconSize={17} fontSize={15} /> :
+                            <ViewWithIcon value={post?.described?.slice(0, 200) + "... "} iconSize={17} fontSize={15} />
+                        }</Text>
                         {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
                     </Paragraph>
                 </Card.Content>

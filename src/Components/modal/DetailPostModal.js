@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     _getCache,
     _setCache,
-    converNumberLikeAndComment
+    converNumberLikeAndComment,
+    getTextWithIcon
 } from '../../Services/Helper/common';
 import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
@@ -89,7 +90,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                     />
                     <Card.Content>
                         <Paragraph style={{ fontSize: 15 }}>
-                            <Text>{post?.described}</Text>
+                            <Text>{getTextWithIcon(post?.described)}</Text>
                         </Paragraph>
                     </Card.Content>
 

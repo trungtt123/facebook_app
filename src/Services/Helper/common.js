@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { data_code, data_icon_have_code } from "./emoticons";
 export const _setCache = async (key, value) => {
     try {
         await AsyncStorage.setItem(key, value);
@@ -34,7 +35,7 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export const getTimeUpdatePostFromUnixTime = (unix) => {
     const today = new Date();
-    const before = today.getTime()/1000 - unix;
+    const before = today.getTime() / 1000 - unix;
     const d = new Date(unix * 1000);
     if (0 <= before && before <= 59) return `Vừa xong`;
     if (60 <= before && before <= 60 * 60 - 1) return `${Math.floor(before / 60)} phút`;
@@ -52,18 +53,16 @@ export const getTimeUpdateDetailPostFromUnixTime = (unix) => {
     return datestring;
 }
 export const checkNamNhuan = (year) => {
-    if (year % 100 === 0){
+    if (year % 100 === 0) {
         return year % 400 === 0;
     }
     return year % 4 === 0;
 }
-export const getAge = (birthday)  => 
-{
+export const getAge = (birthday) => {
     var today = new Date();
     var age = today.getFullYear() - birthday.getFullYear();
     var m = today.getMonth() - birthday.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) 
-    {
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
         age--;
     }
     return age;
@@ -71,12 +70,27 @@ export const getAge = (birthday)  =>
 export const converNumberLikeAndComment = (num) => {
     if (num >= 1000000000) {
         return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-     }
-     if (num >= 1000000) {
+    }
+    if (num >= 1000000) {
         return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-     }
-     if (num >= 1000) {
+    }
+    if (num >= 1000) {
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-     }
-     return num;
+    }
+    return num;
+}
+export const getTextWithIcon = (text) => {
+    let newText = " " + text + " ";
+    for (let i = 0; i < data_code.length; i++) {
+        const icon = data_code[i];
+        while (true) {
+            let index = newText.indexOf(icon.key);
+            if (index === -1) break;
+            if ((newText[index - 1] === " " || newText[index - 1] === "\n")
+                && ((newText[index + icon.key.length] === " ") || newText[index + icon.key.length] === "\n")) {
+                newText = newText.substring(0, index) + icon.code + newText.substring(index + icon.key.length);
+            }
+        }
+    }
+    return newText.trim();
 }

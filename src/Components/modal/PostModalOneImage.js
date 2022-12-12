@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     _getCache,
     _setCache,
-    converNumberLikeAndComment
+    converNumberLikeAndComment,
+    getTextWithIcon
 } from '../../Services/Helper/common';
 import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
@@ -68,10 +69,10 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>{post?.author?.username}</Text>
                     <Text style={{ color: 'white' }}>
                         <Text>{seemore ?
-                            <><Text>{post?.described}</Text>
+                            <><Text>{getTextWithIcon(post?.described)}</Text>
                                 {collapse && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(false)}>{'Thu gọn'}</Text>}
                             </>
-                            : post?.described?.slice(0, 50) + "... "}</Text>
+                            : getTextWithIcon(post?.described?.slice(0, 50)) + "... "}</Text>
                         {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
                     </Text>
                     <Text style={{ color: '#6d6d6d', marginTop: 20, fontSize: 12 }}>{getTimeUpdateDetailPostFromUnixTime(post?.modified)}</Text>
