@@ -26,6 +26,7 @@ import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
 import { COMMON_COLOR } from '../../Services/Helper/constant';
+import ViewWithIcon from '../ViewWithIcon';
 export default function PostModalOneImage({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
@@ -66,15 +67,21 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                 <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: 'black', opacity: 0.5 }}>
                 </View>
                 <View style={{ padding: 10 }}>
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>{post?.author?.username}</Text>
-                    <Text style={{ color: 'white' }}>
-                        <Text>{seemore ?
-                            <><Text>{getTextWithIcon(post?.described)}</Text>
-                                {collapse && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(false)}>{'Thu gọn'}</Text>}
-                            </>
-                            : getTextWithIcon(post?.described?.slice(0, 50)) + "... "}</Text>
-                        {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
+                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username}</Text>
+                    <Text>{seemore ?
+                        <><Text>
+                            <ViewWithIcon value={post?.described}
+                                styleText={{ fontSize: 15, color: 'white' }}
+                                styleIcon={{ width: 17, height: 17 }} />
+                        </Text>
+                            {collapse && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(false)}>{'Thu gọn'}</Text>}
+                        </>
+                        : <ViewWithIcon value={post?.described?.slice(0, 50) + "... "}
+                            styleText={{ fontSize: 15, color: 'white' }}
+                            styleIcon={{ width: 17, height: 17 }} />}
                     </Text>
+                    {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
+
                     <Text style={{ color: '#6d6d6d', marginTop: 20, fontSize: 12 }}>{getTimeUpdateDetailPostFromUnixTime(post?.modified)}</Text>
                 </View>
                 <View style={{
@@ -87,7 +94,7 @@ export default function PostModalOneImage({ postData, onClose, viewImage, callBa
                     <View style={{ flexDirection: "row", }}>
                         <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 20, backgroundColor: COMMON_COLOR.LIKE_BLUE_COLOR }} />
                         <Text style={{ left: 5, color: "white" }}>
-                        {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
+                            {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                         </Text>
                     </View>
 

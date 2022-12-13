@@ -26,6 +26,7 @@ import postService from '../../Services/Api/postService';
 import CenterModal from '../modal/CenterModal';
 import ScaledImage from '../image/ScaleImage';
 import { COMMON_COLOR } from '../../Services/Helper/constant';
+import ViewWithIcon from '../ViewWithIcon';
 function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) {
     const dispatch = useDispatch();
     const [post, setPost] = useState(postData);
@@ -90,7 +91,9 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                     />
                     <Card.Content>
                         <Paragraph style={{ fontSize: 15 }}>
-                            <Text>{getTextWithIcon(post?.described)}</Text>
+                            <ViewWithIcon value={post?.described}
+                                styleText={{ fontSize: 15 }}
+                                styleIcon={{ width: 17, height: 17 }} />
                         </Paragraph>
                     </Card.Content>
 
@@ -116,7 +119,7 @@ function DetailPostModal({ postData, onClose, viewImage, callBackPostUpdated }) 
                                 <View style={{ flexDirection: "row", }}>
                                     <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: COMMON_COLOR.LIKE_BLUE_COLOR }} />
                                     <Text style={{ left: 5, color: "#626262" }}>
-                                    {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
+                                        {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                                     </Text>
                                 </View>
 

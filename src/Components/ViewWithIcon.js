@@ -9,8 +9,11 @@ import {
 import { icon_no_code, data_icon_no_code } from '../Services/Helper/emoticons';
 import { getTextWithIcon } from '../Services/Helper/common';
 import { Paragraph } from 'react-native-paper'
-function ViewWithIcon({ value, fontSize, iconSize }) {
+//trungtt123
+// value cần phải qua function getTextWithIcon
+function ViewWithIcon({ value, styleText, styleIcon }) {
     const [viewElm, setViewElm] = useState();
+    //xử lý icon sử dụng icon sử dụng ảnh
     const convertStringToListTextAndImage = useCallback((value) => {
         let newText = value;
         let data = [];
@@ -29,17 +32,29 @@ function ViewWithIcon({ value, fontSize, iconSize }) {
         while (data[data.length - 1] === "\n" || data[data.length - 1] === " ") {
             data.splice(data.length - 1, 1);
         }
-        let elm = data.map((item, index) => {
-            if (data_icon_no_code[item] === undefined || data_icon_no_code[item] === null) {
-                return <Text style={{fontSize: fontSize}} key={index}>{item}</Text>
+        let newData = [];
+        let text = "";
+        for (let i = 0; i < data.length; i++){
+            if (data_icon_no_code[data[i]] === undefined){
+                text += data[i];
             }
             else {
-                return <Image style={{ width: iconSize, height: iconSize }} key={index} source={{ uri: data_icon_no_code[item] }} />
+                newData.push(text);
+                newData.push(data[i]);
+                text = "";
+            }
+        }
+        if (text !== "") newData.push(text);
+        let elm = newData.map((item, index) => {
+            if (data_icon_no_code[item] === undefined) {
+                return <Text style={styleText} key={index}>{item}</Text>
+            }
+            else {
+                return <Image style={styleIcon} key={index} source={{ uri: data_icon_no_code[item] }} />
             }
         });
         setViewElm(elm);
     }, []);
-    console.log('re-rendering');
     useEffect(() => {
         convertStringToListTextAndImage(value);
     }, [value]);
@@ -49,11 +64,5 @@ function ViewWithIcon({ value, fontSize, iconSize }) {
         </Paragraph>
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white'
-    }
-});
 
 export default memo(ViewWithIcon);

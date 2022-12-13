@@ -9271,94 +9271,107 @@ export const emoticons = [
 export const data_code = [
     {
         key: ":)",
+        regex: new RegExp(/:\)/g),
         code: "🙂",
     },
     {
         key: ":(",
+        regex: new RegExp(/:\(/g),
         code: "🙁",
     },
     {
         key: ":p",
+        regex: new RegExp(/:p/g),
         code: "😛",
     },
     {
         key: ":D",
+        regex: new RegExp(/:D/g),
         code: "😃",
     },
     {
         key: ":o",
+        regex: new RegExp(/:o/g),
         code: "😮",
     },
     {
         key: ";)",
+        regex: new RegExp(/;\)/g),
         code: "😉",
     },
     {
         key: "8-)",
+        regex: new RegExp(/8-\)/g),
         code: "🤓",
     },
     {
         key: "8|",
+        regex: new RegExp(/8\|/g),
         code: "😎",
     },
     {
         key: ">:(",
+        regex: new RegExp(/>:\(/g),
         code: "😠",
     },
     {
         key: ":/",
+        regex: new RegExp(/:\//g),
         code: "😕",
     },
     {
         key: ":'(",
+        regex: new RegExp(/:'\(/g),
         code: "😢",
     },
     {
         key: "3:)",
+        regex: new RegExp(/3:\)/g),
         code: "😈",
     },
     {
         key: "O:)",
+        regex: new RegExp(/O:\)/g),
         code: "😇",
     },
     {
         key: ":*",
+        regex: new RegExp(/:\*/g),
         code: "😘",
     },
     {
         key: "-_-",
+        regex: new RegExp(/-_-/g),
         code: "😑",
     },
     {
         key: "O.O",
+        regex: new RegExp(/O.O/g),
         code: "😳",
     },
     {
         key: ">:o",
+        regex: new RegExp(/>:o/g),
         code: "😠",
     },
     {
         key: "<3",
+        regex: new RegExp(/<3/g),
         code: "❤️",
     },
     {
         key: ":|]",
+        regex: new RegExp(/:\|\]/g),
         code: "🤖",
     },
     {
-        key: "<(\")",
-        code: "🐧",
-    },
-    {
         key: "(^^^)",
+        regex: new RegExp(/\(\^\^\^\)/g),
         code: "🦈",
     },
     {
-        key: "(y)",
-        code: "(y)",
-    },
-    {
         key: ":poop:",
+        regex: new RegExp(/:poop:/g),
         code: "💩",
     }
 ]
@@ -9367,7 +9380,7 @@ export const data_icon_no_code = {
     ":v" : "https://static.xx.fbcdn.net/images/emoji.php/v9/ebb/1.5/24/PACMAN.png",
     ":3" : "https://static.xx.fbcdn.net/images/emoji.php/v9/ed/1.5/16/FACE_WITH_COLON_THREE.png",
     "^_^" : "https://static.xx.fbcdn.net/images/emoji.php/v9/t88/1.5/32/263a.png",
-    // "🙂": "https://static.xx.fbcdn.net/images/emoji.php/v9/t5f/1.5/32/1f642.png"
+    "(y)": "https://static.xx.fbcdn.net/images/emoji.php/v9/ec7/1.5/16/LIKE.png"
 }
 export const data_icon_have_code = {
     "🙂": "https://static.xx.fbcdn.net/images/emoji.php/v9/t5f/1.5/32/1f642.png"

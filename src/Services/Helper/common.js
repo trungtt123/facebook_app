@@ -83,14 +83,13 @@ export const getTextWithIcon = (text) => {
     let newText = " " + text + " ";
     for (let i = 0; i < data_code.length; i++) {
         const icon = data_code[i];
-        while (true) {
-            let index = newText.indexOf(icon.key);
-            if (index === -1) break;
+        newText = newText.replace(icon.regex, (match, index) => {
             if ((newText[index - 1] === " " || newText[index - 1] === "\n")
-                && ((newText[index + icon.key.length] === " ") || newText[index + icon.key.length] === "\n")) {
-                newText = newText.substring(0, index) + icon.code + newText.substring(index + icon.key.length);
-            }
-        }
+                && (newText[index + icon.key.length] === " " || newText[index + icon.key.length] === "\n")
+            )
+                return icon.code;
+            return icon.key;
+        });
     }
     return newText.trim();
 }

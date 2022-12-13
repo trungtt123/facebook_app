@@ -110,8 +110,12 @@ function PostInHome({ navigation, postData }) {
                 <Card.Content>
                     <Paragraph style={{ fontSize: 15 }}>
                         <Text>{seemore ?
-                            <ViewWithIcon value={post?.described} iconSize={17} fontSize={15} /> :
-                            <ViewWithIcon value={post?.described?.slice(0, 200) + "... "} iconSize={17} fontSize={15} />
+                            <ViewWithIcon value={post?.described}
+                                styleText={{ fontSize: 15 }}
+                                styleIcon={{ width: 17, height: 17 }} /> :
+                            <ViewWithIcon value={post?.described?.slice(0, 200) + "... "}
+                                styleText={{ fontSize: 15 }}
+                                styleIcon={{ width: 17, height: 17 }} />
                         }</Text>
                         {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
                     </Paragraph>
