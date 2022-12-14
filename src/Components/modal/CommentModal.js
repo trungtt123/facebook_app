@@ -89,7 +89,7 @@ class ComponentComment extends React.Component{
 }
 
 
-export default function CommentModal({ navigation, closeModal }) {
+export default function CommentModal({ navigation, closeModal, postId }) {
     const [isModalVisible, setModalVisible] = useState(true);
     const [pickerValue, setPickerValue] = useState("Phù hợp nhất");
     const [textComment, setTextComment] = useState("");

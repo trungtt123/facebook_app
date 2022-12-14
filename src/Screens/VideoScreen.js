@@ -18,21 +18,11 @@ function VideoScreen() {
     const { userList, isLoading } = useSelector(
         (state) => state.user
     );
-    const [index, setIndex] = useState(0);
     useEffect(() => {
     }, []);
-    console.log(index);
-    const [show, setShow] = useState(false);
     return (
         <View>
             <Text>Video</Text>
-            <Button
-                onPress={() => setShow(true)}
-                title="SHOW COMMENT MODAL"
-                color="#841584"
-                style={{ marginTop: 5 }}
-            />
-            {show && <CommentModal closeModal={() => setShow(false)}/>}
         </View>
     );
 }

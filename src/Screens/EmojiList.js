@@ -8,7 +8,8 @@ export default function EmojiList(){
             {data.map((item, key) => {
                 const tmp = './'+item.img;  
                 console.log("check",tmp);
-                return <Image source={require(tmp)} key={key} style={styles.img}></Image>
+                return <></>
+                //<Image source={require(tmp)} key={key} style={styles.img} />
 })}
             </View>
         </View>

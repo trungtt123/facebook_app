@@ -26,8 +26,10 @@ import PostModalOneImage from './modal/PostModalOneImage';
 import ViewImage from './image/ViewImage';
 import { COMMON_COLOR } from '../Services/Helper/constant';
 import ViewWithIcon from './ViewWithIcon';
+import CommentModal from './modal/CommentModal';
 function PostInHome({ navigation, postData }) {
     const dispatch = useDispatch();
+    const [showComment, setShowComment] = useState(false);
     const [isShowDetailPost, setIsShowDetailPost] = useState(false);
     const [viewImage, setViewImage] = useState(false);
     const [indexViewImage, setIndexViewImage] = useState(0);
@@ -77,8 +79,10 @@ function PostInHome({ navigation, postData }) {
                     setIndexViewImage(index);
                 }
                 } />}
+                
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
+            {showComment && <CommentModal navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)}/>}
             <Card>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}
@@ -190,7 +194,7 @@ function PostInHome({ navigation, postData }) {
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                 <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>
+                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => setShowComment(true)}>
                                 <Ionicons style={{ top: 3 }} name="chatbox-outline" size={22} color="#626262" />
                                 <Text style={{ top: 4, left: 3, color: "#626262" }}>Bình luận</Text>
                             </TouchableOpacity>
