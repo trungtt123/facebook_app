@@ -7,5 +7,5 @@ Sau khi deploy backend bằng ngrok, copy link "https" của ngrok điền vào 
 # 4. shift + a -> chọn device để khởi chạy ứng dụng
 # 5. đã hoàn thiện chức năng login/logout
 Tài khoản đã có trong hệ thống 
-phonenumber: 0987654321
+phonenumber: 0987654340
 pass: 123456
