@@ -6,18 +6,57 @@ import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {Picker} from "@react-native-picker/picker";
 
+
+import axios from "../../setups/custom_axios";
+import { _getCache } from "../../Services/Helper/common";
+
+let comments = [];
+let commentValue;
+//goi api lay ra thong tin cac comment cua bai viet co post_id
+const getComment = async (post_id)=>{
+    let token = await _getCache("token");
+    //console.log(token);  
+    post_id="6386b4c98827e56f9cecbcb6"; 
+    //const login = await axios.post(`http://localhost:8080/it4788/comment/set_comment?id=6386b4c98827e56f9cecbcb6&comment=Hello bro kk&index=0&count=10&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2IyNTQ0ODJjOWE3MDdjYzNkOWYyYyIsImRhdGVMb2dpbiI6IjIwMjItMTItMTRUMDc6MTU6NDguMTM3WiIsImlhdCI6MTY3MTAwMjE0OCwiZXhwIjoxNjcxMDg4NTQ4fQ.1gZnlJ3OxrZsYbUMDwsOetG37IiOO5pWUO0KeIJUXww`);
+    const listComment = await axios.post(`/comment/get_comment?id=${post_id}&index=0&count=10`);
+    // có 2 cách xử lý
+    //const login = await axios.post(`/auth/login?phonenumber=0987654340&password=123456`);
+    console.log('login nè: ', listComment);
+    comments = listComment.data;
+    
+    // axios.post(`/auth/login?phonenumber=0987654321&password=123456`).then((result) => {
+    //     // truong hop api ko loi 
+    //     console.log(result);
+    // }).catch(e => {
+    //     // truong hop api loi
+    // })
+}
+const setComment = async (post_id) => {
+    //let token = await _getCache("token");  
+    //console.log(token);
+    post_id="6386b4c98827e56f9cecbcb6"; 
+    console.log(commentValue);
+    const setComment = await axios.post(`/comment/set_comment?id=${post_id}&comment=${commentValue}&index=0&count=10`);
+    console.log(setComment);
+  };
+
 //đây là mỗi phần tử comment, có urlImage, ten và textComment, time
 class ComponentComment extends React.Component{
+    constructor(props) {
+        super(props);
+        
+      }
     render(){
+        
         return(
         <View style={styles.commentContainer}>
             <Image
                 style={styles.image}
                 source={{
-                    uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
+                    uri: this.props.urlImage,
                   }}
             />
-
+    {/* 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==' */}
             <View >
                 {/* //comment text */}
                 <View style={styles.commentComponent}>
@@ -49,9 +88,12 @@ class ComponentComment extends React.Component{
     
 }
 
+
 export default function CommentModal({ navigation, closeModal }) {
     const [isModalVisible, setModalVisible] = useState(true);
     const [pickerValue, setPickerValue] = useState("Phù hợp nhất");
+    const [textComment, setTextComment] = useState("");
+    const [like, setLike] = useState("like1");
     //click outside de dong modal
     // const outsideClick = () => {
     //     if(closeOnClickOutside) {
@@ -59,6 +101,14 @@ export default function CommentModal({ navigation, closeModal }) {
     //     }
     // }
     
+    //hàm này gọi khi mở modal comment lên
+    const onScreenLoad =async () => {
+        await getComment();
+    }
+    useEffect( () => {
+         onScreenLoad();
+    }, [])
+
     return (
         <View>
             <Modal
@@ -85,12 +135,11 @@ export default function CommentModal({ navigation, closeModal }) {
                             <View style={{width:16, height: 16, backgroundColor: 'red',marginTop: 9, borderRadius: 20, paddingTop:1, alignItems:'center'}}>
                             <Ionicons style={{}} name="heart" size={12} color="white" />
                             </View>
-                            <Text style={{fontSize: 20, fontWeight: "bold", color: 'black', marginTop: 3}}> 1.234</Text>
+                            {/* <Text style={{fontSize: 20, fontWeight: "bold", color: 'black', marginTop: 3}}> 1.234</Text> */}
                             <Ionicons style={{}} name="chevron-forward-outline" size={33} color="black" />                           
                         </TouchableOpacity>
 
-                        <Ionicons style={{flex:1, alignItems:"flex-end", border: 3, borderColor: "#636363"}} name="thumbs-up" size={23} color="#070707" onPress={()=>console.log("Click like")}/>
-                        
+                        <AntDesign name={like} size={22} color={'#216fdb'} onPress={()=>{if(like=="like1")setLike("like2");else setLike("like1")}}/> 
                         </View>
 
                         {/* thanh phù hợp nhất */}
@@ -111,7 +160,7 @@ export default function CommentModal({ navigation, closeModal }) {
                         {/* thanh comment */}
                         <View style={styles.comment}>
                             <ScrollView>
-                            <ComponentComment time={'23p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không?'}/>
+                            {/* <ComponentComment time={'23p'} urlImage={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRN9yYfNZ8CyiytwR072VR6PuFRZ1je7NZ4RmY2gu_CaJuJP0j6T0-javOuzAyrAI8XDg&usqp=CAU'} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không?'}/>
                             <ComponentComment time={'24p'} urlImage={''} name={'Nguyễn Thị Trang'} textComment={'Bạn xinh gái quá!'}/>
                             <ComponentComment time={'25p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? Làm ny mình đi mà, trời lạnh thế này mà có ny ôm thì thích cực! Thế nhé, mai mình đón bạn đi chơi'}/>
                             <ComponentComment time={'26p'} urlImage={''} name={'Tùng'} textComment={':))'}/>
@@ -121,7 +170,12 @@ export default function CommentModal({ navigation, closeModal }) {
                             <ComponentComment time={'2p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
                             <ComponentComment time={'2d'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
                             <ComponentComment time={'Vừa xong'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'4p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh quá, làm ny mình được không? '}/>
+                            <ComponentComment time={'4p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh quá, làm ny mình được không? '}/> */}
+
+                            {
+                            comments?.map((item, index) => {
+                                return <ComponentComment time={'4p'} urlImage={item.poster.avatar} key={index} name={item.poster.name} textComment={item.comment}/>
+                            })}
                             </ScrollView>
                         </View>
 
@@ -130,10 +184,11 @@ export default function CommentModal({ navigation, closeModal }) {
                         
                         <TextInput
                             style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            onChangeText = {(text)=>{setTextComment(text);commentValue=text;}}
+                            value={textComment}
                             placeholder=" Viết bình luận..."
                             keyboardType="default"
+                            onSubmitEditing={()=>{setComment();setTextComment("");}}
                         />
                         </View>
                     </View>
@@ -205,11 +260,12 @@ const styles = StyleSheet.create({
         borderTopColor: '#d2d2d2'
     },
     input: {
-        fontSize: 23,
+        fontSize: 22,
         height: '80%',
         backgroundColor: '#f1f2f4',
         marginTop: 5,
         borderRadius: 25,
+        paddingLeft:10
     },
     touchable: {
         flexDirection: "row",
