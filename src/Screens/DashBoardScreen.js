@@ -3,13 +3,15 @@ import { useState, useEffect, useCallback } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/authSlice";
-import { Feather, Fontisto, Entypo, FontAwesome, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { Feather, Fontisto, Entypo, FontAwesome, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { TabBar } from 'react-native-tab-view';
 import HomeScreen from "./HomeScreen";
 import VideoScreen from "./VideoScreen";
 import NotificationScreen from "./NotificationScreen";
 import MenuScreen from "./MenuScreen";
+import FriendScreen from "./FriendScreen";
+import ProfileScreen from "./ProfileScreen";
 export default function DashBoardScreen({ navigation }) {
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
@@ -25,13 +27,13 @@ export default function DashBoardScreen({ navigation }) {
         <HomeScreen navigation={navigation} />
     ), []);
     const SecondRoute = useCallback(() => (
-        <VideoScreen navigation={navigation} />
+        <FriendScreen navigation={navigation} />
     ), []);
     const ThreeRoute = useCallback(() => (
-        <Text>Three</Text>
+        <VideoScreen navigation={navigation} />
     ), []);
     const FourRoute = useCallback(() => (
-        <Text>Four</Text>
+        <ProfileScreen navigation={navigation} />
     ), []);
     const FiveRoute = useCallback(() => (
         <NotificationScreen />
@@ -69,11 +71,11 @@ export default function DashBoardScreen({ navigation }) {
                     return <View style={{ color: 'black', margin: 5 }}>
                         {
                             route.key == 'first' ? <Ionicons color={index === 0 ? '#1d6ed9' : 'black'} name={index === 0 ? 'home' : 'home-outline'} size={25} />
-                                : route.key == 'second' ? <Ionicons color={index === 1 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 1 ? 'tv' : 'tv-outline'} size={25} />
-                                    : route.key == 'three' ? <Ionicons color={index === 2 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 2 ? 'bookmark' : 'bookmark-outline'} size={25} />
-                                        : route.key == 'four' ? <Ionicons color={index === 3 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 3 ? 'md-heart' : 'md-heart-outline'} size={25} />
+                                : route.key == 'second' ? <MaterialCommunityIcons color={index === 1 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 1 ? 'account-group' : 'account-group-outline'} size={28} />
+                                    : route.key == 'three' ? <Ionicons color={index === 2 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 2 ? 'tv' : 'tv-outline'} size={25} />
+                                        : route.key == 'four' ? <Ionicons color={index === 3 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 3 ? 'person' : 'person-outline'} size={25} />
                                             : route.key == 'five' ? <FontAwesome color={index === 4 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 4 ? 'bell' : 'bell-o'} size={22} />
-                                                : <Ionicons color={index === 5 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 5 ? 'person' : 'person-outline'} size={25} />
+                                                : <Ionicons color={index === 5 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 5 ? 'menu-outline' : 'menu-outline'} size={28} />
                         }
                     </View>
 
