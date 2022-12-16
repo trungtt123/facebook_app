@@ -12,9 +12,11 @@ import NotificationScreen from "./NotificationScreen";
 import MenuScreen from "./MenuScreen";
 import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
+import * as Animatable from 'react-native-animatable';
 export default function DashBoardScreen({ navigation }) {
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
+    const [showTopAppBar, setShowTopAppBar] = useState(true);
     const [routes] = useState([
         { key: 'first', title: 'home', index: 0 },
         { key: 'second', title: 'watch', index: 1 },
@@ -49,18 +51,25 @@ export default function DashBoardScreen({ navigation }) {
         five: FiveRoute,
         six: SixRoute
     });
-    return <>
-        <View style={styles.header}>
-            <Text style={styles.textLogoFacebook}>facebook</Text>
-            <View style={styles.viewBtnRight}>
-                <Fontisto onPress={() => navigation.navigate('createPost')}
-                    style={styles.btnRight} name="plus-a" size={20} color="black" />
-                <FontAwesome onPress={() => navigation.navigate('search')}
-                    style={styles.btnRight} name="search" size={22} color="black" />
-                <Fontisto onPress={() => navigation.navigate('message')}
-                    style={styles.btnRight} name="messenger" size={22} color="black" />
+    const handleSwitchTab = (currentIndex) => {
+        console.log(currentIndex);
+        setIndex(currentIndex);
+        if (currentIndex !== 0) setShowTopAppBar(false);
+        else setShowTopAppBar(true);
+    }
+    return <View style={{paddingTop: 30, flex: 1, backgroundColor: 'white'}}>
+        {showTopAppBar && <View style={styles.header}>
+                <Text style={styles.textLogoFacebook}>facebook</Text>
+                <View style={styles.viewBtnRight}>
+                    <Fontisto onPress={() => navigation.navigate('createPost')}
+                        style={styles.btnRight} name="plus-a" size={20} color="black" />
+                    <FontAwesome onPress={() => navigation.navigate('search')}
+                        style={styles.btnRight} name="search" size={22} color="black" />
+                    <Fontisto onPress={() => navigation.navigate('message')}
+                        style={styles.btnRight} name="messenger" size={22} color="black" />
+                </View>
             </View>
-        </View>
+        }
         <TabView
             springConfig
             lazy={true}
@@ -68,7 +77,7 @@ export default function DashBoardScreen({ navigation }) {
                 indicatorStyle={{ backgroundColor: '#1d6ed9', height: 2 }}
                 style={{ backgroundColor: 'white', minHeight: 30, padding: 0 }} // here
                 renderLabel={({ route, focused, color }) => {
-                    return <View style={{ color: 'black', margin: 5 }}>
+                    return <View style={{ color: 'black' }}>
                         {
                             route.key == 'first' ? <Ionicons color={index === 0 ? '#1d6ed9' : 'black'} name={index === 0 ? 'home' : 'home-outline'} size={25} />
                                 : route.key == 'second' ? <MaterialCommunityIcons color={index === 1 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 1 ? 'account-group' : 'account-group-outline'} size={28} />
@@ -82,18 +91,18 @@ export default function DashBoardScreen({ navigation }) {
                 }} />}
             navigationState={{ index, routes }}
             renderScene={renderScene}
-            onIndexChange={setIndex}
+            onIndexChange={i => handleSwitchTab(i)}
             initialLayout={{ width: layout.width }}
         />
-    </>
+    </View>
 }
 const styles = StyleSheet.create({
     header: {
         justifyContent: 'space-between',
-        padding: 10,
-        paddingTop: 30,
+        paddingHorizontal: 10,
         flexDirection: "row",
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingVertical: 5
     },
     viewBtnRight: {
         flexDirection: "row",

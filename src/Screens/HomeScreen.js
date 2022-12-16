@@ -8,6 +8,7 @@ import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 import { useNetInfo } from '@react-native-community/netinfo';
+import { COMMON_COLOR } from "../Services/Helper/constant";
 //@trungtt123
 function HomeScreen({ navigation }) {
     const defaultCount = 4;
@@ -100,7 +101,8 @@ function HomeScreen({ navigation }) {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND
     },
     scrollView: {
         marginHorizontal: 20,
