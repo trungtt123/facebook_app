@@ -32,13 +32,6 @@ function ModalExpand({ requestFriendData, closeModal }) {
             elevation: 5
         }
     });
-    const onScreenLoad = async () => {
-
-    }
-    useEffect(() => {
-
-    }, [])
-
     return <Modal
         animationType="slide"
         transparent={true}
@@ -51,7 +44,7 @@ function ModalExpand({ requestFriendData, closeModal }) {
                     <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                         <Feather name="user-x" size={25}
                             style={{ marginTop: 5, flex: 1 }} />
-                        <View style={{ flexDirection: 'column', marginLeft: 10, flex: 9 }}>
+                        <View style={{ flexDirection: 'column', marginLeft: 10, flex: 9, justifyContent: 'center' }}>
                             <Text style={{ fontWeight: '700', fontSize: 17 }}>Bạn thấy sao về lời mời kết bạn này</Text>
                             <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>
                                 {`${requestFriendData?.username} sẽ không nhận được thông báo.`}
@@ -63,7 +56,7 @@ function ModalExpand({ requestFriendData, closeModal }) {
                     <View style={{ flexDirection: 'row', width: '100%' }}>
                         <MaterialCommunityIcons name="message-alert-outline" size={25}
                             style={{ marginTop: 5, left: -2, flex: 1 }} />
-                        <View style={{ flexDirection: 'column', marginLeft: 10, flex: 9 }}>
+                        <View style={{ flexDirection: 'column', marginLeft: 10, flex: 9, justifyContent: 'center' }}>
                             <Text style={{ fontWeight: '700', fontSize: 17 }}>{`Chặn ${requestFriendData?.username}`}</Text>
                             <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>
                                 {`${requestFriendData?.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Facebook.`}
@@ -94,6 +87,7 @@ export default function RequestFriend({ navigation, data }) {
     }
     useEffect(() => {
         setRequestFriendData(data);
+        setStatus(undefined)
     }, [data])
     return <View style={{ width: '100%', paddingVertical: 5, flexDirection: 'row' }}>
         {isShowModalExpand && <ModalExpand requestFriendData={requestFriendData} closeModal={() => setIsShowModalExpand(false)} />}
@@ -105,24 +99,28 @@ export default function RequestFriend({ navigation, data }) {
             <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
                 <Text style={{ fontSize: 17, fontWeight: '600' }}>{requestFriendData?.username}</Text>
                 {
-                    status === undefined ? <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>{getTimeSendRequestFriend(requestFriendData?.created)}</Text>
+                    status === undefined ? <Text style={{ color: COMMON_COLOR.GRAY_TEXT_COLOR }}>{getTimeSendRequestFriend(requestFriendData?.created)}</Text>
                         : <Entypo style={{ top: 0, right: 0 }} onPress={() => setIsShowModalExpand(true)}
                             name="dots-three-horizontal" size={18} color="#626262" />
                 }
             </View>
-            <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
+            <View style={{ flexDirection: 'column' }}>
                 {status !== undefined
                     ? <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>{status}</Text>
                     : <>
-                        <TouchableOpacity onPress={() => handleSendRequestFriend(requestFriendData.id, 1)}
-                            style={{ backgroundColor: COMMON_COLOR.BLUE_COLOR, flex: 1, padding: 10, marginRight: 3, borderRadius: 5 }}>
-                            <Text style={{ color: 'white', textAlign: 'center', fontWeight: '600', fontSize: 15 }}>Chấp nhận</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleSendRequestFriend(requestFriendData.id, 0)}
-                            style={{ backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND, flex: 1, padding: 10, marginLeft: 3, borderRadius: 5 }}>
-                            <Text style={{ textAlign: 'center', fontWeight: '600', fontSize: 15 }}>Xóa</Text>
-                        </TouchableOpacity>
-                    </>}
+                        {requestFriendData?.same_friends > 0 && <Text style={{marginTop: 2, color: COMMON_COLOR.GRAY_TEXT_COLOR}}>{`${requestFriendData?.same_friends} bạn chung`}</Text>}
+                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                            <TouchableOpacity onPress={() => handleSendRequestFriend(requestFriendData.id, 1)}
+                                style={{ backgroundColor: COMMON_COLOR.BLUE_COLOR, flex: 1, padding: 10, marginRight: 3, borderRadius: 5 }}>
+                                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '600', fontSize: 15 }}>Chấp nhận</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleSendRequestFriend(requestFriendData.id, 0)}
+                                style={{ backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND, flex: 1, padding: 10, marginLeft: 3, borderRadius: 5 }}>
+                                <Text style={{ textAlign: 'center', fontWeight: '600', fontSize: 15 }}>Xóa</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                }
             </View>
         </View>
 
