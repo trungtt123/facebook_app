@@ -31,8 +31,6 @@ const getComment = async (postId)=>{
     // })
 }
 const setComment = async (postId) => {
-    
-    postId="6386b4c98827e56f9cecbcb6"; 
     console.log(commentValue);
     const setComment = await axios.post(`/comment/set_comment?id=${postId}&comment=${commentValue}&index=0&count=10`);
     console.log(setComment);
