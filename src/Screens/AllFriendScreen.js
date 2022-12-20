@@ -24,6 +24,7 @@ import { delay, getTimeSendRequestFriend } from '../Services/Helper/common';
 import MyFriend from '../Components/MyFriend';
 function AllFriendScreen({ route, navigation }) {
     const title = route.params?.title;
+    const targetUserId = route.params?.targetUserId;
     const showFilterTab = route.params?.showFilterTab;
     const showSearchFriend = route.params?.showSearchFriend;
     const defaultCount = 1;
@@ -49,7 +50,8 @@ function AllFriendScreen({ route, navigation }) {
         setRefreshing(false);
     };
     const handleGetListRequest = () => {
-        userService.getUserFriends(user.id, defaultIndex.current, defaultCount).then((result) => {
+        let targetUserIdTmp = '637b254482c9a707cc3d9f2c';
+        userService.getUserFriends(targetUserIdTmp, defaultIndex.current, defaultCount).then((result) => {
             defaultIndex.current += defaultCount;
             setListFriend(result.data.friends)
         }).catch(e => {
@@ -92,7 +94,10 @@ function AllFriendScreen({ route, navigation }) {
                     <TouchableOpacity style={{ padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Tất cả</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('allfriend', { title: 'Tất cả bạn bè' })}
+                    <TouchableOpacity onPress={() => navigation.navigate('allfriend',
+                        {
+                            title: 'Tất cả bạn bè'
+                        })}
                         style={{ marginLeft: 5, padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Gần đây</Text>
                     </TouchableOpacity>
@@ -130,7 +135,7 @@ function AllFriendScreen({ route, navigation }) {
                         <View style={{ marginHorizontal: -5 }}>
                             {listFriendTotal?.map((item, index) => {
                                 return <View key={index} >
-                                    <MyFriend navigation={navigation} data={item} updateListFriends={() => handleGetListRequest()}/>
+                                    <MyFriend navigation={navigation} data={item} updateListFriends={() => handleGetListRequest()} />
                                 </View>
                             })}
                         </View>

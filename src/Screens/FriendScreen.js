@@ -27,6 +27,9 @@ function FriendScreen({ navigation }) {
     const defaultIndex = useRef(0);
     const dispatch = useDispatch();
     const netInfo = useNetInfo();
+    const { user } = useSelector(
+        (state) => state.auth
+    );
     const [listRequest, setListRequest] = useState([]);
     const [listRequestTotal, setListRequestTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -75,7 +78,7 @@ function FriendScreen({ navigation }) {
                     <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Bạn bè</Text>
                     <View style={styles.btnRight}>
                         <FontAwesome onPress={() => navigation.navigate('search')}
-                            style={{ left: 1}} name="search" size={22} color="black" />
+                            style={{ left: 1 }} name="search" size={22} color="black" />
                     </View>
                 </View>
 
@@ -104,8 +107,12 @@ function FriendScreen({ navigation }) {
                         <TouchableOpacity style={{ padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Gợi ý</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('allfriend', {title: 'Tất cả bạn bè'})}
-                        style={{ marginLeft: 5, padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
+                        <TouchableOpacity onPress={() => navigation.navigate('allfriend',
+                            {
+                                title: 'Tất cả bạn bè',
+                                targetUserId: user.id
+                            })}
+                            style={{ marginLeft: 5, padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Tất cả bạn bè</Text>
                         </TouchableOpacity>
                     </View>
@@ -123,7 +130,7 @@ function FriendScreen({ navigation }) {
                         <View style={{ marginHorizontal: -5 }}>
                             {listRequestTotal?.map((item, index) => {
                                 return <View key={index} >
-                                    <RequestFriend navigation={navigation} data={item}/>
+                                    <RequestFriend navigation={navigation} data={item} />
                                 </View>
                             })}
                         </View>

@@ -14,7 +14,7 @@ const setRequestFriend = (userId) => {
   return axios.post(`/friend/set_request_friend?user_id=${userId}`);
 }
 const getUserFriends = (userId, index, count) => {
-  return axios.post(`/friend/get_user_friends?userId=${userId}&index=${index}&count=${count}`);
+  return axios.post(`/friend/get_user_friends?user_id=${userId}&index=${index}&count=${count}`);
 }
 const setBlock = (userId, type) => {
   return axios.post(`/friend/set_block?user_id=${userId}&type=${type}`);
