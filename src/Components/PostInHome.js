@@ -82,7 +82,7 @@ function PostInHome({ navigation, postData }) {
                 
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
-            {showComment && <CommentModal navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)}/>}
+            {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)}/>}
             <Card>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}

@@ -77,7 +77,7 @@ const NetworkError = () => {
     );
 }
 
-export default function CommentModal({ navigation, closeModal, postId }) {
+export default function CommentModal({ navigation, closeModal, postId, postUpdated }) {
     const [isModalVisible, setModalVisible] = useState(true);
     const [pickerValue, setPickerValue] = useState("Phù hợp nhất");
     const [textComment, setTextComment] = useState("");
@@ -91,6 +91,7 @@ export default function CommentModal({ navigation, closeModal, postId }) {
         await axios.post(`/comment/set_comment?id=${postId}&comment=${getTextWithIcon(textComment)}&index=0&count=10`);
         setTextComment("");
         getComment(postId);
+        postUpdated();
     };
 
     const getComment = async (postId) => {
