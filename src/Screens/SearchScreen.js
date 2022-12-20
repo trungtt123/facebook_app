@@ -5,6 +5,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    TouchableWithoutFeedbackComponent,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from "react-redux";
@@ -13,23 +14,44 @@ import {
     _setCache
 } from '../Services/Helper/common';
 import axios from '../setups/custom_axios';
+import { MaterialIcons } from '@expo/vector-icons';
 function SearchScreen({ navigation }) {
     const { user, isLoading } = useSelector(
         (state) => state.auth
     );
+    console.log(_getCache("token"))
+
     const [result, setResult] = useState([])
     const [isSearch, setIsSearch] = useState(0)
-    const handleSearch = (keyword) => {
-        setIsSearch(1);
-        axios.post(`/search/search?index=0&count=20&keyword=${keyword}`)
+    const [keyword, setKeyword] = useState('')
+    const [clear, setClear] = useState(false)
+    const handleClear = () => {
+        setClear(true);
+        setKeyword('');
+    }
+    const handleSearch = () => {
+        setIsSearch(1)
+        axios.post(`/search/search?index=0&count=20&keyword=a`)
             .then(res => {
                 setResult(res.data)
+                console.log('data', res.data)
+                console.log(res.data.length)
                 // setResult(res)
             })
             .catch(error => {
                 setResult([]);
             })
     }
+
+    useEffect(() => {
+        axios.post(`/search/get_saved_search?index=0&count=20`)
+            .then(res => {
+                setResult(res.data)
+            })
+            .catch(error => {
+                setResult([])
+            })
+    }, [clear])
 
     const getSavedSearch = () => {
         setIsSearch(0);
@@ -43,23 +65,32 @@ function SearchScreen({ navigation }) {
     }
 
     console.log(1, result);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
+        console.log(5, keyword)
         navigation.setOptions({
             headerTitle: () => (
-                <TextInput
-                    style={styles.textSearch}
-                    placeholder="Tìm kiếm"
-                    value={textSearch}
-                    onFocus={() => getSavedSearch()}
-                    onChangeText={e => getSavedSearch(e)
-                    }
-                />
+                    <View>
+                        <TextInput
+                            // style={styles.textSearch}
+                            placeholder="Tìm kiếm"
+                            value={keyword}
+                            onFocus={() => getSavedSearch()}
+                            onChangeText={e => setKeyword(e)}
+                            onSubmitEditing={() => handleSearch()}
+                        >
+                        </TextInput>
+                    </View>
+                        ),
+            headerRight: () => (
+                    <TouchableOpacity  onPress={() => handleClear()}>
+                        <MaterialIcons name="clear" size={25} />
+                    </TouchableOpacity>
             ),
             headerStyle: {
                 backgroundColor: 'white', //Set Header color
             },
         });
-    }, [navigation])
+    }, [navigation, keyword])
 
     return (
         <View style={styles.container}>
@@ -80,8 +111,8 @@ function SearchScreen({ navigation }) {
                     ) : (
                         result.map((item, index) => {
                             return (
-                                <View key={index} styles={styles.itemResult}>
-                                    <Text></Text>
+                                <View key={index}  >
+                                    <Text>Màn hình search</Text>
                                 </View>
                             )
                         })
