@@ -4,7 +4,9 @@ import Modal from "react-native-modal";
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {Picker} from "@react-native-picker/picker";
+import NetInfo from "@react-native-community/netinfo";
+import { getTimeUpdateCommentFromUnixTime } from '../../Services/Helper/common';
+//import {Picker} from "@react-native-picker/picker";
 
 
 import axios from "../../setups/custom_axios";
@@ -13,12 +15,9 @@ import { _getCache } from "../../Services/Helper/common";
 let comments = [];
 let commentValue;
 //goi api lay ra thong tin cac comment cua bai viet co post_id
-const getComment = async (post_id)=>{
-    let token = await _getCache("token");
-    //console.log(token);  
-    post_id="6386b4c98827e56f9cecbcb6"; 
+const getComment = async (postId)=>{
     //const login = await axios.post(`http://localhost:8080/it4788/comment/set_comment?id=6386b4c98827e56f9cecbcb6&comment=Hello bro kk&index=0&count=10&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzN2IyNTQ0ODJjOWE3MDdjYzNkOWYyYyIsImRhdGVMb2dpbiI6IjIwMjItMTItMTRUMDc6MTU6NDguMTM3WiIsImlhdCI6MTY3MTAwMjE0OCwiZXhwIjoxNjcxMDg4NTQ4fQ.1gZnlJ3OxrZsYbUMDwsOetG37IiOO5pWUO0KeIJUXww`);
-    const listComment = await axios.post(`/comment/get_comment?id=${post_id}&index=0&count=10`);
+    const listComment = await axios.post(`/comment/get_comment?id=${postId}&index=0&count=10`);
     // có 2 cách xử lý
     //const login = await axios.post(`/auth/login?phonenumber=0987654340&password=123456`);
     console.log('login nè: ', listComment);
@@ -31,12 +30,11 @@ const getComment = async (post_id)=>{
     //     // truong hop api loi
     // })
 }
-const setComment = async (post_id) => {
-    //let token = await _getCache("token");  
-    //console.log(token);
-    post_id="6386b4c98827e56f9cecbcb6"; 
+const setComment = async (postId) => {
+    
+    postId="6386b4c98827e56f9cecbcb6"; 
     console.log(commentValue);
-    const setComment = await axios.post(`/comment/set_comment?id=${post_id}&comment=${commentValue}&index=0&count=10`);
+    const setComment = await axios.post(`/comment/set_comment?id=${postId}&comment=${commentValue}&index=0&count=10`);
     console.log(setComment);
   };
 
@@ -56,7 +54,7 @@ class ComponentComment extends React.Component{
                     uri: this.props.urlImage,
                   }}
             />
-    {/* 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==' */}
+
             <View >
                 {/* //comment text */}
                 <View style={styles.commentComponent}>
@@ -72,7 +70,7 @@ class ComponentComment extends React.Component{
 
                     {/* số like comment */}
                     
-                    <Text style={{fontWeight: 'bold', fontSize: 15, color: '#656766', marginLeft: 20, marginRight: 2}}>3</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 15, color: '#656766', marginLeft: 20, marginRight: 2}}>1</Text>
                     <View style={{width:16, height: 16, backgroundColor: 'red',marginTop: 2, borderRadius: 20, paddingTop:1, alignItems:'center'}}>
                     <Ionicons style={{}} name="heart" size={12} color="white" />
                     </View>
@@ -88,18 +86,27 @@ class ComponentComment extends React.Component{
     
 }
 
+//day la man hinh comment khi khong co internet
+const NetworkError = ()=> {
+  
+    return (
+      <View style={{ flex: 1,alignItems: "center",justifyContent: "center", marginTop: 120}}>
+         <Ionicons name="chatbubble-ellipses-outline" size={120} color={'#cfd0d1'} ></Ionicons>
+         <Text style={{fontWeight:"bold", fontSize:15}}>Viết bình luận trong khi offline</Text>
+         <View style={{flexDirection:"row", marginTop: 5}}>
+              <Ionicons name="refresh-outline" size={20} color={'#4c4c4c'} ></Ionicons>
+              <Text style={{fontSize:15}}>Nhấn để tải lại bình luận</Text>
+         </View>
+      </View>
+    );
+  }
 
 export default function CommentModal({ navigation, closeModal, postId }) {
     const [isModalVisible, setModalVisible] = useState(true);
     const [pickerValue, setPickerValue] = useState("Phù hợp nhất");
     const [textComment, setTextComment] = useState("");
     const [like, setLike] = useState("like1");
-    //click outside de dong modal
-    // const outsideClick = () => {
-    //     if(closeOnClickOutside) {
-    //         this.setState({ isModalVisible: false });
-    //     }
-    // }
+    
     
     //hàm này gọi khi mở modal comment lên
     const onScreenLoad =async () => {
@@ -107,6 +114,21 @@ export default function CommentModal({ navigation, closeModal, postId }) {
     }
     useEffect( () => {
          onScreenLoad();
+    }, [])
+
+    //check internet
+    const [isConnected, setConnected] = useState(false);
+    useEffect(()=>{
+        // Subscribe
+        const unsubscribe = NetInfo.addEventListener(state => {
+            console.log("Connection type", state.type);
+            console.log("Is connected?", state.isConnected);
+            setConnected(state.isConnected);
+        });       
+        // Unsubscribe
+        return ()=>{
+            unsubscribe();
+        };
     }, [])
 
     return (
@@ -144,7 +166,7 @@ export default function CommentModal({ navigation, closeModal, postId }) {
 
                         {/* thanh phù hợp nhất */}
                         <View style={styles.phuhopnhat}>
-                            <Picker
+                            {/* <Picker
                                 selectedValue={pickerValue}
                                 style={{ height: "120%", width: "60%", marginTop:-13, }}
                                 onValueChange={(itemValue, itemIndex) => setPickerValue(itemValue)}
@@ -152,30 +174,22 @@ export default function CommentModal({ navigation, closeModal, postId }) {
                                 <Picker.Item label="Phù hợp nhất" value="phuhopnhat" style={{fontSize: 18}}/>
                                 <Picker.Item label="Mới nhất" value="moinhat" style={{fontSize: 18}}/>
                                 <Picker.Item label="Tất cả bình luận" value="tatca" style={{fontSize: 18}}/>
-                            </Picker>
-                            {/* <Text style={{fontSize: 20, marginTop:-5}}>Phù hợp nhất</Text>
-                            <Ionicons style={{flex:1, alignItems:"flex-end", border: 1}} name="chevron-down-outline" size={23} color="black" onPress={()=>console.log("Click like")}/> */}
+                            </Picker> */}
+                            <Text style={{fontSize: 20, marginTop:-5}}>Phù hợp nhất</Text>
+                            <Ionicons style={{flex:1, alignItems:"flex-end", border: 1}} name="chevron-down-outline" size={23} color="black" onPress={()=>console.log("Click like")}/>
                         </View>
 
                         {/* thanh comment */}
                         <View style={styles.comment}>
-                            <ScrollView>
-                            {/* <ComponentComment time={'23p'} urlImage={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRN9yYfNZ8CyiytwR072VR6PuFRZ1je7NZ4RmY2gu_CaJuJP0j6T0-javOuzAyrAI8XDg&usqp=CAU'} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không?'}/>
-                            <ComponentComment time={'24p'} urlImage={''} name={'Nguyễn Thị Trang'} textComment={'Bạn xinh gái quá!'}/>
-                            <ComponentComment time={'25p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? Làm ny mình đi mà, trời lạnh thế này mà có ny ôm thì thích cực! Thế nhé, mai mình đón bạn đi chơi'}/>
-                            <ComponentComment time={'26p'} urlImage={''} name={'Tùng'} textComment={':))'}/>
-                            <ComponentComment time={'1h'} urlImage={''} name={'Huy Quần Hoa'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'2h'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'1d'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'2p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'2d'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'Vừa xong'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh gái quá, làm ny mình được không? '}/>
-                            <ComponentComment time={'4p'} urlImage={''} name={'Huỳnh Đức'} textComment={'Bạn xinh quá, làm ny mình được không? '}/> */}
+                            
 
-                            {
-                            comments?.map((item, index) => {
-                                return <ComponentComment time={'4p'} urlImage={item.poster.avatar} key={index} name={item.poster.name} textComment={item.comment}/>
-                            })}
+                            <ScrollView> 
+                                {/* check xem co internet ko, neu co=>comment, ko thi man hinh error */}
+                                {isConnected?
+                                 comments?.map((item, index) => {
+                                    return <ComponentComment time={getTimeUpdateCommentFromUnixTime(item.created)} urlImage={item.poster.avatar} key={index} name={item.poster.name} textComment={item.comment}/>
+                                }):  <NetworkError/>}
+                                
                             </ScrollView>
                         </View>
 
