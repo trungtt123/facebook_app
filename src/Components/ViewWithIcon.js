@@ -59,7 +59,7 @@ function ViewWithIcon({ value, styleText, styleIcon }) {
         convertStringToListTextAndImage(value);
     }, [value]);
     return (
-        <Paragraph style={{padding: 5}}>
+        <Paragraph>
             {viewElm}
         </Paragraph>
     );
