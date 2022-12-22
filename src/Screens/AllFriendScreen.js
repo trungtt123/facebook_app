@@ -50,8 +50,7 @@ function AllFriendScreen({ route, navigation }) {
         setRefreshing(false);
     };
     const handleGetListRequest = () => {
-        let targetUserIdTmp = '637b254482c9a707cc3d9f2c';
-        userService.getUserFriends(targetUserIdTmp, defaultIndex.current, defaultCount).then((result) => {
+        userService.getUserFriends(targetUserId, defaultIndex.current, defaultCount).then((result) => {
             defaultIndex.current += defaultCount;
             setListFriend(result.data.friends)
         }).catch(e => {
