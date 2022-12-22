@@ -81,10 +81,10 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
     const [isModalVisible, setModalVisible] = useState(true);
     const [pickerValue, setPickerValue] = useState("Phù hợp nhất");
     const [textComment, setTextComment] = useState("");
-    const [like, setLike] = useState("like1");
+    const [like, setLike] = useState("like2");
     const [comments, setComments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const index = useRef(0);
+    const index = useRef(10);
     //goi api lay ra thong tin cac comment cua bai viet co post_id
 
     const setComment = async (postId) => {
@@ -97,12 +97,17 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
     const getComment = async (postId) => {
         if (isLoading) return;
         setIsLoading(true);
-        const listComment = await axios.post(`/comment/get_comment?id=${postId}&index=${index.current}&count=10`);
+        const listComment = await axios.post(`/comment/get_comment?id=${postId}&index=0&count=${index.current}`);
         setComments(listComment.data);
         setIsLoading(false);
     }
     //hàm này gọi khi mở modal comment lên
     const onScreenLoad = async () => {
+        await getComment(postId);
+    }
+    //hàm này gọi khi load tiep comment
+    const onLoadComment = async () => {
+        index.current = index.current+10;
         await getComment(postId);
     }
     useEffect(() => {
@@ -123,7 +128,8 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
             unsubscribe();
         };
     }, [])
-
+    
+    const [h, setH] = useState(400);//chieu cao khi cuon
     return (
         <View>
             <Modal
@@ -167,7 +173,17 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                         <View style={styles.comment}>
 
 
-                            <ScrollView>
+                            <ScrollView
+                                onScroll={(e) => {
+                                    
+                                    //paddingToBottom += e.nativeEvent.layoutMeasurement.height;
+                                    if(e.nativeEvent.contentOffset.y >= h) {
+                                      //console.log("Load comment ");
+                                      onLoadComment();
+                                      setH(h+400);
+                                    }
+                                  }}
+                            >
                                 {/* check xem co internet ko, neu co=>comment, ko thi man hinh error */}
                                 {isConnected ?
                                     comments?.map((item, index) => {

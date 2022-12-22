@@ -12,7 +12,7 @@ import NotificationScreen from "./NotificationScreen";
 import MenuScreen from "./MenuScreen";
 import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+//import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Animated } from "react-native";
 export default function DashBoardScreen({ navigation }) {
     const layout = useWindowDimensions();
