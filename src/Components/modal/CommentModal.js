@@ -88,7 +88,8 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
     //goi api lay ra thong tin cac comment cua bai viet co post_id
 
     const setComment = async (postId) => {
-        await axios.post(`/comment/set_comment?id=${postId}&comment=${getTextWithIcon(textComment)}&index=0&count=10`);
+        const textCommentTmp = textComment + " ";
+        await axios.post(`/comment/set_comment?id=${postId}&comment=${getTextWithIcon(textCommentTmp)}&index=0&count=10`);
         setTextComment("");
         getComment(postId);
         postUpdated();

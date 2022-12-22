@@ -115,10 +115,11 @@ export const getTextWithIcon = (text) => {
         newText = newText.replace(icon.regex, (match, index) => {
             if ((newText[index - 1] === " " || newText[index - 1] === "\n")
                 && (newText[index + icon.key.length] === " " || newText[index + icon.key.length] === "\n")
+                && index + icon.key.length !== newText.length - 1
             )
                 return icon.code;
             return icon.key;
         });
     }
-    return newText.trim();
+    return newText.substring(1, newText.length - 1);
 }
