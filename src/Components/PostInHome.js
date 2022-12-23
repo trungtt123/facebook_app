@@ -155,13 +155,13 @@ function PostInHome({ navigation, postData }) {
                                 {post?.image[2]?.url &&
                                     <View style={{ flex: 1, paddingTop: 2 }}>
                                         <Image style={{ width: '100%', height: '100%' }} source={{ uri: post?.image[2]?.url }} />
-                                        <View style={{
+                                        {post?.image[3]?.url && <View style={{
                                             width: '100%', height: '100%', position: 'absolute',
                                             justifyContent: 'center', alignItems: 'center',
                                             backgroundColor: 'black', top: 2, opacity: 0.5
                                         }}>
                                             <Text style={{ color: 'white', fontSize: 30 }}>+1</Text>
-                                        </View>
+                                        </View>}
                                     </View>
                                 }
                             </View>
