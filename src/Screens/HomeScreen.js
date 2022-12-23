@@ -9,6 +9,7 @@ import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
+import { resetData } from "../Redux/emojiSlice";
 //@trungtt123
 function HomeScreen({ navigation }) {
     const defaultCount = 4;
@@ -79,7 +80,7 @@ function HomeScreen({ navigation }) {
                 <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
                     user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }
                 } />
-                <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate('createPost')}>
+                <TouchableOpacity style={{flex: 1}} onPress={() => {dispatch(resetData()); navigation.navigate('createPost')}}>
                     <TextInput selectTextOnFocus={false}
                         editable={false}
                         style={{

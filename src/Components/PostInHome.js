@@ -27,6 +27,8 @@ import ViewImage from './image/ViewImage';
 import { COMMON_COLOR } from '../Services/Helper/constant';
 import ViewWithIcon from './ViewWithIcon';
 import CommentModal from './modal/CommentModal';
+import data from '../Screens/img/emoji';
+
 function PostInHome({ navigation, postData }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
@@ -65,6 +67,9 @@ function PostInHome({ navigation, postData }) {
             setIsError(true);
         });
     }
+    const uriEmoji = () => {
+         return data.find(x => x.name === (post?.state)).img;
+    }
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
             {isShowDetailPost && post?.image && post?.image?.length > 1 && <DetailPostModal callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
@@ -90,11 +95,13 @@ function PostInHome({ navigation, postData }) {
                         <Text>
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username}</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
+                                {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
-                                        {` đang cảm thấy ${post?.state}`}
+                                        {` đang cảm thấy ${post?.state}` }
                                     </Text>}
-                                </Text>
+                                    
+                                    </Text>
                             </View>
                         </Text>
                     }
@@ -112,17 +119,20 @@ function PostInHome({ navigation, postData }) {
                     right={RightContent}
                 />
                 <Card.Content>
+                    <TouchableOpacity onPress={() => { if(post?.described && post?.described?.length > 200) setSeemore(!seemore)}}>
                     <Paragraph style={{ fontSize: 15 }}>
-                        <Text>{seemore ?
+                        { (post?.described) ? (<Text>{seemore ?
                             <ViewWithIcon value={post?.described}
                                 styleText={{ fontSize: 15 }}
                                 styleIcon={{ width: 17, height: 17 }} /> :
                             <ViewWithIcon value={post?.described?.slice(0, 200) + "... "}
                                 styleText={{ fontSize: 15 }}
                                 styleIcon={{ width: 17, height: 17 }} />
-                        }</Text>
-                        {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
+                        }</Text>) : (<Text/>) }
+                        {(post?.described) ? (!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>) : null}
+
                     </Paragraph>
+                    </TouchableOpacity>
                 </Card.Content>
 
                 <TouchableOpacity activeOpacity={0.8} style={{ marginTop: 5 }}
@@ -190,7 +200,7 @@ function PostInHome({ navigation, postData }) {
                             justifyContent: "space-between",
                         }}>
 
-                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => handleLikePost()}>
+                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => {handleLikePost(); console.log("seemore", seemore)}}>
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                 <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
                             </TouchableOpacity>
@@ -213,3 +223,13 @@ function PostInHome({ navigation, postData }) {
 }
 
 export default PostInHome;
+const styles = StyleSheet.create({
+    emoji: {
+        marginLeft: 5,
+        width: 20,
+        height: 20,
+        borderRadius: 50,
+        marginBottom: 5
+    },
+
+});

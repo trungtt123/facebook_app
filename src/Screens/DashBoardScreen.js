@@ -13,7 +13,10 @@ import MenuScreen from "./MenuScreen";
 import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
 import * as Animatable from 'react-native-animatable';
+import { resetData } from "../Redux/emojiSlice";
 export default function DashBoardScreen({ navigation }) {
+
+    const dispatch = useDispatch();
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
     const [showTopAppBar, setShowTopAppBar] = useState(true);
@@ -61,7 +64,7 @@ export default function DashBoardScreen({ navigation }) {
         {showTopAppBar && <View style={styles.header}>
                 <Text style={styles.textLogoFacebook}>facebook</Text>
                 <View style={styles.viewBtnRight}>
-                    <Fontisto onPress={() => navigation.navigate('createPost')}
+                    <Fontisto onPress={() => {dispatch(resetData()); navigation.navigate('createPost')}}
                         style={styles.btnRight} name="plus-a" size={20} color="black" />
                     <FontAwesome onPress={() => navigation.navigate('search')}
                         style={styles.btnRight} name="search" size={22} color="black" />
