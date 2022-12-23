@@ -15,7 +15,7 @@ function ViewWithIcon({ value, styleText, styleIcon }) {
     const [viewElm, setViewElm] = useState();
     //xử lý icon sử dụng icon sử dụng ảnh
     const convertStringToListTextAndImage = useCallback((value) => {
-        let newText = value;
+        let newText = value.trim();
         let data = [];
         let dataTmp = newText.split("\n");
         for (let i = 0; i < dataTmp.length; i++) {
@@ -59,7 +59,7 @@ function ViewWithIcon({ value, styleText, styleIcon }) {
         convertStringToListTextAndImage(value);
     }, [value]);
     return (
-        <Paragraph style={{padding: 5}}>
+        <Paragraph>
             {viewElm}
         </Paragraph>
     );

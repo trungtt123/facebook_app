@@ -1,5 +1,5 @@
 import { Text, TextInput, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, useCallback } from "react-native";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useRef } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView, SafeAreaView } from "react-native";
@@ -11,12 +11,14 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
 import { resetData } from "../Redux/emojiSlice";
 //@trungtt123
-function HomeScreen({ navigation }) {
+function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 4;
     const defaultIndex = 0;
     const defaultLastId = 0;
     const dispatch = useDispatch();
     const netInfo = useNetInfo();
+    const layoutOffset = useRef(0);
+    const endScroll = useRef(true);
     const { postList, isPostListLoading } = useSelector(
         (state) => state.post
     );
@@ -45,6 +47,19 @@ function HomeScreen({ navigation }) {
         return layoutMeasurement.height + contentOffset.y >=
             contentSize.height - paddingToBottom;
     };
+    const handleOffsetToSwipe = (offsetY) => {
+        if (offsetY >= layoutOffset.current){
+            if (onSwipeUp !== undefined && endScroll.current){
+                onSwipeUp();
+            }
+        }
+        else {
+            if (onSwipeDown !== undefined && endScroll.current){
+                onSwipeDown();
+            }
+        }
+        layoutOffset.current = offsetY;
+    }
     useEffect(() => {
         console.log('is', !isPostListLoading);
         if (!isPostListLoading)
@@ -66,7 +81,10 @@ function HomeScreen({ navigation }) {
                     onRefresh={onRefresh}
                     colors={["#0f80f7"]}
                 />}
+            onScrollBeginDrag={() => endScroll.current = false}
+            onScrollEndDrag={() => endScroll.current = true}
             onScroll={({ nativeEvent }) => {
+                handleOffsetToSwipe(nativeEvent.contentOffset.y)
                 if (isCloseToBottom(nativeEvent)) {
                     // đã đến cuối trang -> gọi api lấy bài tiếp theo
                     // khi không load nữa

@@ -20,6 +20,7 @@ import authService from '../Services/Api/authService';
 import SaveLoginInfoScreen from './SaveLoginInfo';
 import ImageLibrary from './ImageLibrary';
 import EmojiList from './EmojiList';
+import AllFriendScreen from './AllFriendScreen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -52,6 +53,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                 <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
                 <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }}/>
+                <Stack.Screen name="allfriend" component={AllFriendScreen} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
