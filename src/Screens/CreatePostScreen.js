@@ -25,7 +25,7 @@ import { Video } from 'expo-av';
 import axios from '../setups/custom_axios';
 
 export default function CreatePostScreen({ navigation }) {
-    const route = useRoute();
+
     const [text, setText] = useState('');
     const { user } = useSelector(
         (state) => state.auth
@@ -40,18 +40,18 @@ export default function CreatePostScreen({ navigation }) {
     const getType = (filename) => {
         return filename.split('.').pop();
     }
-
-    navigation.setOptions({
-        headerTitle: () => (
-            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>Tạo bài viết</Text>
-        ),
-        headerRight: () => (
-            <TouchableOpacity onPress={() => { postData(); navigation.navigate('dashboard') }}
-                style={{ backgroundColor: '#365899', borderRadius: 10, width: 50, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 15 }}>Đăng</Text>
-            </TouchableOpacity>)
-    })
-
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: () => (
+                <Text style={{ fontWeight: 'bold', fontSize: 17 }}>Tạo bài viết</Text>
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => { postData(); navigation.navigate('dashboard') }}
+                    style={{ backgroundColor: '#365899', borderRadius: 10, width: 50, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ color: 'white', fontSize: 15 }}>Đăng</Text>
+                </TouchableOpacity>)
+        })
+    }, [navigation, text, textEmoji, checkEmoji, iconEmoji, data, checkImage, checkVideo]);
     const postData = () => {
         let formData = new FormData();
         let status = textEmoji;

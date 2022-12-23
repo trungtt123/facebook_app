@@ -7,10 +7,8 @@ import {
 } from "react-native";
 import SwipeUpDown from "react-native-swipe-up-down";
 import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
-import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import * as MediaLibrary from 'expo-media-library';
 import { useRoute } from "@react-navigation/native";
-import * as ImageManipulator from "expo-image-manipulator"
 import { useDispatch, useSelector } from "react-redux";
 import { setDataImage } from "../Redux/emojiSlice";
 import { setImage, setVideo } from "../Redux/emojiSlice";
