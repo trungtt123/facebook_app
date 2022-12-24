@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo, Component } from 'react';
+import React, { useEffect, useState, memo, Component, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -12,6 +12,7 @@ import {
     ScrollView,
     Modal,
     Button,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { useRoute } from "@react-navigation/native";
@@ -23,9 +24,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Video } from 'expo-av';
 import axios from '../setups/custom_axios';
+import { createPost } from '../Redux/postSlice';
 
-export default function CreatePostScreen({ navigation }) {
-
+export default function CreatePostScreen({ route, navigation }) {
+    const prevPage = useRef(route.params?.prevPage);
+    const dispatch = useDispatch();
     const [text, setText] = useState('');
     const { user } = useSelector(
         (state) => state.auth
@@ -41,12 +44,15 @@ export default function CreatePostScreen({ navigation }) {
         return filename.split('.').pop();
     }
     useEffect(() => {
+        prevPage.current = route.params?.prevPage;
+    }, [route])
+    useEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
                 <Text style={{ fontWeight: 'bold', fontSize: 17 }}>Tạo bài viết</Text>
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => { postData(); navigation.navigate('dashboard') }}
+                <TouchableOpacity onPress={() => { postData(); navigation.goBack() }}
                     style={{ backgroundColor: '#365899', borderRadius: 10, width: 50, height: 40, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ color: 'white', fontSize: 15 }}>Đăng</Text>
                 </TouchableOpacity>)
@@ -64,10 +70,8 @@ export default function CreatePostScreen({ navigation }) {
         } else if (data.length > 0 && checkVideo) {
             formData.append("video", { name: data[0].filename, uri: data[0].uri, type: 'video/' + getType(data[0].filename) })
         }
-        if (checkImage || checkVideo) {
-            return axios.post(`/post/add_post?&described=${described}&status=${status}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-        }
-        return axios.post(`/post/add_post?&described=${described}&status=${status}`);
+        // check xem người dùng đã nhập các thông tin tối thiểu hay chưa
+        dispatch(createPost({described, status, formData, isMedia: (checkImage || checkVideo)}));
     }
 
     return (

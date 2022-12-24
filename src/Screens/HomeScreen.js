@@ -1,4 +1,4 @@
-import { Text, TextInput, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, useCallback } from "react-native";
+import { Text, TextInput, View, Button, StyleSheet, Image, RefreshControl, TouchableOpacity, Alert } from "react-native";
 import { useState, useEffect, memo, useRef } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
 import { resetData } from "../Redux/emojiSlice";
 //@trungtt123
-function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
+function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 4;
     const defaultIndex = 0;
     const defaultLastId = 0;
@@ -19,7 +19,7 @@ function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
     const netInfo = useNetInfo();
     const layoutOffset = useRef(0);
     const endScroll = useRef(true);
-    const { postList, isPostListLoading } = useSelector(
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost } = useSelector(
         (state) => state.post
     );
     const { user } = useSelector(
@@ -48,18 +48,39 @@ function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
             contentSize.height - paddingToBottom;
     };
     const handleOffsetToSwipe = (offsetY) => {
-        if (offsetY >= layoutOffset.current){
-            if (onSwipeUp !== undefined && endScroll.current){
+        if (offsetY >= layoutOffset.current) {
+            if (onSwipeUp !== undefined && endScroll.current) {
                 onSwipeUp();
             }
         }
         else {
-            if (onSwipeDown !== undefined && endScroll.current){
+            if (onSwipeDown !== undefined && endScroll.current) {
                 onSwipeDown();
             }
         }
         layoutOffset.current = offsetY;
     }
+    const goToCreatePost = () => {
+        dispatch(resetData());
+        navigation.navigate('createPost');
+    }
+    useEffect(() => {
+        if (!isPendingCreatePost && newCreatePostData) {
+            let newPostList = [];
+            newPostList.push(newCreatePostData);
+            console.log(newCreatePostData);
+            newPostList = newPostList.concat(postListTotal);
+            setPostListTotal(newPostList);
+        }
+        if (isErrorCreatePost) {
+            Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        }
+        else {
+            // popup noti đăng bài thành công
+        }
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
     useEffect(() => {
         console.log('is', !isPostListLoading);
         if (!isPostListLoading)
@@ -98,7 +119,7 @@ function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
                 <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
                     user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }
                 } />
-                <TouchableOpacity style={{flex: 1}} onPress={() => {dispatch(resetData()); navigation.navigate('createPost')}}>
+                <TouchableOpacity style={{ flex: 1 }} onPress={() => goToCreatePost()}>
                     <TextInput selectTextOnFocus={false}
                         editable={false}
                         style={{
@@ -112,8 +133,9 @@ function HomeScreen({ onSwipeUp, onSwipeDown, navigation }) {
                 </TouchableOpacity>
             </View>
             {postListTotal?.map((item, index) => {
+                console.log(index);
                 //if (index === 0) console.log(item.image);
-                return <PostInHome navigation={navigation} key={index} postData={item} />
+                return <PostInHome navigation={navigation} key={item.id} postData={item} />
             })}
         </ScrollView>
     </View>

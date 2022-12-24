@@ -12,10 +12,24 @@ export const fetchListPost = createAsyncThunk(
     }
   }
 );
+export const createPost = createAsyncThunk(
+  "post/createPost",
+  async (data, thunkAPI) => {
+    try {
+      return await postService.createPost(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+); 
 export const resetPostSlice = createAction('resetPostSlice');
 const initialState = {
   postList: [],
   isPostListLoading: false,
+  isPendingCreatePost: false,
+  isErrorCreatePost: undefined,
+  newCreatePostData: undefined
 };
 
 const postSlice = createSlice({
@@ -26,6 +40,7 @@ const postSlice = createSlice({
     [fetchListPost.pending]: (state) => {
       console.log("fetchListPost pending");
       state.isPostListLoading = true;
+      state.isErrorAddPost = undefined
     },
     [fetchListPost.fulfilled]: (state, action) => {
       console.log("fetchListPost actiion ful", action);
@@ -37,6 +52,23 @@ const postSlice = createSlice({
       console.log("fetchListPost action rej", action);
       state.isPostListLoading = false;
       state.postList = [];
+    },
+    [createPost.pending]: (state) => {
+      console.log("createPost pending");
+      state.isPendingCreatePost = true;
+      state.newCreatePostData = undefined;
+      state.isErrorCreatePost = undefined;
+    },
+    [createPost.fulfilled]: (state, action) => {
+      console.log("createPost actiion ful", action);
+      state.isPendingCreatePost = false;
+      state.newCreatePostData = action?.payload?.data;
+      state.isErrorCreatePost = false;
+    },
+    [createPost.rejected]: (state, action) => {
+      console.log("createPost action rej", action);
+      state.isPendingCreatePost = false;
+      state.isErrorCreatePost = true;
     },
     [resetPostSlice]: () => initialState
   },

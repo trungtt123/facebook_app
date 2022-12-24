@@ -65,6 +65,10 @@ export default function DashBoardScreen({ navigation }) {
         else setIsShowTopBar(true)
         setIndex(currentIndex)
     }
+    const goToCreatePost = () => {
+        dispatch(resetData()); 
+        navigation.navigate('createPost');
+    }
     let xValue = new Animated.Value(isShowTopBar ? -10 : 30);
     useEffect(() => {
         if (isShowTopBar) xValue.setValue(30);
@@ -94,7 +98,7 @@ export default function DashBoardScreen({ navigation }) {
                     <Text style={styles.textLogoFacebook}>facebook</Text>
                     <View style={styles.viewBtnRight}>
                         <View style={styles.btnRight}>
-                            <Fontisto onPress={() => { dispatch(resetData()); navigation.navigate('createPost')} }
+                            <Fontisto onPress={() => goToCreatePost() }
                                 style={{ left: 1, top: 0.5 }} name="plus-a" size={20} color="black" />
                         </View>
                         <View style={styles.btnRight}>

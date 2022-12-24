@@ -1,6 +1,12 @@
 import axios from "../../setups/custom_axios";
 import { deepCopy, _getCache, _setCache } from "../Helper/common";
 
+const createPost = (data) => {
+  const { described, status, formData, isMedia } = data;
+  if (isMedia) return axios.post(`/post/add_post?&described=${described}&status=${status}`,
+    formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  return axios.post(`/post/add_post?&described=${described}&status=${status}`);
+};
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
 };
@@ -15,11 +21,11 @@ const updateListPostsCache = async (newlistPosts) => {
   // console.log('listPosts', listPosts);
   //console.log('start list post', JSON.stringify(listPosts));
   if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
-  for (let i = 0; i < newlistPosts.length; i++){
+  for (let i = 0; i < newlistPosts.length; i++) {
     let ids = listPosts.map(o => o.id);
     let index = ids.indexOf(newlistPosts[i].id);
     //console.log(index);
-    if (index === -1){
+    if (index === -1) {
       listPosts.push(newlistPosts[i]);
     }
     else {
@@ -32,7 +38,7 @@ const updateListPostsCache = async (newlistPosts) => {
   await _setCache("listPosts", JSON.stringify(listPosts));
 }
 const getListPostsCache = async () => {
-  
+
   let listPosts = JSON.parse(await _getCache("listPosts"))
   if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
   console.log('get cache post', listPosts.length);
@@ -47,6 +53,7 @@ const postService = {
   getPost,
   updateListPostsCache,
   getListPostsCache,
-  removePostsCache
+  removePostsCache,
+  createPost
 };
 export default postService;
