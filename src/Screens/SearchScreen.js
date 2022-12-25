@@ -31,7 +31,7 @@ function SearchScreen({ navigation }) {
     }
     const handleSearch = () => {
         setIsSearch(1)
-        axios.post(`/search/search?index=0&count=20&keyword=a`)
+        axios.post(`/search/search?index=0&count=20&keyword=${keyword}`)
             .then(res => {
                 setResult(res.data)
                 console.log('data', res.data)
@@ -96,7 +96,9 @@ function SearchScreen({ navigation }) {
         <View style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
                 <Text style={{ color: 'black', fontSize: 18, fontWeight: "bold" }}>Tìm kiếm gần đây</Text>
+                <TouchableOpacity>
                 <Text style={{ color: 'blue', fontSize: 18, marginLeft: 140 }}>Chỉnh sửa</Text>
+                </TouchableOpacity>
             </View>
             {result.length != 0 ?
                 isSearch == 0 ?
@@ -112,7 +114,8 @@ function SearchScreen({ navigation }) {
                         result.map((item, index) => {
                             return (
                                 <View key={index}  >
-                                    <Text>Màn hình search</Text>
+                                    {item.author?<Image source={{uri: item.author.avatar.url}} />:null}
+                                    <Text>{item.author?item.author.username:null}</Text>
                                 </View>
                             )
                         })
