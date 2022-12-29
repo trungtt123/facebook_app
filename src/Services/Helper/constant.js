@@ -1,5 +1,5 @@
 import {API_URL} from '@env';
-export const REST_API_URL = 'https://310e-2405-4802-13e-7740-1c41-cbe3-ba11-d8db.ap.ngrok.io/it4788';
+export const REST_API_URL = 'https://0a15-2405-4802-352-5530-3472-7af8-f956-9ac4.ap.ngrok.io/it4788';
 //export const REST_API_URL = API_URL;
 const INTERNET_CONNECTION_FAILED = 'Bạn đang offline';
 const INTERNET_CONNECTION_SUCCESS = 'Bạn đang online';

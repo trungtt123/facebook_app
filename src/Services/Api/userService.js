@@ -16,6 +16,9 @@ const setRequestFriend = (userId) => {
 const getUserFriends = (userId, index, count) => {
   return axios.post(`/friend/get_user_friends?user_id=${userId}&index=${index}&count=${count}`);
 }
+const getSuggestFriends = (index, count) => {
+  return axios.post(`/friend/get_list_suggested_friends?index=${index}&count=${count}`);
+}
 const setBlock = (userId, type) => {
   return axios.post(`/friend/set_block?user_id=${userId}&type=${type}`);
 }
@@ -29,6 +32,7 @@ const userService = {
   getUserFriends,
   setBlock,
   unFriend,
-  setRequestFriend
+  setRequestFriend,
+  getSuggestFriends
 };
 export default userService;

@@ -253,6 +253,7 @@ export default function MyFriend({ navigation, data, updateListFriends }) {
         (state) => state.auth
     );
     const handleSetRequestFriend = () => {
+        console.log('suggest', friendData);
         userService.setRequestFriend(friendData.id).then((result) => {
             console.log('data', result.data.requested_friends);
             // setStatus(+result.data.requested_friends);
