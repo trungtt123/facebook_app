@@ -22,6 +22,7 @@ import ImageLibrary from './ImageLibrary';
 import EmojiList from './EmojiList';
 import AllFriendScreen from './AllFriendScreen';
 import SuggestFriendScreen from './SuggestFriendScreen';
+import Messager from './messenger/screen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ export default function AppNavigator() {
             <Stack.Navigator>
                 <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
+                <Stack.Screen name="message" component={Messager} options={{ title: 'Tin nhắn' }} />
                 <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                 <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
@@ -61,14 +62,5 @@ export default function AppNavigator() {
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
         {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />}
     </>
-    return <>
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
-            </Stack.Navigator>
-        </NavigationContainer>
-        {/* {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
-        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />} */}
-    </>
+    return <></>
 }
