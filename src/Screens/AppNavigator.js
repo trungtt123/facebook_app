@@ -53,14 +53,23 @@ export default function AppNavigator() {
                 <Stack.Screen name="message" component={Messager} options={{ title: 'Tin nhắn' }} />
                 <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
-                <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
-                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }}/>
+                <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }} />
+                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }} />
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
-                <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{title: 'Gợi ý'}} />
+                <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
         {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />}
     </>
-    return <></>
+    return <>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="signup" component={SignupScreen} options={{ title: 'Tạo tài khoản' }} />
+            </Stack.Navigator>
+        </NavigationContainer>
+        {/* {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
+        {!netInfo.isConnected && <SystemModal icon={'wifi-off'} body={COMMON_MESSAGE.INTERNET_CONNECTION_FAILED} />} */}
+    </>
 }
