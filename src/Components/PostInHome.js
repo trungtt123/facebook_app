@@ -73,12 +73,14 @@ function PostInHome({ navigation, postData }) {
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
             {isShowDetailPost && post?.image && post?.image?.length > 1 && <DetailPostModal callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
+                navigation={navigation}
                 postData={post} viewImage={(index) => {
                     setViewImage(true);
                     setIndexViewImage(index);
                 }
                 } />}
             {isShowDetailPost && post?.image && post?.image?.length === 1 && <PostModalOneImage callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
+                navigation={navigation}
                 postData={post} viewImage={(index) => {
                     setViewImage(true);
                     setIndexViewImage(index);
