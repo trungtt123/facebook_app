@@ -1,4 +1,3 @@
-import { height } from 'deprecated-react-native-prop-types/DeprecatedImagePropType'
 import { StyleSheet, Dimensions } from 'react-native'
 
 const { width } = Dimensions.get('window')
