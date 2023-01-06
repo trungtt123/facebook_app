@@ -86,21 +86,22 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
     const [isLoading, setIsLoading] = useState(false);
     const index = useRef(10);
     //goi api lay ra thong tin cac comment cua bai viet co post_id
-
-    const setComment = async (postId) => {
-        await axios.post(`/comment/set_comment?id=${postId}&comment=${getTextWithIcon(textComment)}&index=0&count=10`);
-        setTextComment("");
-        getComment(postId);
-        postUpdated();
-    };
-
     const getComment = async (postId) => {
         if (isLoading) return;
         setIsLoading(true);
         const listComment = await axios.post(`/comment/get_comment?id=${postId}&index=0&count=${index.current}`);
         setComments(listComment.data);
         setIsLoading(false);
+
     }
+    const setComment = async (postId) => {
+        await axios.post(`/comment/set_comment?id=${postId}&comment=${getTextWithIcon(textComment)}&index=0&count=10`);
+        setTextComment("");
+        await getComment(postId);
+        postUpdated();   
+    };
+
+
     //hàm này gọi khi mở modal comment lên
     const onScreenLoad = async () => {
         await getComment(postId);
@@ -187,6 +188,7 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                                 {/* check xem co internet ko, neu co=>comment, ko thi man hinh error */}
                                 {isConnected ?
                                     comments?.map((item, index) => {
+                                        if(item.is_blocked == 0)
                                         return <ComponentComment time={getTimeUpdateCommentFromUnixTime(item.created)} urlImage={item.poster.avatar} key={index} name={item.poster.name} textComment={item.comment} />
                                     }) : <NetworkError />}
 
@@ -201,7 +203,7 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                                 value={getTextWithIcon(textComment)}
                                 placeholder=" Viết bình luận..."
                                 keyboardType="default"
-                                onSubmitEditing={() => { setComment(postId); }}
+                                onSubmitEditing={async() => {await setComment(postId); }}
                             />
                         </View>
                     </View>
