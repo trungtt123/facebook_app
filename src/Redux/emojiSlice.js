@@ -6,6 +6,8 @@ const initialState ={
     iconEmoji: '',
     checkImage: false,
     checkVideo: false,
+    videoWidth: 0,
+    videoHeight: 0,
     data: [],
 
 }
@@ -34,9 +36,13 @@ const emojiSlice = createSlice({
         },
         setDataImage: (state, action) => {
             state.data = action.payload;
+        },
+        setVideoSize: (state, action) => {
+            state.videoWidth = action.payload.videoWidth;
+            state.videoHeight = action.payload.videoHeight;
         }
         
     }
 });
-export const {showEmoji, hideEmoji, resetData, setDataImage, setImage, setVideo} = emojiSlice.actions;
+export const {showEmoji, hideEmoji, resetData, setDataImage, setImage, setVideo, setVideoSize} = emojiSlice.actions;
 export default emojiSlice.reducer

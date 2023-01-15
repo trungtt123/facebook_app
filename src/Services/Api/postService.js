@@ -2,8 +2,8 @@ import axios from "../../setups/custom_axios";
 import { deepCopy, _getCache, _setCache } from "../Helper/common";
 
 const createPost = (data) => {
-  const { described, status, formData, isMedia } = data;
-  if (isMedia) return axios.post(`/post/add_post?&described=${described}&status=${status}`,
+  const { described, status, formData, isMedia, videoWidth, videoHeight } = data;
+  if (isMedia) return axios.post(`/post/add_post?&described=${described}&status=${status}&videoWidth=${videoWidth}&videoHeight=${videoHeight}`,
     formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   return axios.post(`/post/add_post?&described=${described}&status=${status}`);
 };

@@ -39,6 +39,9 @@ export default function CreatePostScreen({ route, navigation }) {
     const data = useSelector((state) => state.emoji.data);
     const checkImage = useSelector((state) => state.emoji.checkImage);
     const checkVideo = useSelector((state) => state.emoji.checkVideo);
+    const videoWidth = useSelector((state) => state.emoji.videoWidth);
+    const videoHeight = useSelector((state) => state.emoji.videoHeight);
+
 
     const getType = (filename) => {
         return filename.split('.').pop();
@@ -71,7 +74,7 @@ export default function CreatePostScreen({ route, navigation }) {
             formData.append("video", { name: data[0].filename, uri: data[0].uri, type: 'video/' + getType(data[0].filename) })
         }
         // check xem người dùng đã nhập các thông tin tối thiểu hay chưa
-        dispatch(createPost({described, status, formData, isMedia: (checkImage || checkVideo)}));
+        dispatch(createPost({described, status, formData, isMedia: (checkImage || checkVideo), videoWidth: videoWidth, videoHeight: videoHeight}));
     }
 
     return (
@@ -146,6 +149,7 @@ export default function CreatePostScreen({ route, navigation }) {
                 {(checkVideo) ? (
                     <Video source={{ uri: data[0].uri }} style={{ flex: 1, alignSelf: 'stretch' }}
                         useNativeControls
+                        resizeMode='contain'
                     >
                     </Video>
                 ) : null}

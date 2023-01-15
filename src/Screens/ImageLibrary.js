@@ -11,7 +11,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setDataImage } from "../Redux/emojiSlice";
-import { setImage, setVideo } from "../Redux/emojiSlice";
+import { setImage, setVideo, setVideoSize } from "../Redux/emojiSlice";
 
 export default function ImageLibrary({ navigation }) {
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ export default function ImageLibrary({ navigation }) {
               } else {
                 dispatch(setDataImage(assets));
                 dispatch(setVideo());
+                dispatch(setVideoSize({videoWidth: assets[0].width, videoHeight: assets[0].height}));
                 navigation.navigate("createPost");
               }
             } else {
