@@ -4,7 +4,9 @@ export const REST_API_URL = 'https://c541-27-73-54-229.ap.ngrok.io/it4788';
 const INTERNET_CONNECTION_FAILED = 'Bạn đang offline';
 const INTERNET_CONNECTION_SUCCESS = 'Bạn đang online';
 const BLUE_COLOR = "#216fdb";
-const LIKE_BLUE_COLOR = "#30a4f0"
+const LIKE_BLUE_COLOR = "#30a4f0";
+const GRAY_COLOR_BACKGROUND = "#dbdbdd"
+const GRAY_TEXT_COLOR = "#8c8d90"
 
 export const COMMON_MESSAGE = {
     INTERNET_CONNECTION_FAILED,
@@ -12,5 +14,7 @@ export const COMMON_MESSAGE = {
 }
 export const COMMON_COLOR = {
     BLUE_COLOR,
-    LIKE_BLUE_COLOR
+    LIKE_BLUE_COLOR,
+    GRAY_COLOR_BACKGROUND,
+    GRAY_TEXT_COLOR
 }

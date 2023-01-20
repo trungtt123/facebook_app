@@ -1,141 +1,72 @@
-import React, { useState,useEffect } from "react";
-import { Text,View, } from "react-native";
-import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import { PermissionsAndroid, Platform,SafeAreaView,
-    ScrollView,
-    TouchableOpacity,Button,Image, } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, StyleSheet, ToastAndroid } from "react-native";
+import {
+  PermissionsAndroid, Platform, SafeAreaView,
+  ScrollView,
+  TouchableOpacity, Button, Image, FlatList,
+} from "react-native";
 import SwipeUpDown from "react-native-swipe-up-down";
+import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
+import * as MediaLibrary from 'expo-media-library';
+import { useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setDataImage } from "../Redux/emojiSlice";
+import { setImage, setVideo, setVideoSize } from "../Redux/emojiSlice";
 
+export default function ImageLibrary({ navigation }) {
+  const dispatch = useDispatch();
+  const allTypeEqual = (assets) => {
+    return assets.every(x => x.mediaType === assets[0].mediaType);
+  };
+  const allTimeVideo = (assets) => {
+    return assets.every(x => x.mediaType === assets[0].mediaType);
+  };
 
-export default function ImageLibrary(){
-    const [nodes, setNodes] = useState([]);
-    const [detailViewVisible, setDetailViewVisibility] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    useEffect(() => {
-        checkPermission()
-          .then(() => {
-            getPhotos()
-          })
-      }, [])
-    const checkPermission = async () => {
-        const hasPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-    
-        if (hasPermission) {
-          return true;
-        }
-    
-        const status = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-          title: "Image gallery app permissions",
-          message: "Image gallery needs your permission to access your photos",
-          buttonPositive: "OK",
-        })
-    
-        return status === 'granted';
-      }
-    
-      const getPhotos = async () => {
-        const photos = await CameraRoll.getPhotos({
-          first: 10
-        })
-    
-        setNodes(photos.edges.map(edge => edge.node))
-      }
-    
-   
-    return (
-        <SafeAreaView>
-      <ScrollView>
-        {
-          detailViewVisible
-          ? (
-            <SwipeUpDown
-              loop={false}
-              index={selectedIndex}
-            >
-              {
-                nodes.map(
-                  (node, index) => (
-                    <View
-                      key={index}
-                      style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#333',
-                      }}
-                    >
-                      <Image
-                        style={{
-                          width: "100%",
-                          flex: 1,
-                        }}
-                        resizeMode="contain"
-                        source={{
-                          uri: node.image.uri
-                        }}
-                      />
-                      <View
-                        style={{
-                          position: 'absolute',
-                          bottom: 60
-                        }}
-                      >
-                        <Button
-                          title="Close"
-                          onPress={() => {
-                            setDetailViewVisibility(false)
-                          }}
-                        />
-                      </View>
-                    </View>
-                  )
-                )
+  return (
+    <View style={{ flex: 1 }}>
+      <ImagePicker
+        onSave={(assets) => {
+          if (allTypeEqual(assets)) {
+            if (assets[0].mediaType == "video") {
+              if (assets.length > 1) {
+                ToastAndroid.show("Không thể upload nhiều video!", ToastAndroid.SHORT);
+              } else if (assets[0].duration < 1) {
+                ToastAndroid.show("Không thể upload video quá ngắn!", ToastAndroid.SHORT);
+              } else {
+                dispatch(setDataImage(assets));
+                dispatch(setVideo());
+                dispatch(setVideoSize({videoWidth: assets[0].width, videoHeight: assets[0].height}));
+                navigation.navigate("createPost");
               }
-            </SwipeUpDown>
-          )
-          : (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-              }}
-            >
-              {
-                nodes.map(
-                  (node, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={{
-                        height: 100,
-                        minWidth: 100,
-                        flex: 1
-                      }}
-                      onPress={() => {
-                        setDetailViewVisibility(true)
-                        setSelectedIndex(index)
-                      }}
-                    >
-                      <Image
-                        style={{
-                          height: 100,
-                          minWidth: 100,
-                          flex: 1
-                        }}
-                        source={{
-                          uri: node.image.uri
-                        }}
-                      />
-                    </TouchableOpacity>
-                  )
-                )
-              }
-            </View>
-          )
-        }
-      </ScrollView>
-    </SafeAreaView>
-    );
-    
-    
+            } else {
+              dispatch(setDataImage(assets));
+              dispatch(setImage());
+              navigation.navigate("createPost");
+            }
+          } else {
+            ToastAndroid.show("Không thể upload ảnh và video cùng lúc!", ToastAndroid.SHORT);
+          }
+        }}
+        limit={4}
+        multiple
+        video
+        galleryColumns={3}
+        onCancel={() => console.log('no permissions or user go back')}>
+      </ImagePicker>
+    </View>
+  );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  img: {
+    marginLeft: 5,
+    width: 30,
+    height: 30,
+    marginBottom: 5
+  },
+
+
+});

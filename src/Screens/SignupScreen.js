@@ -72,10 +72,16 @@ export default function SignupScreen({ navigation }) {
     // function
     const handleSetFirstName = (e) => {
         let dataTmp = deepCopy(validate.current);
+        var regFistName = /[0-9]+/g;
         if (e === undefined || e === "") {
             dataTmp['firstName'] = {
                 exactly: false,
                 errorName: 'Vui lòng nhập'
+            }
+        } else if (regFistName.test(e)) {
+            dataTmp['firstName'] = {
+                exactly: false,
+                errorName: 'Không thể chứa số'
             }
         }
         else {
@@ -85,16 +91,22 @@ export default function SignupScreen({ navigation }) {
             }
         }
         validate.current = dataTmp;
-        setFirstName(e);
+        setFirstName(e.trim());
         setCheckValidate(checkValidate + 1);
     }
     const handleSetLastName = (e) => {
         let dataTmp = deepCopy(validate.current);
-        setLastName(e);
+        setLastName(e.trim());
+        var regLastName = /[0-9]+/g;
         if (e === undefined || e === "") {
             dataTmp['lastName'] = {
                 exactly: false,
                 errorName: 'Vui lòng nhập'
+            }
+        }else if (regLastName.test(e)) {
+            dataTmp['lastName'] = {
+                exactly: false,
+                errorName: 'Không thể chứa số'
             }
         }
         else {
@@ -108,7 +120,8 @@ export default function SignupScreen({ navigation }) {
     }
     const handleSetPhoneNumber = (e) => {
         let dataTmp = deepCopy(validate.current);
-        if (e === undefined || !onlyNumber(e)) {
+        var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+        if (e === undefined || !onlyNumber(e) || !vnf_regex.test(e)) {
             dataTmp['phoneNumber'] = {
                 exactly: false,
                 errorName: 'Số điện thoại không hợp lệ'
@@ -131,6 +144,11 @@ export default function SignupScreen({ navigation }) {
             dataTmp['password'] = {
                 exactly: false,
                 errorName: 'Mật khẩu phải lớn hơn 6 ký tự'
+            }
+        }else if(e.length>10){
+            dataTmp['password'] = {
+                exactly: false,
+                errorName: 'Mật khẩu phải không quá 10 ký tự'
             }
         }
         else {
@@ -326,7 +344,7 @@ export default function SignupScreen({ navigation }) {
                                 <View style={{ flexDirection: 'column', flex: 1 }}>
                                     <TextInput value={firstName} label="Tên"
                                         onChangeText={(e) => handleSetFirstName(e)}
-                                        style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard" 
+                                        style={{ width: '100%', padding: 2, marginTop: 30 }} variant="standard"
                                         color={validate.current.firstName.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                     {validate.current && !validate.current.firstName.exactly &&
                                         <Text style={{ color: 'red', marginTop: 10 }}>
@@ -373,7 +391,7 @@ export default function SignupScreen({ navigation }) {
                                     </Text>
                                     <TextInput value={phoneNumber} label="Số điện thoại"
                                         onChangeText={(e) => handleSetPhoneNumber(e)}
-                                        style={{ width: '100%', marginTop: 30 }} variant="outlined" 
+                                        style={{ width: '100%', marginTop: 30 }} variant="outlined"
                                         color={validate.current.phoneNumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                     {!validate.current.phoneNumber.exactly &&
                                         <Text style={{ color: 'red', marginTop: 10 }}>
@@ -395,7 +413,7 @@ export default function SignupScreen({ navigation }) {
                                         </Text>
                                         <TextInput value={password} label="Mật khẩu" secureTextEntry={true}
                                             onChangeText={(e) => handleSetPassword(e)}
-                                            style={{ width: '100%', marginTop: 30 }} variant="outlined" 
+                                            style={{ width: '100%', marginTop: 30 }} variant="outlined"
                                             color={validate.current.password.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                         {!validate.current.password.exactly &&
                                             <Text style={{ color: 'red', marginTop: 10 }}>
@@ -403,7 +421,7 @@ export default function SignupScreen({ navigation }) {
                                             </Text>}
                                         <TextInput value={confirmPassword} label="Xác nhận mật khẩu" secureTextEntry={true}
                                             onChangeText={(e) => handleSetConfirmPassword(e)}
-                                            style={{ width: '100%', marginTop: 10 }} variant="outlined" 
+                                            style={{ width: '100%', marginTop: 10 }} variant="outlined"
                                             color={validate.current.confirmPassword.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                         {!validate.current.confirmPassword.exactly &&
                                             <Text style={{ color: 'red', marginTop: 10 }}>
@@ -439,7 +457,7 @@ export default function SignupScreen({ navigation }) {
                                                 </Text>
                                                 <TextInput value={verifyCode} label="Mã code"
                                                     onChangeText={(e) => handleSetVerifyCode(e)}
-                                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 50 }} variant="outlined" 
+                                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 50 }} variant="outlined"
                                                     color={validate.current.verifyCode.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
                                                 {!validate.current.verifyCode.exactly &&
                                                     <Text style={{ color: 'red', marginTop: 10, textAlign: 'center' }}>
@@ -472,7 +490,7 @@ export default function SignupScreen({ navigation }) {
                                                         </Animatable.View>
                                                     </Animatable.View>
                                                     <Animatable.View animation='zoomIn'>
-                                                        <Text style={{marginTop: 50, fontWeight: 'bold', color: COMMON_COLOR.BLUE_COLOR}}>ĐĂNG KÝ THÀNH CÔNG</Text>
+                                                        <Text style={{ marginTop: 50, fontWeight: 'bold', color: COMMON_COLOR.BLUE_COLOR }}>ĐĂNG KÝ THÀNH CÔNG</Text>
                                                     </Animatable.View>
                                                 </View>
 

@@ -1,5 +1,5 @@
-import { Text, View, Button, StyleSheet, ScrollView, TextInput, BackHandler, useWindowDimensions } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import { Text, View, Button, StyleSheet, ScrollView, TextInput, Easing, BackHandler, useWindowDimensions } from "react-native";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/authSlice";
@@ -12,9 +12,16 @@ import NotificationScreen from "./NotificationScreen";
 import MenuScreen from "./MenuScreen";
 import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
+import * as Animatable from 'react-native-animatable';
+import { resetData } from "../Redux/emojiSlice";
+//import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import { Animated } from "react-native";
 export default function DashBoardScreen({ navigation }) {
+
+    const dispatch = useDispatch();
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
+    const [isShowTopBar, setIsShowTopBar] = useState(true);
     const [routes] = useState([
         { key: 'first', title: 'home', index: 0 },
         { key: 'second', title: 'watch', index: 1 },
@@ -24,7 +31,9 @@ export default function DashBoardScreen({ navigation }) {
         { key: 'six', title: 'me', index: 5 }
     ]);
     const FirstRoute = useCallback(() => (
-        <HomeScreen navigation={navigation} />
+        <HomeScreen onSwipeDown={() => setIsShowTopBar(true)}
+        onSwipeUp={() => setIsShowTopBar(false)}
+        navigation={navigation} />
     ), []);
     const SecondRoute = useCallback(() => (
         <FriendScreen navigation={navigation} />
@@ -49,51 +58,95 @@ export default function DashBoardScreen({ navigation }) {
         five: FiveRoute,
         six: SixRoute
     });
+    const handleSwitchTab = (currentIndex) => {
+        if (currentIndex !== 0) {
+            setIsShowTopBar(false)
+        }
+        else setIsShowTopBar(true)
+        setIndex(currentIndex)
+    }
+    const goToCreatePost = () => {
+        dispatch(resetData()); 
+        navigation.navigate('createPost');
+    }
+    let xValue = new Animated.Value(isShowTopBar ? -10 : 30);
+    useEffect(() => {
+        if (isShowTopBar) xValue.setValue(30);
+        else xValue.setValue(-10)
+        // if (isShowTopBar) {
+        //     Animated.timing(xValue, {
+        //         toValue: 30,
+        //         duration: 100,
+        //         easing: Easing.linear,
+        //         useNativeDriver: false
+        //     }).start();
+        // }
+        // else {
+        //     Animated.timing(xValue, {
+        //         toValue: -10,
+        //         duration: 100,
+        //         easing: Easing.linear,
+        //         useNativeDriver: false
+        //     }).start();
+        // }
+    }, [isShowTopBar])
     return <>
-        <View style={styles.header}>
-            <Text style={styles.textLogoFacebook}>facebook</Text>
-            <View style={styles.viewBtnRight}>
-                <Fontisto onPress={() => navigation.navigate('createPost')}
-                    style={styles.btnRight} name="plus-a" size={20} color="black" />
-                <FontAwesome onPress={() => navigation.navigate('search')}
-                    style={styles.btnRight} name="search" size={22} color="black" />
-                <Fontisto onPress={() => navigation.navigate('message')}
-                    style={styles.btnRight} name="messenger" size={22} color="black" />
-            </View>
-        </View>
-        <TabView
-            springConfig
-            lazy={true}
-            renderTabBar={props => <TabBar {...props}
-                indicatorStyle={{ backgroundColor: '#1d6ed9', height: 2 }}
-                style={{ backgroundColor: 'white', minHeight: 30, padding: 0 }} // here
-                renderLabel={({ route, focused, color }) => {
-                    return <View style={{ color: 'black', margin: 5 }}>
-                        {
-                            route.key == 'first' ? <Ionicons color={index === 0 ? '#1d6ed9' : 'black'} name={index === 0 ? 'home' : 'home-outline'} size={25} />
-                                : route.key == 'second' ? <MaterialCommunityIcons color={index === 1 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 1 ? 'account-group' : 'account-group-outline'} size={28} />
-                                    : route.key == 'three' ? <Ionicons color={index === 2 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 2 ? 'tv' : 'tv-outline'} size={25} />
-                                        : route.key == 'four' ? <Ionicons color={index === 3 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 3 ? 'person' : 'person-outline'} size={25} />
-                                            : route.key == 'five' ? <FontAwesome color={index === 4 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 4 ? 'bell' : 'bell-o'} size={22} />
-                                                : <Ionicons color={index === 5 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 5 ? 'menu-outline' : 'menu-outline'} size={28} />
-                        }
+        <View style={{ position: 'absolute', height: 30, width: '100%', backgroundColor: 'white', zIndex: 10000 }}></View>
+        <Animated.View style={{ marginTop: isShowTopBar ? 30 : -10, flex: 1, backgroundColor: 'white' }}>
+            <View style={{ flexDirection: 'column' }}>
+                <View style={{ ...styles.header }}>
+                    <Text style={styles.textLogoFacebook}>facebook</Text>
+                    <View style={styles.viewBtnRight}>
+                        <View style={styles.btnRight}>
+                            <Fontisto onPress={() => goToCreatePost() }
+                                style={{ left: 1, top: 0.5 }} name="plus-a" size={20} color="black" />
+                        </View>
+                        <View style={styles.btnRight}>
+                            <FontAwesome onPress={() => navigation.navigate('search')}
+                                style={{ left: 1 }} name="search" size={22} color="black" />
+                        </View>
+                        <View style={styles.btnRight}>
+                            <Fontisto onPress={() => navigation.navigate('message')}
+                                name="messenger" size={22} color="black" />
+                        </View>
+                        {/* </View> */}
                     </View>
+                </View>
+            </View>
+            <TabView
+                springConfig
+                lazy={true}
+                // style={{ marginTop: 20 + topNavBar }}
+                renderTabBar={props => <TabBar {...props}
+                    indicatorStyle={{ backgroundColor: '#1d6ed9', height: 2 }}
+                    style={{ backgroundColor: 'white', minHeight: 30, padding: 0 }} // here
+                    renderLabel={({ route, focused, color }) => {
+                        return <View style={{ color: 'black' }}>
+                            {
+                                route.key == 'first' ? <Ionicons color={index === 0 ? '#1d6ed9' : 'black'} name={index === 0 ? 'home' : 'home-outline'} size={25} />
+                                    : route.key == 'second' ? <MaterialCommunityIcons color={index === 1 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 1 ? 'account-group' : 'account-group-outline'} size={28} />
+                                        : route.key == 'three' ? <Ionicons color={index === 2 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 2 ? 'tv' : 'tv-outline'} size={25} />
+                                            : route.key == 'four' ? <Ionicons color={index === 3 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 3 ? 'person' : 'person-outline'} size={25} />
+                                                : route.key == 'five' ? <FontAwesome color={index === 4 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 4 ? 'bell' : 'bell-o'} size={22} />
+                                                    : <Ionicons color={index === 5 ? '#1d6ed9' : 'black'} style={styles.menuItem} name={index === 5 ? 'menu-outline' : 'menu-outline'} size={28} />
+                            }
+                        </View>
 
-                }} />}
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
-        />
+                    }} />}
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={i => handleSwitchTab(i)}
+                initialLayout={{ width: layout.width }}
+            />
+        </Animated.View>
     </>
 }
 const styles = StyleSheet.create({
     header: {
         justifyContent: 'space-between',
-        padding: 10,
-        paddingTop: 30,
-        flexDirection: "row",
-        backgroundColor: 'white'
+        paddingHorizontal: 10,
+        backgroundColor: 'white',
+        flexDirection: 'row'
     },
     viewBtnRight: {
         flexDirection: "row",
@@ -103,7 +156,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f2f4',
         padding: 5,
         borderRadius: 20,
-        marginLeft: 10
+        marginLeft: 10,
+        width: 32,
+        height: 32
     },
     textLogoFacebook: {
         fontSize: 27,

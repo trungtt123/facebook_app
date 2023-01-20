@@ -21,8 +21,12 @@ import { Feather, Fontisto, Entypo, FontAwesome, MaterialCommunityIcons, Ionicon
 import { useNetInfo } from '@react-native-community/netinfo';
 import userService from '../Services/Api/userService';
 import { delay, getTimeSendRequestFriend } from '../Services/Helper/common';
-import RequestFriend from '../Components/RequestFriend';
-function FriendScreen({ navigation }) {
+import MyFriend from '../Components/MyFriend';
+function AllFriendScreen({ route, navigation }) {
+    const title = route.params?.title;
+    const targetUserId = route.params?.targetUserId;
+    const showFilterTab = route.params?.showFilterTab;
+    const showSearchFriend = route.params?.showSearchFriend;
     const defaultCount = 1;
     const defaultIndex = useRef(0);
     const dispatch = useDispatch();
@@ -30,8 +34,8 @@ function FriendScreen({ navigation }) {
     const { user } = useSelector(
         (state) => state.auth
     );
-    const [listRequest, setListRequest] = useState([]);
-    const [listRequestTotal, setListRequestTotal] = useState([]);
+    const [listFriend, setListFriend] = useState([]);
+    const [listFriendTotal, setListFriendTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const onRefresh = async () => {
@@ -46,11 +50,11 @@ function FriendScreen({ navigation }) {
         setRefreshing(false);
     };
     const handleGetListRequest = () => {
-        userService.getListFriendRequest(defaultIndex.current, defaultCount).then((result) => {
+        userService.getUserFriends(targetUserId, defaultIndex.current, defaultCount).then((result) => {
             defaultIndex.current += defaultCount;
-            setListRequest(result.data.request)
+            setListFriend(result.data.friends)
         }).catch(e => {
-            setListRequest([])
+            setListFriend([])
             console.log(e);
         })
     }
@@ -66,23 +70,38 @@ function FriendScreen({ navigation }) {
         }
     }, []);
     useEffect(() => {
-        let newList = listRequestTotal;
-        newList = newList.concat(listRequest);
-        // setListRequestTotal(newList);
-        setListRequestTotal(listRequest);
-    }, [listRequest]);
+        let newList = listFriendTotal;
+        newList = newList.concat(listFriend);
+        // setListFriendTotal(newList);
+        setListFriendTotal(listFriend);
+    }, [listFriend]);
+    useEffect(() => {
+        navigation.setOptions({
+            title: title,
+            headerRight: () => (
+                <View style={styles.btnRight}>
+                    <FontAwesome onPress={() => navigation.navigate('search')}
+                        style={{ left: 1 }} name="search" size={22} color="black" />
+                </View>
+            )
+        });
+    }, [navigation]);
     return (
         <View style={{ flex: 1, flexDirection: 'column', backgroundColor: 'white' }}>
-            <View style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 10, width: '100%', flexDirection: 'column' }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Bạn bè</Text>
-                    <View style={styles.btnRight}>
-                        <FontAwesome onPress={() => navigation.navigate('search')}
-                            style={{ left: 1 }} name="search" size={22} color="black" />
-                    </View>
+            {showFilterTab && <View style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 10, width: '100%', flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity style={{ padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Tất cả</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('allfriend',
+                        {
+                            title: 'Tất cả bạn bè'
+                        })}
+                        style={{ marginLeft: 5, padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Gần đây</Text>
+                    </TouchableOpacity>
                 </View>
-
-            </View>
+            </View>}
 
             <ScrollView showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
@@ -103,35 +122,19 @@ function FriendScreen({ navigation }) {
                 scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
             >
                 <View style={{ backgroundColor: 'white', paddingHorizontal: 20 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate('suggestfriend')}
-                        style={{ padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
-                            <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Gợi ý</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('allfriend',
-                            {
-                                title: 'Tất cả bạn bè',
-                                targetUserId: user.id
-                            })}
-                            style={{ marginLeft: 5, padding: 8, paddingHorizontal: 10, borderRadius: 20, backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND }}>
-                            <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -1, marginLeft: -1, fontSize: 15 }}>Tất cả bạn bè</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: '#8c8d90', marginTop: 20, paddingHorizontal: 20 }} />
                     <View>
                         {!refreshing && <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                            {listRequestTotal.length > 0 ?
+                            {listFriendTotal.length > 0 ?
                                 <>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Lời mời kết bạn </Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{listRequestTotal?.length}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{`${listFriendTotal?.length} người bạn`}</Text>
                                 </>
-                                : <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Không có lời mời kết bạn</Text>
+                                : <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Không có bạn bè</Text>
                             }
                         </View>}
                         <View style={{ marginHorizontal: -5 }}>
-                            {listRequestTotal?.map((item, index) => {
+                            {listFriendTotal?.map((item, index) => {
                                 return <View key={index} >
-                                    <RequestFriend navigation={navigation} data={item} />
+                                    <MyFriend navigation={navigation} data={item} updateListFriends={() => handleGetListRequest()} />
                                 </View>
                             })}
                         </View>
@@ -154,4 +157,4 @@ const styles = StyleSheet.create({
         height: 32
     },
 });
-export default memo(FriendScreen);
+export default memo(AllFriendScreen);
