@@ -28,8 +28,11 @@ import { COMMON_COLOR } from '../Services/Helper/constant';
 import ViewWithIcon from './ViewWithIcon';
 import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
-function PostInHome({ navigation, postData }) {
+import { Video, AVPlaybackStatus } from 'expo-av';
+function PostInVideo({ navigation, postData }) {
     const dispatch = useDispatch();
+    const video = useRef(null);
+    const [status, setStatus] = useState({ isPlaying: false });
     const [showComment, setShowComment] = useState(false);
     const [isShowDetailPost, setIsShowDetailPost] = useState(false);
     const [viewImage, setViewImage] = useState(false);
@@ -71,6 +74,13 @@ function PostInHome({ navigation, postData }) {
     const uriEmoji = () => {
         return data.find(x => x.name === (post?.state)).img;
     }
+    useEffect(() => {
+        if (post?.video && post?.video?.height && post?.video?.width){
+            const videoWidth = widthLayout, videoHeight = widthLayout * post?.video?.height / post?.video?.width;
+            setVideoDimension({width: videoWidth, height: videoHeight});
+        }
+    }, [post]);
+    console.log(post?.video?.url);
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
             {isShowDetailPost && post?.image && post?.image?.length > 1 && <DetailPostModal callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
@@ -137,7 +147,41 @@ function PostInHome({ navigation, postData }) {
                         </Paragraph>
                     </TouchableOpacity>
                 </Card.Content>
-
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    // backgroundColor: '#ecf0f1',
+                    marginTop: 5
+                }}>
+                    <Video
+                        ref={video}
+                        style={{
+                            alignSelf: 'center',
+                            width: videoDimension.width,
+                            height: videoDimension.height,
+                        }}
+                        source={{
+                            uri: post?.video?.url
+                        }}
+                        isLooping
+                        resizeMode="cover"
+                        onPlaybackStatusUpdate={
+                            status => setStatus(status)
+                        }
+                    />
+                    <View style={{ position: 'absolute' }}>
+                        {
+                            !status.isPlaying
+                            && <Ionicons onPress={() => video.current.playAsync()}
+                            color="white" name="md-play-circle-outline" size={80} />
+                        }
+                        {
+                            status.isPlaying
+                            && <Ionicons onPress={() => video.current.pauseAsync()} color="white" name="pause-circle-outline" size={80} />
+                        }
+                    </View>
+                </View>
                 <TouchableOpacity activeOpacity={0.8} style={{ marginTop: 5 }}
                     onPress={() => {
                         setIsShowDetailPost(true);
@@ -202,6 +246,7 @@ function PostInHome({ navigation, postData }) {
                             flexDirection: "row",
                             justifyContent: "space-between",
                         }}>
+
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore) }}>
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                 <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
@@ -224,7 +269,7 @@ function PostInHome({ navigation, postData }) {
     );
 }
 
-export default PostInHome;
+export default memo(PostInVideo);
 const styles = StyleSheet.create({
     emoji: {
         marginLeft: 5,
