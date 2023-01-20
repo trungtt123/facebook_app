@@ -8,6 +8,8 @@ import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 import { useNetInfo } from '@react-native-community/netinfo';
+import {getUserInfo} from '../Redux/userSlice';
+
 //@trungtt123
 function HomeScreen({ navigation }) {
     const defaultCount = 4;
@@ -45,6 +47,7 @@ function HomeScreen({ navigation }) {
     };
     useEffect(() => {
         console.log('is', !isPostListLoading);
+        dispatch(getUserInfo({ user_id: user.id }));
         if (!isPostListLoading)
             dispatch(fetchListPost({ lastId: defaultLastId, index: defaultIndex, count: defaultCount }));
     }, []);

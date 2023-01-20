@@ -12,10 +12,75 @@ export const fetchAllUsers = createAsyncThunk(
   }
 );
 
+export const getUserInfo = createAsyncThunk("user/get_user_info", async (data, thunkAPI) => {
+  try {
+    const { user_id } = data;
+    return await userService.getUserInfor(user_id);
+  } catch (e) {
+    console.log("error", e);
+    return thunkAPI.rejectWithValue("something went wrong");
+  }
+});
+
+export const setUserInfo = createAsyncThunk("user/set_user_info", async (data, thunkAPI) => {
+  try {
+    const { userId, des } = data;
+    return await userService.setUserDescription(des, userId);
+  } catch (e) {
+    console.log("error", e);
+    return thunkAPI.rejectWithValue("something went wrong");
+  }
+});
+
+export const setAvatar  = createAsyncThunk(
+  "user/set_user_info", async (data, thunkAPI) => {
+    try {
+      return await userService.setAvatar(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+)
+
+export const setCoverImage  = createAsyncThunk(
+  "user/set_user_info", async (data, thunkAPI) => {
+    try {
+      return await userService.setCoverImage(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+)
+
+export const setUserCity  = createAsyncThunk(
+  "user/set_user_info", async (data, thunkAPI) => {
+    try {
+      return await userService.setUserCity(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+)
+
+export const setUserCountry  = createAsyncThunk(
+  "user/set_user_info", async (data, thunkAPI) => {
+    try {
+      return await userService.setUserCountry(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+)
 
 const initialState = {
   userList: [],
   isLoading: false,
+  userInfor: null,
+  isEdit: false
 };
 
 const userSlice = createSlice({
@@ -34,6 +99,28 @@ const userSlice = createSlice({
     },
     [fetchAllUsers.rejected]: (state, action) => {
       console.log("action rej", action);
+      state.isLoading = false;
+    },
+    [getUserInfo.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getUserInfo.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.userInfor = action?.payload?.data;
+    },
+    [getUserInfo.rejected]: (state, action) => {
+      state.isLoading = false;
+    },
+
+    [setAvatar.pending] : (state) => {
+      state.isLoading = true;
+    },
+    [setAvatar.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.userInfor = action?.payload?.data;
+      state.isEdit = !state.isEdit;
+    },
+    [setAvatar.rejected]: (state, action) => {
       state.isLoading = false;
     },
   },

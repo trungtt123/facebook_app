@@ -10,6 +10,10 @@ const likePost = (postId) => {
 const getPost = (postId) => {
   return axios.post(`post/get_post?id=${postId}`);
 }
+
+const getListPostByUserId = (userId) => {
+  return axios.post(`post/get_post_by_userId?userId=${userId}`);
+}
 const updateListPostsCache = async (newlistPosts) => {
   let listPosts = JSON.parse(await _getCache("listPosts"));
   // console.log('listPosts', listPosts);
@@ -32,7 +36,7 @@ const updateListPostsCache = async (newlistPosts) => {
   await _setCache("listPosts", JSON.stringify(listPosts));
 }
 const getListPostsCache = async () => {
-  
+
   let listPosts = JSON.parse(await _getCache("listPosts"))
   if (listPosts === undefined || listPosts === null || listPosts === "") listPosts = [];
   console.log('get cache post', listPosts.length);
@@ -47,6 +51,7 @@ const postService = {
   getPost,
   updateListPostsCache,
   getListPostsCache,
-  removePostsCache
+  removePostsCache,
+  getListPostByUserId
 };
 export default postService;
