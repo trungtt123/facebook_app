@@ -35,6 +35,7 @@ function ProfileScreen({ navigation }) {
         (state) => state.auth
     );
     const {userInfor, isEdit} = useSelector((state) => state.user);
+    console.log('userInfor: ', userInfor);
         useEffect(() => {
             const fetchListPost = async () => {
                 try {
@@ -50,9 +51,9 @@ function ProfileScreen({ navigation }) {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.firstView}>
-                <Image source={userInfor?.cover_image === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.cover_image }} style={styles.coverImage}/>
+                <Image source={!userInfor?.cover_image ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.cover_image }} style={styles.coverImage}/>
                 <View style={styles.avatar}>
-                    <Image source={userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }} style={styles.avatarImg}/>
+                    <Image source={!userInfor?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }} style={styles.avatarImg}/>
                     <Text style={styles.name}>
                         { userInfor?.username }
                     </Text>

@@ -8,13 +8,10 @@ import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 import { useNetInfo } from '@react-native-community/netinfo';
-<<<<<<< HEAD
 import {getUserInfo} from '../Redux/userSlice';
 
-=======
 import { COMMON_COLOR } from "../Services/Helper/constant";
 import { resetData } from "../Redux/emojiSlice";
->>>>>>> 91da6ac289e4db817a4dc087ffb29c70ce5625c6
 //@trungtt123
 function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 4;
