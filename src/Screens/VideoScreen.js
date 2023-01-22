@@ -23,9 +23,8 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         (state) => state.auth
     );
     const [postListTotal, setPostListTotal] = useState([]);
-    const [postList, setPostList] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-
+    const [currentVideo, setCurrentVideo] = useState(0);
     const onRefresh = async () => {
         setRefreshing(true);
         handleGetListVideos();
@@ -46,41 +45,50 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         })
     }
     const handleScroll = (nativeEvent) => {
-        const currentVideo = Math.max(0, Math.floor(nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height));
-        console.log('video', currentVideo);
-        //setPageIndex(Math.floor(currentVideo / 4));
+        setCurrentVideo(Math.min(postListTotal.length - 1, Math.max(0, Math.ceil(nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height))));
     }
     useEffect(() => {
         handleGetListVideos();
     }, []);
     return <View style={styles.container}>
         <FlatList
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             data={postListTotal}
             renderItem={(data) => {
-                return <PostInVideo navigation={navigation} key={data.item.id} postData={data.item} />
+                console.log('currentVideo', currentVideo);
+                console.log('dataIndex', data.index);
+                return <PostInVideo isPlaying={currentVideo === data.index}
+                    navigation={navigation} key={data.item.id} postData={data.item} />
             }}
-        // refreshControl={
-        //     <RefreshControl
-        //         refreshing={refreshing}
-        //         onRefresh={onRefresh}
-        //         colors={["#0f80f7"]}
-        //     />}
-        // onScroll={({ nativeEvent }) => {
-        //     handleScroll(nativeEvent);
-        //     if (isCloseToBottom(nativeEvent)) {
-        //         pageIndex.current++;
-        //         setPostList(postListTotal.slice(pageIndex.current * 4 + (pageIndex.current + 1) * 4));
-        //         console.log('end');
-        //     }
-        // }}
-        // scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
+            // Performance settings
+            removeClippedSubviews={true} // Unmount components when outside of window 
+            initialNumToRender={1} // Reduce initial render amount
+            maxToRenderPerBatch={1} // Reduce number in each render batch
+            updateCellsBatchingPeriod={100} // Increase time between renders
+            windowSize={7} // Reduce the window size
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    colors={["#0f80f7"]}
+                />}
+            onScroll={({ nativeEvent }) => {
+                handleScroll(nativeEvent);
+                // if (isCloseToBottom(nativeEvent)) {
+                //     pageIndex.current++;
+                //     setPostList(postListTotal.slice(pageIndex.current * 4 + (pageIndex.current + 1) * 4));
+                //     console.log('end');
+                // }
+            }}
+            scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
         />
     </View>
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND
+        backgroundColor: '#242527'
     },
     scrollView: {
         marginHorizontal: 20,

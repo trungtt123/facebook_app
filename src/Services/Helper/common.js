@@ -123,3 +123,28 @@ export const getTextWithIcon = (text) => {
     }
     return newText.substring(1, newText.length - 1);
 }
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+}
+export const convertMsToTime = (milliseconds) => {
+    let seconds = Math.floor(milliseconds / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+    hours = hours % 24;
+    const textHours = padTo2Digits(hours);
+    const textMinutes = padTo2Digits(minutes);
+    if (textHours === "00") {
+        if (textMinutes === "00") return `${0}:${padTo2Digits(
+            seconds,
+        )}`;
+        return `${textMinutes}:${padTo2Digits(
+            seconds,
+        )}`;
+    }
+    return `${textHours}:${textMinutes}:${padTo2Digits(
+        seconds,
+    )}`;
+}

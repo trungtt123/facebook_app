@@ -14,7 +14,9 @@ import {
     _getCache,
     _setCache,
     converNumberLikeAndComment,
-    getTextWithIcon
+    getTextWithIcon,
+    delay,
+    convertMsToTime
 } from '../Services/Helper/common';
 import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
@@ -29,7 +31,8 @@ import ViewWithIcon from './ViewWithIcon';
 import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
 import { Video, AVPlaybackStatus } from 'expo-av';
-function PostInVideo({ navigation, postData }) {
+import Slider from '@react-native-community/slider';
+function PostInVideo({ navigation, postData, isPlaying }) {
     const dispatch = useDispatch();
     const video = useRef(null);
     const [status, setStatus] = useState({ isPlaying: false });
@@ -40,9 +43,13 @@ function PostInVideo({ navigation, postData }) {
     const [post, setPost] = useState(postData);
     const [seemore, setSeemore] = useState(post?.described && post?.described?.length <= 200);
     const [isError, setIsError] = useState(false);
-    const [videoDimension, setVideoDimension] = useState({width: 0, height: 0});
+    const [showBtnControl, setShowBtnControl] = useState(false);
+    const [focusVideo, setFocusVideo] = useState(false);
+    const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
+    const showVideoDuration = useRef(false);
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
+    const ratioVideo = useRef(0);
     const postUpdated = () => {
         postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
@@ -75,42 +82,50 @@ function PostInVideo({ navigation, postData }) {
         return data.find(x => x.name === (post?.state)).img;
     }
     useEffect(() => {
-        if (post?.video && post?.video?.height && post?.video?.width){
+        if (post?.video && post?.video?.height && post?.video?.width) {
             const videoWidth = widthLayout, videoHeight = widthLayout * post?.video?.height / post?.video?.width;
-            setVideoDimension({width: videoWidth, height: videoHeight});
+            setVideoDimension({ width: videoWidth, height: videoHeight });
         }
     }, [post]);
-    console.log(post?.video?.url);
+    const handleShowButtonControl = async () => {
+        setShowBtnControl(true);
+        await delay(3000);
+        if (!showVideoDuration.current) setShowBtnControl(false);
+    }
+    const handleChangeDurationVideo = (ratio) => {
+        if (status?.durationMillis) {
+            video.current.setPositionAsync(status?.durationMillis * ratio);
+            video.current.playAsync();
+        }
+    }
+    useEffect(() => {
+        if (isPlaying) video.current.playAsync();
+        else video.current.pauseAsync();
+    }, [isPlaying])
+    useEffect(() => {
+        if (status.isPlaying) {
+            handleShowButtonControl();
+        }
+    }, [status.isPlaying])
+    useEffect(() => {
+        if (focusVideo) {
+            handleShowButtonControl();
+        }
+    }, [focusVideo]);
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
-            {isShowDetailPost && post?.image && post?.image?.length > 1 && <DetailPostModal callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
-                navigation={navigation}
-                postData={post} viewImage={(index) => {
-                    setViewImage(true);
-                    setIndexViewImage(index);
-                }
-                } />}
-            {isShowDetailPost && post?.image && post?.image?.length === 1 && <PostModalOneImage callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}
-                navigation={navigation}
-                postData={post} viewImage={(index) => {
-                    setViewImage(true);
-                    setIndexViewImage(index);
-                }
-                } />}
-
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
-            {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
-            <Card>
+            <Card style={{ backgroundColor: '#333436' }}>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15, color: 'white' }}>{post?.author?.username + ' '}</Text>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
-                                    {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
+                                    {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15, color: 'white' }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
 
@@ -136,10 +151,10 @@ function PostInVideo({ navigation, postData }) {
                         <Paragraph style={{ fontSize: 15 }}>
                             {(post?.described) ? (<Text>{seemore ?
                                 <ViewWithIcon value={post?.described}
-                                    styleText={{ fontSize: 15 }}
+                                    styleText={{ fontSize: 15, color: 'white' }}
                                     styleIcon={{ width: 17, height: 17 }} /> :
                                 <ViewWithIcon value={post?.described?.slice(0, 200) + "... "}
-                                    styleText={{ fontSize: 15 }}
+                                    styleText={{ fontSize: 15, color: 'white' }}
                                     styleIcon={{ width: 17, height: 17 }} />
                             }</Text>) : (<Text />)}
                             {(post?.described) ? (!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>) : null}
@@ -147,12 +162,12 @@ function PostInVideo({ navigation, postData }) {
                         </Paragraph>
                     </TouchableOpacity>
                 </Card.Content>
+
                 <View style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
                     // backgroundColor: '#ecf0f1',
-                    marginTop: 5
                 }}>
                     <Video
                         ref={video}
@@ -169,19 +184,80 @@ function PostInVideo({ navigation, postData }) {
                         onPlaybackStatusUpdate={
                             status => setStatus(status)
                         }
+                        onTouchStart={() => setFocusVideo(true)}
+                        onTouchEnd={() => setFocusVideo(false)}
                     />
                     <View style={{ position: 'absolute' }}>
                         {
                             !status.isPlaying
-                            && <Ionicons onPress={() => video.current.playAsync()}
-                            color="white" name="md-play-circle-outline" size={80} />
+                            && <Ionicons onPress={() => {
+                                video.current.playAsync()
+                            }}
+                                color="white" name="md-play-circle-outline" size={80} />
                         }
                         {
-                            status.isPlaying
-                            && <Ionicons onPress={() => video.current.pauseAsync()} color="white" name="pause-circle-outline" size={80} />
+                            status.isPlaying && showBtnControl
+                            && <Ionicons
+                                onPress={() => {
+                                    video.current.pauseAsync()
+                                }} color="white" name="pause-circle-outline" size={80} />
                         }
                     </View>
                 </View>
+                {
+                    showBtnControl && <View style={{ width: '100%' }}>
+                        <View style={{ width: '100%', position: 'absolute', bottom: -20, marginLeft: -15 }}>
+                            <Slider
+                                style={{ width: '110%', height: 40 }}
+                                minimumValue={0}
+                                maximumValue={1}
+                                value={
+                                    status?.positionMillis
+                                        ? status?.positionMillis / status?.durationMillis
+                                        : 0
+                                }
+                                onValueChange={(e) => ratioVideo.current = e}
+                                onSlidingStart={(e) => showVideoDuration.current = true}
+                                onSlidingComplete={(e) => showVideoDuration.current = false}
+                                onTouchEnd={(e) => handleChangeDurationVideo(ratioVideo.current)}
+                                minimumTrackTintColor="#FFFFFF"
+                                maximumTrackTintColor="#FFFFFF"
+                                thumbTintColor="#FFFFFF"
+                            />
+                        </View>
+                    </View>
+                }
+                {
+                    showBtnControl && <View style={{
+                        flex: 1,
+                    }}>
+                        <Text style={{ color: 'white', position: 'absolute', fontSize: 14, top: -45, left: 10 }}>
+                            {
+                                status?.positionMillis
+                                    ? convertMsToTime(status?.positionMillis) + ' / ' + convertMsToTime(status?.durationMillis)
+                                    : "0:00 / 0:00"
+                            }
+                        </Text>
+                        <View style={{ position: 'absolute', fontSize: 14, top: -45, right: 90 }}>
+                            <Ionicons
+                                onPress={() => {
+                                   
+                                }} color="white" name="settings-sharp" size={22} />
+                        </View>
+                        <View style={{ position: 'absolute', fontSize: 14, top: -49, right: 45 }}>
+                            <Ionicons
+                                onPress={() => {
+                                   
+                                }} color="white" name="volume-medium-outline" size={30} />
+                        </View>
+                        <View style={{ position: 'absolute', fontSize: 14, top: -42, right: 10 }}>
+                            <AntDesign
+                                onPress={() => {
+                                   
+                                }} color="white" name="arrowsalt" size={18} />
+                        </View>
+                    </View>
+                }
                 <TouchableOpacity activeOpacity={0.8} style={{ marginTop: 5 }}
                     onPress={() => {
                         setIsShowDetailPost(true);
@@ -228,17 +304,17 @@ function PostInVideo({ navigation, postData }) {
 
                             <View style={{ flexDirection: "row", }}>
                                 <AntDesign name="like1" size={10} color="white" style={{ top: 1, padding: 4, borderRadius: 10, backgroundColor: COMMON_COLOR.LIKE_BLUE_COLOR }} />
-                                <Text style={{ left: 5, color: "#626262" }}>
+                                <Text style={{ left: 5, color: "white" }}>
                                     {+post?.is_liked === 1 ? `Bạn ${post?.like - 1 > 0 ? `và ${converNumberLikeAndComment(post?.like - 1)} người khác` : ''}` : converNumberLikeAndComment(post?.like)}
                                 </Text>
                             </View>
 
                             <TouchableOpacity style={{ flexDirection: "row", }}>
-                                <Text style={{ color: "#626262" }}>{post?.comment} bình luận</Text>
+                                <Text style={{ color: "white" }}>{post?.comment} bình luận</Text>
                             </TouchableOpacity>
 
                         </View>
-                        <View style={{ height: 1, backgroundColor: '#e7e7e7', marginVertical: 15, marginHorizontal: 5 }} />
+                        <View style={{ height: 1, backgroundColor: '#444444', marginVertical: 15, marginHorizontal: 5 }} />
                         <View style={{
                             flex: 1,
                             marginHorizontal: 20,
@@ -248,16 +324,16 @@ function PostInVideo({ navigation, postData }) {
                         }}>
 
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore) }}>
-                                <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
-                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
+                                <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : 'white'} />
+                                <Text style={{ top: 4, left: 3, color: "white" }}>Thích</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => setShowComment(true)}>
-                                <Ionicons style={{ top: 3 }} name="chatbox-outline" size={22} color="#626262" />
-                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Bình luận</Text>
+                                <Ionicons style={{ top: 3 }} name="chatbox-outline" size={22} color="white" />
+                                <Text style={{ top: 4, left: 3, color: "white" }}>Bình luận</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }}>
-                                <Ionicons style={{ top: 2 }} name="share-social-outline" size={22} color="#626262" />
-                                <Text style={{ top: 4, left: 3, color: "#626262" }}>Chia sẻ</Text>
+                                <Ionicons style={{ top: 2 }} name="share-social-outline" size={22} color="white" />
+                                <Text style={{ top: 4, left: 3, color: "white" }}>Chia sẻ</Text>
                             </TouchableOpacity>
 
                         </View>
