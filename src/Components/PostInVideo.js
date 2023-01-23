@@ -18,7 +18,7 @@ import {
     delay,
     convertMsToTime
 } from '../Services/Helper/common';
-import { Ionicons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, Entypo, MaterialIcons, AntDesign, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { getTimeUpdatePostFromUnixTime } from '../Services/Helper/common';
 import postService from '../Services/Api/postService';
@@ -45,8 +45,9 @@ function PostInVideo({ navigation, postData, isPlaying }) {
     const [isError, setIsError] = useState(false);
     const [showBtnControl, setShowBtnControl] = useState(false);
     const [focusVideo, setFocusVideo] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
     const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
-    const showVideoDuration = useRef(false);
+    const showVideoOption = useRef(false);
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
     const ratioVideo = useRef(0);
@@ -90,7 +91,7 @@ function PostInVideo({ navigation, postData, isPlaying }) {
     const handleShowButtonControl = async () => {
         setShowBtnControl(true);
         await delay(3000);
-        if (!showVideoDuration.current) setShowBtnControl(false);
+        if (!showVideoOption.current) setShowBtnControl(false);
     }
     const handleChangeDurationVideo = (ratio) => {
         if (status?.durationMillis) {
@@ -180,6 +181,7 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                             uri: post?.video?.url
                         }}
                         isLooping
+                        isMuted={isMuted}
                         resizeMode="cover"
                         onPlaybackStatusUpdate={
                             status => setStatus(status)
@@ -217,8 +219,8 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                                         : 0
                                 }
                                 onValueChange={(e) => ratioVideo.current = e}
-                                onSlidingStart={(e) => showVideoDuration.current = true}
-                                onSlidingComplete={(e) => showVideoDuration.current = false}
+                                onSlidingStart={(e) => showVideoOption.current = true}
+                                onSlidingComplete={(e) => showVideoOption.current = false}
                                 onTouchEnd={(e) => handleChangeDurationVideo(ratioVideo.current)}
                                 minimumTrackTintColor="#FFFFFF"
                                 maximumTrackTintColor="#FFFFFF"
@@ -238,23 +240,40 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                                     : "0:00 / 0:00"
                             }
                         </Text>
-                        <View style={{ position: 'absolute', fontSize: 14, top: -45, right: 90 }}>
+                        <View style={{ position: 'absolute', fontSize: 14, top: -45, right: 110 }}>
                             <Ionicons
                                 onPress={() => {
                                    
-                                }} color="white" name="settings-sharp" size={22} />
+                                }} color="white" name="settings-sharp" size={20} />
                         </View>
-                        <View style={{ position: 'absolute', fontSize: 14, top: -49, right: 45 }}>
-                            <Ionicons
-                                onPress={() => {
-                                   
-                                }} color="white" name="volume-medium-outline" size={30} />
-                        </View>
+                        {
+                            !isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 56 }}>
+                                <SimpleLineIcons
+                                    onPress={() => {
+                                        showVideoOption.current = true;
+                                        setIsMuted(true);
+                                    }} color="white" name="volume-2" size={22} 
+                                    onTouchEnd={() => showVideoOption.current = false}    
+                                />
+                            </View>
+                        }
+                        {
+                            isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 56 }}>
+                                <SimpleLineIcons
+                                    onPress={() => {
+                                        showVideoOption.current = true;
+                                        setIsMuted(false);
+                                    }} color="white" name="volume-off" size={22} 
+                                    onTouchEnd={() => showVideoOption.current = false}    
+                                />
+                            </View>
+                        }
+                        
                         <View style={{ position: 'absolute', fontSize: 14, top: -42, right: 10 }}>
                             <AntDesign
                                 onPress={() => {
                                    
-                                }} color="white" name="arrowsalt" size={18} />
+                                }} color="white" name="arrowsalt" size={16} />
                         </View>
                     </View>
                 }
