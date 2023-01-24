@@ -22,6 +22,7 @@ import ImageLibrary from './ImageLibrary';
 import EmojiList from './EmojiList';
 import AllFriendScreen from './AllFriendScreen';
 import SuggestFriendScreen from './SuggestFriendScreen';
+import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
@@ -56,6 +57,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }} />
                 <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }} />
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
+                <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
             </Stack.Navigator>
         </NavigationContainer>

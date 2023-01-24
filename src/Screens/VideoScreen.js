@@ -56,9 +56,8 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
             showsHorizontalScrollIndicator={false}
             data={postListTotal}
             renderItem={(data) => {
-                console.log('currentVideo', currentVideo);
-                console.log('dataIndex', data.index);
-                return <PostInVideo isPlaying={currentVideo === data.index}
+                return <PostInVideo 
+                    isPlaying={currentVideo === data.index}
                     navigation={navigation} key={data.item.id} postData={data.item} />
             }}
             // Performance settings
@@ -88,7 +87,7 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#242527'
+        backgroundColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND,
     },
     scrollView: {
         marginHorizontal: 20,
