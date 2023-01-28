@@ -4,6 +4,7 @@ import authReducer from "./authSlice";
 import postReducer from "./postSlice";
 import emojiReducer from "./emojiSlice";
 import videoReducer from "./videoSlice";
+import tabReducer from "./tabSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     auth: authReducer,
     post: postReducer,
     emoji: emojiReducer,
-    video: videoReducer
+    video: videoReducer,
+    tab: tabReducer
   },
 });

@@ -50,6 +50,9 @@ function PostInVideo({ navigation, postData, isPlaying }) {
     const { isMuted, playInVideoTab } = useSelector(
         (state) => state.video
     );
+    const { currentTabIndex } = useSelector(
+        (state) => state.tab
+    )
     const showVideoOption = useRef(false);
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
@@ -122,14 +125,9 @@ function PostInVideo({ navigation, postData, isPlaying }) {
             handleShowButtonControl();
         }
     }, [focusVideo]);
-    // useEffect(() => {
-    //     if (playInVideoTab){
-    //         video.current.playAsync();
-    //     }
-    //     else {
-    //         video.current.pauseAsync();
-    //     }
-    // }, [playInVideoTab])
+    useEffect(() => {
+        if (currentTabIndex !== 2) video.current.pauseAsync();
+    }, [currentTabIndex])
     return (
         <View style={{ flex: 1, marginBottom: 10 }}>
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}

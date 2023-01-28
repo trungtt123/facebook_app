@@ -46,7 +46,7 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         })
     }
     const handleScroll = (nativeEvent) => {
-        setCurrentVideo(Math.min(postListTotal.length - 1, Math.max(0, Math.ceil(nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height))));
+        setCurrentVideo(Math.min(postListTotal.length - 1, Math.max(0, Math.ceil((nativeEvent.contentOffset.y - 50) / nativeEvent.layoutMeasurement.height))));
     }
     useEffect(() => {
         handleGetListVideos();
@@ -74,7 +74,7 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row', marginVertical: 10, 
-                            marginHorizontal: 15, justifyContent: 'space-between'}}>
+                            marginHorizontal: 20, justifyContent: 'space-between'}}>
                                 <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
                                     height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
                                     <Entypo style={{top: 5, marginRight: 5}}
