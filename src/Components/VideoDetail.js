@@ -189,10 +189,8 @@ function VideoDetail({ navigation, postData, isPlaying }) {
                         onPlaybackStatusUpdate={
                             status => setStatus(status)
                         }
-                        onTouchEnd={() => navigation.navigate('anothervideo', {
-                            postData: post
-                        })}
-                        // onTouchEnd={() => setFocusVideo(false)}
+                        onTouchStart={() => setFocusVideo(true)}
+                        onTouchEnd={() => setFocusVideo(false)}
                     />
                     <View style={{ position: 'absolute' }}>
                         {

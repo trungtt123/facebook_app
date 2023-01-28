@@ -10,6 +10,7 @@ import PostInVideo from "../Components/PostInVideo";
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
 import { resetData } from "../Redux/emojiSlice";
+import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 //@trungtt123
 function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 4;
@@ -56,7 +57,50 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
             showsHorizontalScrollIndicator={false}
             data={postListTotal}
             renderItem={(data) => {
-                return <PostInVideo 
+                if (data.index === 0) {
+                    return <>
+                        <View style={{ flex: 1, backgroundColor: 'white', marginBottom: 10 }}>
+                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 15, marginTop: 8 }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>WATCH</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={styles.btnRight}>
+                                        <Ionicons style={{ left: -1, top: -2 }}
+                                            color='black' name='person' size={25} />
+                                    </View>
+                                    <View style={styles.btnRight}>
+                                        <FontAwesome onPress={() => navigation.navigate('search')}
+                                            style={{ left: -1, top: -1 }} name="search" size={22} color="black" />
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: 'row', marginVertical: 10, 
+                            marginHorizontal: 15, justifyContent: 'space-between'}}>
+                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
+                                    <Entypo style={{top: 5, marginRight: 5}}
+                                        color='black' name='video-camera' size={10} />
+                                    <Text style={{ fontWeight: 'bold' }}>Trực tiếp</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
+                                    <MaterialCommunityIcons style={{top: 4, marginRight: 5}}
+                                        color='black' name='silverware-fork-knife' size={12} />
+                                    <Text style={{ fontWeight: 'bold' }}>Ẩm thực</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
+                                    <Entypo style={{top: 5, marginRight: 5}}
+                                        color='black' name='game-controller' size={10} />
+                                    <Text style={{ fontWeight: 'bold' }}>Chơi game</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <PostInVideo
+                            isPlaying={currentVideo === data.index}
+                            navigation={navigation} key={data.item.id} postData={data.item} />
+                    </>
+                }
+                return <PostInVideo
                     isPlaying={currentVideo === data.index}
                     navigation={navigation} key={data.item.id} postData={data.item} />
             }}
@@ -91,6 +135,14 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         marginHorizontal: 20,
+    },
+    btnRight: {
+        backgroundColor: '#f1f2f4',
+        padding: 5,
+        borderRadius: 20,
+        marginLeft: 10,
+        width: 32,
+        height: 32
     }
 });
 

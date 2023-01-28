@@ -32,7 +32,7 @@ import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import Slider from '@react-native-community/slider';
-import { onChangeMute } from '../Redux/videoSlice';
+import { onChangeMute, onChangePlayVideoDetail, onChangePlayVideoTab } from '../Redux/videoSlice';
 function PostInVideo({ navigation, postData, isPlaying }) {
     const dispatch = useDispatch();
     const video = useRef(null);
@@ -47,7 +47,7 @@ function PostInVideo({ navigation, postData, isPlaying }) {
     const [showBtnControl, setShowBtnControl] = useState(false);
     const [focusVideo, setFocusVideo] = useState(false);
     const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
-    const { isMuted } = useSelector(
+    const { isMuted, playInVideoTab } = useSelector(
         (state) => state.video
     );
     const showVideoOption = useRef(false);
@@ -102,6 +102,12 @@ function PostInVideo({ navigation, postData, isPlaying }) {
             video.current.playAsync();
         }
     }
+    const handleGoToDetailVideo = (post) => {
+        navigation.navigate('anothervideo', {
+            postData: post
+        });
+        dispatch(onChangePlayVideoTab(false))
+    }
     useEffect(() => {
         if (isPlaying) video.current.playAsync();
         else video.current.pauseAsync();
@@ -116,6 +122,14 @@ function PostInVideo({ navigation, postData, isPlaying }) {
             handleShowButtonControl();
         }
     }, [focusVideo]);
+    // useEffect(() => {
+    //     if (playInVideoTab){
+    //         video.current.playAsync();
+    //     }
+    //     else {
+    //         video.current.pauseAsync();
+    //     }
+    // }, [playInVideoTab])
     return (
         <View style={{ flex: 1, marginBottom: 10 }}>
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
@@ -189,10 +203,10 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                         onPlaybackStatusUpdate={
                             status => setStatus(status)
                         }
-                        onTouchEnd={() => navigation.navigate('anothervideo', {
-                            postData: post
-                        })}
-                        // onTouchEnd={() => setFocusVideo(false)}
+                        // onTouchEnd={() => handleGoToDetailVideo(post)}
+
+                        onTouchStart={() => setFocusVideo(true)}
+                        onTouchEnd={() => setFocusVideo(false)}
                     />
                     <View style={{ position: 'absolute' }}>
                         {
@@ -212,7 +226,7 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                     </View>
                 </View>
                 {
-                    <View style={{ width: '100%' }}>
+                    showBtnControl && <View style={{ width: '100%' }}>
                         <View style={{ width: '100%', position: 'absolute', bottom: -20, marginLeft: -15 }}>
                             <Slider
                                 style={{ width: '110%', height: 40 }}
@@ -235,7 +249,7 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                     </View>
                 }
                 {
-                    <View style={{
+                    showBtnControl && <View style={{
                         flex: 1,
                     }}>
                         <Text style={{ color: 'white', position: 'absolute', fontSize: 14, top: -45, left: 10 }}>
@@ -245,28 +259,41 @@ function PostInVideo({ navigation, postData, isPlaying }) {
                                     : "0:00 / 0:00"
                             }
                         </Text>
+                        <View style={{ position: 'absolute', fontSize: 14, top: -45, right: 110 }}>
+                            <Ionicons
+                                onPress={() => {
+                                   
+                                }} color="white" name="settings-sharp" size={20} />
+                        </View>
                         {
-                            !isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 10 }}>
+                            !isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 56 }}>
                                 <SimpleLineIcons
                                     onPress={() => {
                                         showVideoOption.current = true;
                                         dispatch(onChangeMute(true));
-                                    }} name="volume-2" size={22} color="white"
+                                    }} color="white" name="volume-2" size={22} 
                                     onTouchEnd={() => showVideoOption.current = false}    
                                 />
                             </View>
                         }
                         {
-                            isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 10 }}>
+                            isMuted && <View style={{ position: 'absolute', fontSize: 14, top: -46, right: 56 }}>
                                 <SimpleLineIcons
                                     onPress={() => {
                                         showVideoOption.current = true;
                                         dispatch(onChangeMute(false));
-                                    }} name="volume-off" size={22} color="white"
+                                    }} color="white" name="volume-off" size={22} 
                                     onTouchEnd={() => showVideoOption.current = false}    
                                 />
                             </View>
                         }
+                        
+                        <View style={{ position: 'absolute', fontSize: 14, top: -42, right: 10 }}>
+                            <AntDesign
+                                onPress={() => {
+                                   
+                                }} color="white" name="arrowsalt" size={16} />
+                        </View>
                     </View>
                 }
                 <Card.Actions>
