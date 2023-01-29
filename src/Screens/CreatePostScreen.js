@@ -107,7 +107,7 @@ export default function CreatePostScreen({ route, navigation }) {
             </View>
 
 
-            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(newText)} />
+            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={getTextWithIcon(text)} onChangeText={newText => setText(getTextWithIcon(newText))} />
 
 
             <View style={{ justifyContent: 'center', alignContent: 'center', backgroundColor: 'white', height: 400, flexDirection: 'row', }}>
