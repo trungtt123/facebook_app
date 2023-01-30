@@ -4,6 +4,7 @@ import DashBoardScreen from './DashBoardScreen';
 import AboutScreen from './VideoScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
+import DeleteSearchScreen from './DeleteSearchScreen'
 import SystemModal from '../Components/modal/SystemModal';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
@@ -75,6 +76,8 @@ export default function AppNavigator() {
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
+                <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
+                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
