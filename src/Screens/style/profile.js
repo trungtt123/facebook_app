@@ -4,7 +4,8 @@ const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#ccc'
     },
     firstView: {
         flexDirection: 'column',
@@ -17,7 +18,7 @@ export default styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         height: height*0.3,
-        // width: width,
+        width: '100%',
         resizeMode: 'cover'
     },
     avatar: {

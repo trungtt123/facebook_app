@@ -49,7 +49,7 @@ function ProfileScreen({ navigation }) {
             fetchListPost();
         }, [])
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <View style={styles.firstView}>
                 <Image source={!userInfor?.cover_image ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.cover_image }} style={styles.coverImage}/>
                 <View style={styles.avatar}>
@@ -152,9 +152,9 @@ function ProfileScreen({ navigation }) {
                     Bài viết
                 </Text>
                 <View style={styles.thinking}>
-                    <Image source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKPbEsRYyIwripN7DcGubau9m4knFcrsWqEA&usqp=CAU'}} style={styles.postImage}/>
+                    <Image source={{uri: `${userInfor?.avatar}`}} style={styles.postImage}/>
                     <Text style={styles.thinkText}>
-                        Bạn dang nghĩ gì?
+                        Bạn đang nghĩ gì?
                     </Text>
                     <View style={styles.imageIcon}>
                         <FontAwesome5 name='images' size={25} color='#61ec84'/>
