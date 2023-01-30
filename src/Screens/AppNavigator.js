@@ -4,6 +4,7 @@ import DashBoardScreen from './DashBoardScreen';
 import AboutScreen from './VideoScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
+import DeleteSearchScreen from './DeleteSearchScreen'
 import SystemModal from '../Components/modal/SystemModal';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ export default function AppNavigator() {
                                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
                                 <Stack.Screen name="message" component={MessageScreen} options={{ title: 'Tin nhắn' }} />
                                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
+                                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
                                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                             </Stack.Navigator>
                         </NavigationContainer>

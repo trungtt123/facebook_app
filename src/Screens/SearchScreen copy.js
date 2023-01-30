@@ -66,6 +66,36 @@ function SearchScreen({ navigation }) {
             })
     }
 
+    const handleChangeKeyword = (e) => {
+        setKeyword(e);
+        list_res=[]
+        if (result.length!=0)
+            list_res = result.filter(item => item.includes(e));
+        setResult(list_res);
+    }
+    const searchFilterFunction = (text) => {
+        // Check if searched text is not blank
+        if (text) {
+          // Inserted text is not blank
+          // Filter the masterDataSource and update FilteredDataSource
+          const newData = result.filter(function (item) {
+            // Applying filter for the inserted text in search bar
+            const itemData = item.title
+              ? item.title.toUpperCase()
+              : ''.toUpperCase();
+            const textData = text.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+          });
+          setResult(newData);
+          setKeyword(text);
+        } else {
+          // Inserted text is blank
+          // Update FilteredDataSource with masterDataSource
+          setResult([]);
+          setKeyword(text);
+        }
+      };
+
     console.log(1, result);
     React.useEffect(() => {
         console.log(5, keyword)
@@ -77,7 +107,7 @@ function SearchScreen({ navigation }) {
                         placeholder="Tìm kiếm"
                         value={keyword}
                         onFocus={() => getSavedSearch()}
-                        onChangeText={e => setKeyword(e)}
+                        onChangeText={(text) => searchFilterFunction(text)}
                         onSubmitEditing={() => handleSearch()}
                     >
                     </TextInput>
