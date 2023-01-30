@@ -10,6 +10,9 @@ const createPost = (data) => {
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
 };
+const getListVideos = (lastId, index, count) => {
+  return axios.post(`post/get_list_videos?last_id=${lastId}&index=${index}&count=${count}`);
+};
 const likePost = (postId) => {
   return axios.post(`like/like?id=${postId}`);
 }
@@ -53,6 +56,7 @@ const removePostsCache = async () => {
 }
 const postService = {
   getListPosts,
+  getListVideos,
   likePost,
   getPost,
   updateListPostsCache,
