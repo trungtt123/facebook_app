@@ -60,7 +60,6 @@ export default function AppNavigator() {
                 <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="message" component={Messager} options={{ title: 'Tin nhắn' }} />
-                <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                 <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
                 <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }}/>
