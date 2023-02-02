@@ -17,60 +17,58 @@ import {
 } from '../Services/Helper/common';
 import axios from '../setups/custom_axios';
 import { MaterialIcons } from '@expo/vector-icons';
-function SearchScreen({ navigation }) {
+function SearchScreen3({ navigation }) {
     const { user, isLoading } = useSelector(
         (state) => state.auth
     );
+    console.log(_getCache("token"))
 
-    const [keyword, setKeyword] = useState("")
-    const getCacheSearchList = async () => {
-        try {
-            let list = JSON.parse(await _getCache("cacheSearchList"));
-            if (list === null || list === undefined || list === "") list = [];
-            return list;
-          }
-          catch(e){
-            console.log(e);
-          }
+    const [result, setResult] = useState([])
+    const [isSearch, setIsSearch] = useState(0)
+    const [keyword, setKeyword] = useState('')
+    const [clear, setClear] = useState(false)
+    const handleClear = () => {
+        setClear(true);
+        setKeyword('');
     }
-    const keywordListOrgin=getCacheSearchList
-    const [keywordList, setKeywordList] = useState(keywordListOrgin)
-    
-
-
-
     const handleSearch = () => {
-        saveCacheSearch(keyword);
-        keywordListOrgin = getCacheSearchList();
-        setKeywordList(keywordListOrgin);
+        setIsSearch(1)
+        axios.post(`/search/search?index=0&count=20&keyword=${keyword}`)
+            .then(res => {
+                setResult(res.data)
+                console.log('data', res.data)
+                console.log(res.data.length)
+                // setResult(res)
+            })
+            .catch(error => {
+                setResult([]);
+            })
     }
 
+    useEffect(() => {
+        axios.post(`/search/get_saved_search?index=0&count=20`)
+            .then(res => {
+                setResult(res.data)
+            })
+            .catch(error => {
+                setResult([])
+            })
+    }, [clear])
 
-    const handleChangeText = (e) => {
-        tmp = keywordListOrgin.filter((keyword, e) => keyword.contains(e))
-        setKeywordList(tmp)
+    const getSavedSearch = () => {
+        setIsSearch(0);
+        axios.post(`/search/get_saved_search?index=0&count=20`)
+            .then(res => {
+                setResult(res.data)
+            })
+            .catch(error => {
+                setResult([])
+            })
     }
-    
-    const saveCacheSearch = async (keyword) => {
-        try {
-          console.log(keyword);
-          let list = JSON.parse(await _getCache("cacheSearchList"));
-          if (list === null || list === undefined || list === "") list = [];
-          let index = list.indexOf(keyword);
-          if (index === -1) list.push(keyword);
-          else {
-            list[index] = keyword;
-          }
-          // remove cache
-          // await _setCache("ketwordList", "");
-          await _setCache("cacheSearchList", JSON.stringify(list));
-        }
-        catch (e) {
-          console.log(e);
-        }
-      }
 
+    console.log(1, result);
     React.useEffect(() => {
+        console.log(5, keyword)
         navigation.setOptions({
             headerTitle: () => (
                 <View>
@@ -78,8 +76,8 @@ function SearchScreen({ navigation }) {
                         // style={styles.textSearch}
                         placeholder="Tìm kiếm"
                         value={keyword}
-                        onFocus={() => getCacheSearchList()}
-                        onChangeText={e => handleChangeText(e)}
+                        onFocus={() => getSavedSearch()}
+                        onChangeText={e => setKeyword(e)}
                         onSubmitEditing={() => handleSearch()}
                     >
                     </TextInput>
@@ -102,23 +100,43 @@ function SearchScreen({ navigation }) {
                 <TouchableOpacity onPress = {() => navigation.navigate('deleteSearch')}>
                     <Text style={{ color: 'blue', fontSize: 18, marginLeft: 30 }}>Chỉnh sửa</Text>
                 </TouchableOpacity>
-                {   
-                    keywordList.length!=0 
-                    ?(keywordList.map((item, index) => {
+            </View>
+            {result.length != 0 ?
+                isSearch == 0 ?
+                    (
+                        result.map((item, index) => {
                             return (
                                 <View key={index} style={{ width: '100%', paddingVertical: 5, flexDirection: 'row' }}>
                                     <View style={{ justifyContent: 'center', marginLeft: 10, flex: 1 }}>
                                         <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                                            <Text style={{ fontSize: 17, fontWeight: '600' }}>{item}</Text>
+                                            <Text style={{ fontSize: 17, fontWeight: '600' }}>{item.keyword}</Text>
                                         </View>
                                     </View>
                                 </View>
                             )
                         })
-                    ):(<View><Text>Không có kết quả tìm kiếm</Text></View>)
-                    }
-            </View>
-            
+                    ) : (
+                        result.map((item, index) => {
+                            return (
+                                <View key={index} style={{ width: '100%', paddingVertical: 5, flexDirection: 'row' }}>
+                                    <Image source={
+                                        !item.author ? require('../../assets/images/logo_facebook.png')
+                                            : { uri: item.author.avatar.url }
+                                    } style={{ width: 80, height: 80, borderRadius: 40, borderColor: "#dbdbdd", borderWidth: 1 }} />
+
+                                    <View style={{ justifyContent: 'center', marginLeft: 10, flex: 1 }}>
+                                        <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                                            <Text style={{ fontSize: 17, fontWeight: '600' }}>{item.author ? item.author.username : null}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            )
+                        })
+                    )
+                :
+                (<View>
+                    <Text>Không có kết quả tìm kiếm</Text>
+                </View>)}
         </View >
     );
 }
@@ -162,4 +180,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SearchScreen;
+export default SearchScreen3;
