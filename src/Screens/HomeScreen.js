@@ -138,7 +138,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
             {postListTotal?.map((item, index) => {
                 console.log(index);
                 //if (index === 0) console.log(item.image);
-                return <PostInHome navigation={navigation} key={item.id} postData={item} />
+                return <PostInHome navigation={navigation} key={item.id} postData={item} userID={user.id}/>
             })}
         </ScrollView>
     </View>

@@ -101,7 +101,7 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                     </>
                 }
                 return <PostInVideo
-                    isPlaying={currentVideo === data.index}
+                    isPlaying={currentVideo === data.index} userID={user.id}
                     navigation={navigation} key={data.item.id} postData={data.item} />
             }}
             // Performance settings

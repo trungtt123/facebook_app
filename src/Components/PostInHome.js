@@ -28,9 +28,13 @@ import { COMMON_COLOR } from '../Services/Helper/constant';
 import ViewWithIcon from './ViewWithIcon';
 import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
-function PostInHome({ navigation, postData }) {
+import DotModal from './modal/DotModal';
+import ReportModal from './modal/ReportModal';
+function PostInHome({ navigation, postData, userID }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
+    const [showDot, setShowDot] = useState(false);
+    const [showReport, setShowReport] = useState(false);
     const [isShowDetailPost, setIsShowDetailPost] = useState(false);
     const [viewImage, setViewImage] = useState(false);
     const [indexViewImage, setIndexViewImage] = useState(0);
@@ -55,8 +59,12 @@ function PostInHome({ navigation, postData }) {
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={()=> {setShowDot(true)}}>
             <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=> {}}>
             <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            </TouchableOpacity>
         </View>
     }
     const handleLikePost = () => {
@@ -90,6 +98,8 @@ function PostInHome({ navigation, postData }) {
 
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
+            {showDot && <DotModal postUserId={post?.author?.id} userID={userID} closeModal={()=> setShowDot(false)} postID={post?.id} setReportDot={setShowReport}></DotModal>}
+            {showReport && <ReportModal closeModal={()=> setShowReport(false)} postID={post?.id}></ReportModal>}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
             <Card>
                 <Card.Title

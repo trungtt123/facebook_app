@@ -19,7 +19,10 @@ const likePost = (postId) => {
 const getPost = (postId) => {
   return axios.post(`post/get_post?id=${postId}`);
 }
-
+const reportPost = (data) => {
+  const {id, subject, details} = data;
+  return axios.post(`post/report_post?id=${id}&subject=${subject}&details=${details}`);
+}
 const getListPostByUserId = (userId) => {
   return axios.post(`post/get_post_by_userId?userId=${userId}`);
 }
@@ -63,6 +66,7 @@ const postService = {
   getListPostsCache,
   removePostsCache,
   getListPostByUserId,
-  createPost
+  createPost,
+  reportPost,
 };
 export default postService;

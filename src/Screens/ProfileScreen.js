@@ -163,7 +163,7 @@ function ProfileScreen({ navigation }) {
             </View>
             {listPost?.map((item, index) => {
                 //if (index === 0) console.log(item.image);
-                return <PostInHome navigation={navigation} key={index} postData={item} />
+                return <PostInHome navigation={navigation} key={index} postData={item} userID={user.id}/>
             })}
         </ScrollView>
     );
