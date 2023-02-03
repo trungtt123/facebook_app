@@ -32,6 +32,7 @@ import AllFriendScreen from './AllFriendScreen';
 import SuggestFriendScreen from './SuggestFriendScreen';
 import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
+import ChatScreen from './messenger/ChatScreen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -77,6 +78,9 @@ export default function AppNavigator() {
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
                 <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
+
+                {/* //chat */}
+                <Stack.Screen name="chatscreen" component={ChatScreen} options={{title: 'Tin nhắn'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}

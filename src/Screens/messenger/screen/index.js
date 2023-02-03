@@ -5,7 +5,7 @@ import Item from '../elements/chat_item';
 import styles from '../style/style_item';
 import FriendItem from '../elements/friend_item';
 
-function Messager() {
+function Messager({navigation}) {
     const inputRef = React.createRef(null);
 
     return(
@@ -43,7 +43,7 @@ function Messager() {
                         keyExtractor={(item) => item.id } // tránh trùng các item với nhau
                     /> */}
                     {data.map((e, index) =>
-                        <Item item = {e} keyExtractor={(e)=> e.id}/>
+                        <Item item = {e} navigation = {navigation} keyExtractor={(e)=> e.id}/>
                     )}
                 </View>
             </ScrollView>
