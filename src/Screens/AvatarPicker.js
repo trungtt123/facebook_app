@@ -1,6 +1,6 @@
 import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
 import {useDispatch, useSelector} from 'react-redux';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, ToastAndroid} from 'react-native';
 import {setAvatar} from '../Redux/userSlice';
 import { useEffect } from "react";
 
@@ -13,6 +13,9 @@ export default function AvatarPicker({navigation}) {
     const getType = (filename) => {
         return filename.split('.').pop();
     }
+    const showToast = (message) => {
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+    };
 
     useEffect(() => {
         console.log('new Data: ',userInfor);
@@ -32,6 +35,7 @@ export default function AvatarPicker({navigation}) {
                 formData.append("avatar", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
                 dispatch(setAvatar({formData: formData, userId: user.id}));
                 navigation.goBack();
+                showToast('Cập nhật ảnh đại diện thành công!')
             }}
             onCancel={() => console.log('no permissions or user go back')}
         />

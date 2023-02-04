@@ -85,9 +85,9 @@ export default styles = StyleSheet.create({
     },
 
     secondView: {
-        marginTop: height*0.02,
+        marginTop: 10,
         paddingHorizontal: 10,
-        height: 0.5*height,
+        // height: 820,
         backgroundColor: '#FFFFFF',
     },
 
@@ -130,7 +130,7 @@ export default styles = StyleSheet.create({
         color: 'blue'
     },
     thirdView: {
-        marginTop: height*0.02,
+        marginTop: 10,
         paddingHorizontal: 10,
         height: 150,
         backgroundColor: '#FFFFFF',
@@ -143,12 +143,13 @@ export default styles = StyleSheet.create({
     thinking: {
         marginTop: 0.03*height,
         flexDirection: 'row',
-        height: 0.12*width
+        height: 0.12*width,
+        marginRight: 30
     },
     postImage: {
         height: 0.12*width,
         width: 0.12*width,
-        borderRadius: 0.12*width
+        borderRadius: 0.12*width,
     },
     thinkText: {
         fontSize:18,
@@ -157,7 +158,65 @@ export default styles = StyleSheet.create({
     },
     imageIcon: {
         marginTop: 0.04*width,
-        marginStart: 0.4*width
-    }
+        marginStart: 0.35*width,
+    },
+
+    modalBox: {
+        overflow: "hidden",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        height: height,
+        backgroundColor: "transparent"
+    },
+    contentAva: {
+        position: "relative",
+        bottom: 0,
+        width,
+        height: 280,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        backgroundColor: "white",
+        paddingTop: 30
+    },
+    rowModal: {
+        flexDirection:'row',
+        paddingHorizontal: 20,
+        marginBottom: 15
+    },
+    iconModal: {
+        height: 40,
+        width:40,
+        borderRadius: 40,
+        backgroundColor: '#E4E6EB',
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 15
+    },
+    contentCover: {
+        position: "relative",
+        bottom: 0,
+        width,
+        height: 350,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        backgroundColor: "white",
+        paddingTop: 30
+    },
+    friendCard: {
+        height: 140,
+    },
+    imageFr: {
+        height: 110,
+        width: 110,
+        borderRadius: 15,
+        marginBottom:5,
+        marginTop: 10
+    },
+    titleButton: {
+        fontSize: 18,
+        fontWeight: '400',
+        color: 'blue',
+        marginTop: height*0.03
+    },
 
 })

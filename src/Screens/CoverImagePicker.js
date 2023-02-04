@@ -1,6 +1,6 @@
 import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
 import {useDispatch, useSelector} from 'react-redux';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, ToastAndroid} from 'react-native';
 import {setCoverImage} from '../Redux/userSlice';
 import { useEffect } from "react";
 
@@ -13,6 +13,9 @@ export default function CoverImagePicker({navigation}) {
     const getType = (filename) => {
         return filename.split('.').pop();
     }
+    const showToast = (message) => {
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+    };
     navigation.setOptions({
         headerRight: () => (
             <TouchableOpacity onPress={() => { navigation.goBack() }}>
@@ -27,6 +30,7 @@ export default function CoverImagePicker({navigation}) {
                 formData.append("cover_image", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
                 dispatch(setCoverImage({formData: formData, userId: user.id}));
                 navigation.goBack();
+                showToast('Cập nhật ảnh bìa thành công!')
             }}
             onCancel={() => console.log('no permissions or user go back')}
         />

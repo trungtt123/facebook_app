@@ -78,8 +78,6 @@ export default function AppNavigator() {
                 <Stack.Screen name="pickCover" component={CoverImagePicker} options={{title: 'Thay đổi ảnh bìa'}}/>
                 <Stack.Screen name="editPublicInfo" component={EditPublicInfor} options={{title: 'Thay đổi chi tiết'}}/>
                 <Stack.Screen name="editCity" component={EditCity} options={{title: 'Thay đổi chi tiết tỉnh/thành phố'}}/>
-                {/* <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }} />
-                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }} /> */}
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />

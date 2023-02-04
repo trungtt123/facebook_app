@@ -1,12 +1,12 @@
+import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
 
 const getAllUsers = () => {
   return axios.get("/get-all-users");
 };
 
-const getUserInfor = async (user_id) => {
-  console.log(user_id);
-  return await axios.post(`/user/get_user_info?&user_id=${user_id}`);
+const getUserInfor = (user_id) => {
+  return axios.post(`/user/get_user_info?user_id=${user_id}`);
 }
 
 const setUserDescription = (descrtiption, userId) => {
@@ -62,6 +62,10 @@ const setBlock = (userId, type) => {
 const unFriend = (userId) => {
   return axios.post(`/friend/unfriend?user_id=${userId}`);
 }
+
+const getUserInforWithToken = (userId, token) =>  {
+  return axios.post(`/user/get_user_info?user_id=${userId}&token=${token}`);
+}
 const userService = {
   getAllUsers,
   getListFriendRequest,
@@ -76,7 +80,8 @@ const userService = {
   setAvatar,
   setCoverImage,
   setUserCity,
-  setUserCountry
+  setUserCountry,
+  getUserInforWithToken
 };
 
 

@@ -37,7 +37,7 @@ export const setAvatar  = createAsyncThunk(
     try {
       return await userService.setAvatar(data);
     } catch (e) {
-      console.log("error", e);
+      console.log("error", e.response);
       return thunkAPI.rejectWithValue("something went wrong");
     }
   }
@@ -48,7 +48,7 @@ export const setCoverImage  = createAsyncThunk(
     try {
       return await userService.setCoverImage(data);
     } catch (e) {
-      console.log("error", e);
+      console.log("error", e.response);
       return thunkAPI.rejectWithValue("something went wrong");
     }
   }
