@@ -127,7 +127,7 @@ function EditProfileScreen ({navigation}) {
                         Sống tại
                     </Text>
                     <Text style={styles.hardTextAddress}>
-                        Hà Nội
+                        {userInfor.city}
                     </Text>
                 </View>
                 <View style={styles.rowInfor}>
@@ -136,7 +136,7 @@ function EditProfileScreen ({navigation}) {
                         Đến từ
                     </Text>
                     <Text style={styles.hardTextAddress}>
-                        Ninh Bình
+                        {userInfor.country}
                     </Text>
                 </View>
                 <View style={styles.rowInfor}>
