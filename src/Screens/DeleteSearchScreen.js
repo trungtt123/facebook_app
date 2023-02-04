@@ -16,8 +16,6 @@ function DeleteSearchScreen({ navigation }) {
             if (list === null || list === undefined || list === "") list = [];
             let index = list.indexOf(keyword);
             if (index > -1) list.splice(index, 1);
-            // remove cache
-            // await _setCache("ketwordList", "");
             await _setCache("cacheSearchList", JSON.stringify(list));
             getCacheSearchList()
         }
