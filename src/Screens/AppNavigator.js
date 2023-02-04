@@ -76,7 +76,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
-                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
+                <Stack.Screen name="deleteSearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
