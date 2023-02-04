@@ -27,6 +27,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const { user } = useSelector(
         (state) => state.auth
     );
+    const {userInfor, isLoading} = useSelector((state) => state.user);
     const [postListTotal, setPostListTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -164,7 +165,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                     return <>
                         <View style={{ flex: 1, height: 70, backgroundColor: 'white', flexDirection: 'row', padding: 15 }}>
                             <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
-                                user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }
+                                userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }
                             } />
                             <TouchableOpacity style={{ flex: 1 }} onPress={() => goToCreatePost()}>
                                 <TextInput selectTextOnFocus={false}
