@@ -14,6 +14,7 @@ import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
 import * as Animatable from 'react-native-animatable';
 import { resetData } from "../Redux/emojiSlice";
+import { onChangeCurrentTabIndex } from "../Redux/tabSlice";
 //import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Animated } from "react-native";
 export default function DashBoardScreen({ navigation }) {
@@ -67,6 +68,7 @@ export default function DashBoardScreen({ navigation }) {
         }
         else setIsShowTopBar(true)
         setIndex(currentIndex)
+        dispatch(onChangeCurrentTabIndex(currentIndex));
     }
     const goToCreatePost = () => {
         dispatch(resetData());

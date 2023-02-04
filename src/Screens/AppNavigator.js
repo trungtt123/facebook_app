@@ -4,6 +4,7 @@ import DashBoardScreen from './DashBoardScreen';
 import AboutScreen from './VideoScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
+import DeleteSearchScreen from './DeleteSearchScreen'
 import SystemModal from '../Components/modal/SystemModal';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
@@ -29,7 +30,9 @@ import EditPublicInfor from './EditPublicInfor';
 import EditCity from './EditCity';
 import AllFriendScreen from './AllFriendScreen';
 import SuggestFriendScreen from './SuggestFriendScreen';
+import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
+import ChatScreen from './messenger/ChatScreen';
 export default function AppNavigator() {
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
@@ -58,7 +61,6 @@ export default function AppNavigator() {
                 <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="message" component={Messager} options={{ title: 'Tin nhắn' }} />
-                <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
                 <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
                 <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }}/>
@@ -70,7 +72,13 @@ export default function AppNavigator() {
                 <Stack.Screen name="editPublicInfo" component={EditPublicInfor} options={{title: 'Thay đổi chi tiết'}}/>
                 <Stack.Screen name="editCity" component={EditCity} options={{title: 'Thay đổi chi tiết tỉnh/thành phố'}}/>
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
+                <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
+                <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
+                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
+
+                {/* //chat */}
+                <Stack.Screen name="chatscreen" component={ChatScreen} options={{title: 'Tin nhắn'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}

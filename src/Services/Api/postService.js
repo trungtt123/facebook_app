@@ -10,13 +10,19 @@ const createPost = (data) => {
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
 };
+const getListVideos = (lastId, index, count) => {
+  return axios.post(`post/get_list_videos?last_id=${lastId}&index=${index}&count=${count}`);
+};
 const likePost = (postId) => {
   return axios.post(`like/like?id=${postId}`);
 }
 const getPost = (postId) => {
   return axios.post(`post/get_post?id=${postId}`);
 }
-
+const reportPost = (data) => {
+  const {id, subject, details} = data;
+  return axios.post(`post/report_post?id=${id}&subject=${subject}&details=${details}`);
+}
 const getListPostByUserId = (userId) => {
   return axios.post(`post/get_post_by_userId?userId=${userId}`);
 }
@@ -53,12 +59,14 @@ const removePostsCache = async () => {
 }
 const postService = {
   getListPosts,
+  getListVideos,
   likePost,
   getPost,
   updateListPostsCache,
   getListPostsCache,
   removePostsCache,
   getListPostByUserId,
-  createPost
+  createPost,
+  reportPost,
 };
 export default postService;

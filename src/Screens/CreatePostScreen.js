@@ -25,6 +25,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Video } from 'expo-av';
 import axios from '../setups/custom_axios';
 import { createPost } from '../Redux/postSlice';
+import { getTextWithIcon } from '../Services/Helper/common';
 
 export default function CreatePostScreen({ route, navigation }) {
     const prevPage = useRef(route.params?.prevPage);
@@ -64,7 +65,7 @@ export default function CreatePostScreen({ route, navigation }) {
     const postData = () => {
         let formData = new FormData();
         let status = textEmoji;
-        let described = text;
+        let described = getTextWithIcon(text);
         if (data.length > 0 && checkImage) {
             for (let i = 0; i < data.length; i++) {
                 formData.append("image", { name: data[i].filename, uri: data[i].uri, type: 'image/' + getType(data[i].filename) })
@@ -106,7 +107,7 @@ export default function CreatePostScreen({ route, navigation }) {
             </View>
 
 
-            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(newText)} />
+            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={getTextWithIcon(text)} onChangeText={newText => setText(getTextWithIcon(newText))} />
 
 
             <View style={{ justifyContent: 'center', alignContent: 'center', backgroundColor: 'white', height: 400, flexDirection: 'row', }}>
