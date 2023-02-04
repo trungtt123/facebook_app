@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, useRef, memo } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -23,6 +23,7 @@ function SearchScreen({ navigation }) {
     const { user } = useSelector(
         (state) => state.auth
     );
+    const inputRef = useRef()
     const [keyword, setKeyword] = useState("");
     const [keywordList, setKeywordList] = useState([]);
     const [isShowPost, setIsShowPost] = useState(false);
@@ -57,7 +58,9 @@ function SearchScreen({ navigation }) {
         saveCacheSearch(keyword);
     }
     const handleClear = () => {
+        inputRef.current.clear()
         setKeyword('');
+        setKeywordList('')
         handleChangeText('')
     }
     const handleChangeText = async (e) => {
@@ -106,8 +109,9 @@ function SearchScreen({ navigation }) {
                     <TextInput
                         style={{ width: '60%' }}
                         // style={styles.textSearch}
+                        ref={inputRef}
                         placeholder="Tìm kiếm"
-                        value={keyword}
+                        // value={keyword}
                         onFocus={() => getCacheSearchList()}
                         onChangeText={e => handleChangeText(e)}
                         onSubmitEditing={() => handleSearch(keyword)}
