@@ -1,6 +1,6 @@
 import {API_URL} from '@env';
-export const REST_API_URL = 'https://6bb5-27-67-75-209.ap.ngrok.io/it4788';
-export const CHAT_SERVER_URL = 'https://6bb5-27-67-75-209.ap.ngrok.io';
+export const REST_API_URL = 'https://d26b-27-68-136-253.ap.ngrok.io/it4788';
+export const CHAT_SERVER_URL = 'https://d26b-27-68-136-253.ap.ngrok.io';
 //export const REST_API_URL = API_URL;
 const INTERNET_CONNECTION_FAILED = 'Bạn đang offline';
 const INTERNET_CONNECTION_SUCCESS = 'Bạn đang online';
