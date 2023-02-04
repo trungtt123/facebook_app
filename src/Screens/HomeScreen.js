@@ -8,10 +8,14 @@ import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
 import { useNetInfo } from '@react-native-community/netinfo';
-import {getUserInfo} from '../Redux/userSlice';
+import { getUserInfo } from '../Redux/userSlice';
 
 import { COMMON_COLOR } from "../Services/Helper/constant";
 import { resetData } from "../Redux/emojiSlice";
+import { CHAT_SERVER_URL } from "../Services/Helper/constant";
+import { io } from 'socket.io-client'
+import { async } from "q";
+const socket = io(`${CHAT_SERVER_URL}`);
 //@trungtt123
 function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 4;
@@ -29,7 +33,32 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     );
     const [postListTotal, setPostListTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-
+    const handleAddDialog = () => {
+        socket.emit('client_add_dialog', {
+            token: user.token,
+            senderId: user.id,
+            targetUserId: '639315083fa4155480da25f0',
+            content: 'Tin nhắn 3'
+        })
+    }
+    useEffect(() => {
+        socket.emit('client_join_conversation', {
+            // thisUserId, targetUserId, token
+            token: user.token,
+            thisUserId: user.id,
+            targetUserId: '639315083fa4155480da25f0'
+        })
+        socket.on('server_send_conversation', (data) => {
+            console.log('server_send_conversation', data);
+        })
+        socket.emit('client_get_list_conversation', {
+            token: user.token,
+            thisUserId: user.id
+        })
+        socket.on('server_send_list_conversation', (data) => {
+            console.log('server_send_list_conversation', JSON.stringify(data));
+        })
+    }, [])
     const onRefresh = async () => {
         setRefreshing(true);
         if (!isPostListLoading) {
@@ -97,6 +126,9 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     }, [postList]);
     console.log('newPostList', postListTotal.length);
     return <View style={styles.container}>
+        <TouchableOpacity onPress={() => handleAddDialog()}>
+            <Text style={{width: 100, height: 50, fontSize: 20}}>Send Message</Text>
+        </TouchableOpacity>
         <ScrollView showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             refreshControl={

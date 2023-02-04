@@ -5,7 +5,10 @@ import { Provider } from "react-redux";
 import AppNavigator from './src/Screens/AppNavigator';
 import { CHAT_SERVER_URL } from './src/Services/Helper/constant';
 import { io } from 'socket.io-client'
+import { useEffect } from 'react';
 const socket = io(`${CHAT_SERVER_URL}`);
+
+
 ///*
 // trungtt123 disable log box
 console.disableYellowBox = true;
