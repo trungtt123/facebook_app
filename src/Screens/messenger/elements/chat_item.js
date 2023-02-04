@@ -6,10 +6,11 @@ class Item extends Component {
 
     render() {
         const {item} = this.props;
-        console.log(item)
+        console.log(item);
+        const {navigation} = this.props
 
        return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{navigation.navigate('chatscreen')}}>
         <View style={styles.container}>
             <View style={styles.bgAvatar}>
                 <Image

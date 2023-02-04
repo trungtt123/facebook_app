@@ -32,7 +32,12 @@ import AllFriendScreen from './AllFriendScreen';
 import SuggestFriendScreen from './SuggestFriendScreen';
 import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
+import ChatScreen from './messenger/ChatScreen';
+import { CHAT_SERVER_URL } from '../Services/Helper/constant';
+import { io } from 'socket.io-client';
+import { onChangeSocket } from '../Redux/authSlice';
 export default function AppNavigator() {
+    const socket = io(`${CHAT_SERVER_URL}`);
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
     const [token, setToken] = useState();
@@ -43,6 +48,9 @@ export default function AppNavigator() {
         const token = await authService.getToken();
         setToken(token);
     }
+    useEffect(() => {
+        dispatch(onChangeSocket(socket));
+    }, [socket])
     useEffect(() => {
         if (netInfo.isConnected) dispatch(verifyToken());
         getCacheToken();
@@ -70,13 +78,14 @@ export default function AppNavigator() {
                 <Stack.Screen name="pickCover" component={CoverImagePicker} options={{title: 'Thay đổi ảnh bìa'}}/>
                 <Stack.Screen name="editPublicInfo" component={EditPublicInfor} options={{title: 'Thay đổi chi tiết'}}/>
                 <Stack.Screen name="editCity" component={EditCity} options={{title: 'Thay đổi chi tiết tỉnh/thành phố'}}/>
-                {/* <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }} />
-                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }} /> */}
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
                 <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
+
+                {/* //chat */}
+                <Stack.Screen name="chatscreen" component={ChatScreen} options={{title: 'Tin nhắn'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
