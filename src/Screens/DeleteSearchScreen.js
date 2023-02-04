@@ -27,16 +27,7 @@ function DeleteSearchScreen({ navigation }) {
         }
     }
 
-    // useEffect(() => {
-    //     axios.post(`/search/get_saved_search?index=0&count=20`)
-    //         .then(res => {
-    //             setResult(res.data)
-    //         })
-    //         .catch(error => {
-    //             setResult([])
-    //         })
-    // }, [])
-    // console.log(result)
+
     const getCacheSearchList = async () => {
         try {
             let list = JSON.parse(await _getCache("cacheSearchList"));
@@ -60,7 +51,7 @@ function DeleteSearchScreen({ navigation }) {
         }
     }
     useEffect(() => {
-        tmp = getCacheSearchList()
+        getCacheSearchList()
     }, [])
     console.log("tmp", tmp)
     return (
@@ -85,10 +76,6 @@ function DeleteSearchScreen({ navigation }) {
                                             <Text style={{ fontSize: 17, fontWeight: '600' }}>Bạn đã tìm kiếm trên Facebook </Text>
                                             <Text style={{ color: "#76787c", fontSize: 17, fontWeight: '600' }}>"{item}"</Text>
                                             <Text style={{ color: "#76787c", fontSize: 17, fontWeight: '600' }}>
-                                                {/* <Image source={
-                                                    !item.author ? require('../../assets/images/logo_facebook.png')
-                                                        : { uri: item.author.avatar.url }
-                                                } style={{ width: 80, height: 80, borderRadius: 40, borderColor: "#dbdbdd", borderWidth: 1 }} /> */}
                                                 Chỉ mình tôi - Đã ẩn khỏi dòng thời gian
                                             </Text>
                                         </View>
