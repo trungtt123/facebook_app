@@ -22,14 +22,27 @@ export const createPost = createAsyncThunk(
       return thunkAPI.rejectWithValue("something went wrong");
     }
   }
-); 
+);
+export const editPost = createAsyncThunk(
+  "post/editPost",
+  async (data, thunkAPI) => {
+    try {
+      return await postService.editPost(data);
+    } catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("somethign went wrong");
+    }
+  }
+);
 export const resetPostSlice = createAction('resetPostSlice');
 const initialState = {
   postList: [],
   isPostListLoading: false,
   isPendingCreatePost: false,
   isErrorCreatePost: undefined,
-  newCreatePostData: undefined
+  newCreatePostData: undefined,
+  isPendingEditPost: false,
+  isErrorEditPost: undefined,
 };
 
 const postSlice = createSlice({
@@ -69,6 +82,21 @@ const postSlice = createSlice({
       console.log("createPost action rej", action);
       state.isPendingCreatePost = false;
       state.isErrorCreatePost = true;
+    },
+    [editPost.pending]: (state) => {
+      console.log("editPost pending");
+      state.isPendingEditPost = true;
+      state.isErrorEditPost = undefined;
+    },
+    [editPost.fulfilled]: (state, action) => {
+      console.log("editPost actiion ful", action);
+      state.isPendingEditPost = false;
+      state.isErrorEditPost = false;
+    },
+    [editPost.rejected]: (state, action) => {
+      console.log("editPost action rej", action);
+      state.isPendingEditPost = false;
+      state.isErrorEditPost = true;
     },
     [resetPostSlice]: () => initialState
   },

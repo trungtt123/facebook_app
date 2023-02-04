@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Alert, StyleSheet, Text, Button, View, TextInput, TouchableOpacity, Image, ScrollView, FlatList } from "react-native";
+import { Alert, StyleSheet, Text, Button, View, TextInput, TouchableOpacity, Image, ScrollView, FlatList, ToastAndroid } from "react-native";
 import Modal from "react-native-modal";
 import { AntDesign, Entypo, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -38,7 +38,7 @@ const ReportList = ({postID}) => {
                 id: data.id,
                 subject: data.subject,
                 details: data.details,
-            }).then(()=> alert("Báo cáo thành công")).catch((e)=> {
+            }).then(()=> ToastAndroid.show("Báo cáo thành công", ToastAndroid.SHORT)).catch((e)=> {
                 console.log(e);
             });
         }
@@ -46,7 +46,7 @@ const ReportList = ({postID}) => {
             <View>
                 <TouchableOpacity onPress={() => {setTextIcon(!textIcon)}}>
                     <View style={{ flexDirection: 'row', borderBottomWidth: 0.5, alignItems: 'center', justifyContent: 'space-between', borderBottomColor: 'gray', height: 50 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 19 }}>{textItem}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{textItem}</Text>
                         {textIcon ? <AntDesign name="right" size={20} color="gray" />: <AntDesign name="down" size={20} color="gray" />}
                     </View>
                 </TouchableOpacity>
@@ -54,7 +54,6 @@ const ReportList = ({postID}) => {
                     renderItem={({ item }) => {
                         return (
                             <TouchableOpacity onPress={() => {
-                                console.log({id: postID, subject: textItem, details: item});
                                 reportPost({id: postID, subject: textItem, details: item});
                             }}>
                                 <View style={{ flexDirection: 'row', borderBottomWidth: 0.5, alignItems: 'center', justifyContent: 'space-between', borderBottomColor: 'gray', height: 40 }}>

@@ -22,27 +22,25 @@ import {
     _setCache
 } from '../Services/Helper/common';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { AntDesign } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import axios from '../setups/custom_axios';
-import { createPost } from '../Redux/postSlice';
+import { createPost, editPost } from '../Redux/postSlice';
 import { getTextWithIcon } from '../Services/Helper/common';
+import { setNewData, setOriginalData, addImageDel, setVideoDel, setAsset } from '../Redux/emojiSlice';
 
 export default function CreatePostScreen({ route, navigation }) {
     const prevPage = useRef(route.params?.prevPage);
     const dispatch = useDispatch();
-    const [text, setText] = useState('');
     const { user } = useSelector(
         (state) => state.auth
     );
-    const checkEmoji = useSelector((state) => state.emoji.checkEmoji);
-    const textEmoji = useSelector((state) => state.emoji.textEmoji);
-    const iconEmoji = useSelector((state) => state.emoji.iconEmoji);
-    const data = useSelector((state) => state.emoji.data);
-    const checkImage = useSelector((state) => state.emoji.checkImage);
-    const checkVideo = useSelector((state) => state.emoji.checkVideo);
-    const videoWidth = useSelector((state) => state.emoji.videoWidth);
-    const videoHeight = useSelector((state) => state.emoji.videoHeight);
-
+    const newData = useSelector((state) => state.emoji.newData);
+    const aggregateData = useSelector((state) => state.emoji.aggregateData);
+    const originalData = useSelector((state) => state.emoji.originalData);
+    const image_del = useSelector((state) => state.emoji.image_del);
+    const post = useSelector((state) => state.emoji);
+    const [text, setText] = useState(post.described);
 
     const getType = (filename) => {
         return filename.split('.').pop();
@@ -60,22 +58,58 @@ export default function CreatePostScreen({ route, navigation }) {
                     style={{ backgroundColor: '#365899', borderRadius: 10, width: 50, height: 40, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ color: 'white', fontSize: 15 }}>Đăng</Text>
                 </TouchableOpacity>)
-        })
-    }, [navigation, text, textEmoji, checkEmoji, iconEmoji, data, checkImage, checkVideo]);
+        });
+    }, [navigation, text, post.textEmoji, post.checkEmoji, post.iconEmoji, post.assets, newData, post.checkImage, post.checkVideo, aggregateData]);
     const postData = () => {
+
         let formData = new FormData();
-        let status = textEmoji;
+        let status = post.textEmoji;
         let described = getTextWithIcon(text);
-        if (data.length > 0 && checkImage) {
-            for (let i = 0; i < data.length; i++) {
-                formData.append("image", { name: data[i].filename, uri: data[i].uri, type: 'image/' + getType(data[i].filename) })
+
+        if (newData.length > 0 && post.checkImage) {
+            for (let i = 0; i < newData.length; i++) {
+                formData.append("image", { name: newData[i].filename, uri: newData[i].uri, type: newData[i].type })
             }
             //formData.append("image", assets);
-        } else if (data.length > 0 && checkVideo) {
-            formData.append("video", { name: data[0].filename, uri: data[0].uri, type: 'video/' + getType(data[0].filename) })
+        } else if (newData.length > 0 && post.checkVideo) {
+            formData.append("video", { name: newData[0].filename, uri: newData[0].uri, type: newData[0].type })
         }
-        // check xem người dùng đã nhập các thông tin tối thiểu hay chưa
-        dispatch(createPost({described, status, formData, isMedia: (checkImage || checkVideo), videoWidth: videoWidth, videoHeight: videoHeight}));
+        if (!post.checkEdit) {
+            // check xem người dùng đã nhập các thông tin tối thiểu hay chưa
+            dispatch(createPost({ described, status, formData, isMedia: (post.checkImage || post.checkVideo), videoWidth: post.videoWidth, videoHeight: post.videoHeight }));
+        } else {
+            //console.log({ id: post.postID, described, status, formData, isMedia: (newData.length==0), videoWidth: post.videoWidth, videoHeight: post.videoHeight, image_del: JSON.stringify(image_del), video_del: post.video_del});
+            dispatch(editPost({ id: post.postID, described, status, formData, isMedia: !(newData.length==0), videoWidth: post.videoWidth, videoHeight: post.videoHeight, image_del: JSON.stringify(image_del), video_del: post.video_del}))
+        }
+    }
+    const CustomImage = ({ style, item }) => {
+        return (
+            <View style={style}>
+                <Image source={{ uri: item.uri }} style={styles.image} />
+                <TouchableOpacity style={{
+                    position: 'absolute',
+                    right: 5,
+                    top: 5,
+                }} onPress={() => {
+                    //console.log(post.checkEdit);
+                    let itemData = newData.find(x => x.uri === item.uri);
+                    if (typeof (itemData) === "undefined") {
+                        let data = originalData.filter(x => x.url != item.uri);
+                        let delData = originalData.find(x => x.url === item.uri);
+                        dispatch(addImageDel(delData.id));
+                        dispatch(setOriginalData(data));
+                    } else {
+                        let data = newData.filter(x => x.uri != item.uri);
+                        let assets = post.assets.filter(x=> x.uri != item.uri);
+                        dispatch(setNewData(data));
+                        dispatch(setAsset(assets));
+                    }
+
+                }}>
+                    <AntDesign name="close" size={20} color="gray" />
+                </TouchableOpacity>
+            </View>
+        );
     }
 
     return (
@@ -85,11 +119,11 @@ export default function CreatePostScreen({ route, navigation }) {
                 <View style={{ paddingLeft: 8 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ color: 'black', fontWeight: '600' }}>{user?.username}</Text>
-                        {(checkEmoji) ? (
+                        {(post.checkEmoji) ? (
                             <View style={{ flexDirection: 'row' }}>
-                                <Image source={{ uri: iconEmoji }} style={styles.emoji} />
+                                <Image source={{ uri: post.iconEmoji }} style={styles.emoji} />
                                 <Text>{' đang cảm thấy '}</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{textEmoji}</Text>
+                                <Text style={{ fontWeight: 'bold' }}>{post.textEmoji}</Text>
                             </View>) : null
                         }
                     </View>
@@ -107,52 +141,70 @@ export default function CreatePostScreen({ route, navigation }) {
             </View>
 
 
-            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={getTextWithIcon(text)} onChangeText={newText => setText(getTextWithIcon(newText))} />
+            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(getTextWithIcon(newText))} />
 
 
             <View style={{ justifyContent: 'center', alignContent: 'center', backgroundColor: 'white', height: 400, flexDirection: 'row', }}>
-                {(checkImage && data.length == 1) ? (
-                    data.map((item, i) => {
-                        return (
-                            <View style={{ flex: 1 }} key={i}>
-                                <Image source={{ uri: item.uri }} style={styles.image} />
-                            </View>
-                        );
-                    })) : null}
-                {(checkImage && data.length == 2) ? (
-                    data.map((item, i) => {
-                        return (
-                            <View style={{ flex: 1, width: '50%', height: '100%', }} key={i}>
-                                <Image source={{ uri: item.uri }} style={styles.image} />
-                            </View>
-                        );
-                    })) : null}
-                {(checkImage && data.length == 3) ? (
+                {(post.checkImage && aggregateData.length == 1) ? (
+                    <CustomImage style={{
+                        flex: 1, borderWidth: 1,
+                        borderColor: "white",
+                    }} item={aggregateData[0]} />
+                ) : null}
+                {(post.checkImage && aggregateData.length == 2) ? (
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Image source={{ uri: data[0].uri }} style={styles.firstImage} />
-                        <View style={{ flex: 1, width: '50%' }}>
-                            <Image source={{ uri: data[1].uri }} style={styles.secondImage} />
-                            <Image source={{ uri: data[2].uri }} style={styles.secondImage} />
+                        <CustomImage style={{
+                            flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
+                        }} item={aggregateData[0]} />
+                        <CustomImage style={{
+                            flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
+                        }} item={aggregateData[1]} />
+                    </View>
+                ) : null}
+                {(post.checkImage && aggregateData.length == 3) ? (
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <CustomImage style={styles.firstImage} item={aggregateData[0]} />
+
+                        <View style={{ flex: 1, width: '50%', flexDirection: 'column' }}>
+                            <CustomImage style={styles.secondImage} item={aggregateData[1]} />
+                            <CustomImage style={styles.secondImage} item={aggregateData[2]} />
                         </View>
                     </View>
 
                 ) : null}
-                {(checkImage && data.length == 4) ? (
+                {(post.checkImage && aggregateData.length == 4) ? (
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Image source={{ uri: data[0].uri }} style={styles.firstImage} />
-                        <View style={{ flex: 1, width: '50%' }}>
-                            <Image source={{ uri: data[1].uri }} style={styles.thirdImage} />
-                            <Image source={{ uri: data[2].uri }} style={styles.thirdImage} />
-                            <Image source={{ uri: data[3].uri }} style={styles.thirdImage} />
+                        <CustomImage style={styles.firstImage} item={aggregateData[0]} />
+                        <View style={{ width: '50%' }}>
+                            <CustomImage style={styles.thirdImage} item={aggregateData[1]} />
+                            <CustomImage style={styles.thirdImage} item={aggregateData[2]} />
+                            <CustomImage style={styles.thirdImage} item={aggregateData[3]} />
                         </View>
                     </View>
                 ) : null}
-                {(checkVideo) ? (
-                    <Video source={{ uri: data[0].uri }} style={{ flex: 1, alignSelf: 'stretch' }}
-                        useNativeControls
-                        resizeMode='contain'
-                    >
-                    </Video>
+                {(post.checkVideo) ? (
+                    <View style={{ flex: 1 }}>
+                        <Video source={{ uri: aggregateData[0].uri }} style={{ flex: 1, alignSelf: 'stretch' }}
+                            useNativeControls={true}
+                            resizeMode='contain'>
+                        </Video>
+                        <TouchableOpacity style={{
+                            position: 'absolute',
+                            right: 5,
+                            top: 5,
+                        }} onPress={() => {
+                            let itemData = newData.find(x => x.uri === aggregateData[0].uri);
+                            if (typeof (itemData) === "undefined") {
+                                dispatch(setVideoDel());
+                                dispatch(setOriginalData([]));
+                            } else {
+                                dispatch(setNewData([]));
+                                dispatch(setAsset([]));
+                            }
+                        }}>
+                            <AntDesign name="close" size={20} color="gray" />
+                        </TouchableOpacity>
+                    </View>
                 ) : null}
             </View>
             <View>
@@ -166,6 +218,7 @@ export default function CreatePostScreen({ route, navigation }) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
+                    //console.log(JSON.stringify(image_del)); console.log(post.video_del);
                     navigation.navigate("emoji")
                 }}>
                     <View style={{
@@ -208,34 +261,25 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         resizeMode: 'cover',
-        borderWidth: 1,
-        borderColor: "white",
         overflow: "hidden",
     },
     firstImage: {
         flex: 1,
-        resizeMode: 'cover',
         borderWidth: 1,
         borderColor: "white",
-
-        overflow: "hidden",
         width: '50%'
     },
     secondImage: {
         flex: 1,
-        resizeMode: 'cover',
         borderWidth: 1,
         borderColor: "white",
-        overflow: "hidden",
-        height: '50%'
+        height: '50%',
     },
     thirdImage: {
         flex: 1,
         height: '33%',
-        resizeMode: 'cover',
         borderWidth: 1,
         borderColor: "white",
-        overflow: "hidden",
     },
 
 });

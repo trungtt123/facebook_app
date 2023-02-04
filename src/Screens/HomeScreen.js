@@ -21,7 +21,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const netInfo = useNetInfo();
     const layoutOffset = useRef(0);
     const endScroll = useRef(true);
-    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost } = useSelector(
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost } = useSelector(
         (state) => state.post
     );
     const { user } = useSelector(
@@ -82,7 +82,15 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         else {
             // popup noti đăng bài thành công
         }
-    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
+        if (isErrorEditPost) {
+            Alert.alert("Chỉnh sửa bài không thành công", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        }
+        else {
+            // popup noti chỉnh sửa bài thành công
+        }
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost])
     useEffect(() => {
         console.log('is', !isPostListLoading);
         dispatch(getUserInfo({ user_id: user.id }));
