@@ -36,8 +36,8 @@ import ChatScreen from './messenger/ChatScreen';
 import { CHAT_SERVER_URL } from '../Services/Helper/constant';
 import { io } from 'socket.io-client';
 import { onChangeSocket } from '../Redux/authSlice';
+const socket = io(`${CHAT_SERVER_URL}`);
 export default function AppNavigator() {
-    const socket = io(`${CHAT_SERVER_URL}`);
     const netInfo = useNetInfo();
     const dispatch = useDispatch();
     const [token, setToken] = useState();
