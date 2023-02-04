@@ -10,7 +10,6 @@ import {
 function DeleteSearchScreen({ navigation }) {
     const [result, setResult] = useState([])
     const [clear, setClear] = useState(false)
-    let tmp
     const removeSavedSearch = async (keyword) => {
         try {
             let list = JSON.parse(await _getCache("cacheSearchList"));
@@ -53,7 +52,6 @@ function DeleteSearchScreen({ navigation }) {
     useEffect(() => {
         getCacheSearchList()
     }, [])
-    console.log("tmp", tmp)
     return (
         <View style={styles.container}>
             <TouchableOpacity style={{ width: '100%' }} onPress={() => handleDeleteAllCacheSearch()}>
