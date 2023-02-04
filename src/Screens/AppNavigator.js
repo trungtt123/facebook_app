@@ -48,9 +48,9 @@ export default function AppNavigator() {
         const token = await authService.getToken();
         setToken(token);
     }
-    useEffect(() => {
-        dispatch(onChangeSocket(socket));
-    }, [socket])
+    // useEffect(() => {
+    //     dispatch(onChangeSocket(socket));
+    // }, [socket])
     useEffect(() => {
         if (netInfo.isConnected) dispatch(verifyToken());
         getCacheToken();
@@ -67,25 +67,29 @@ export default function AppNavigator() {
             <Stack.Navigator>
                 <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
                 <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="message" component={Messager} options={{ title: 'Tin nhắn' }} />
+                <Stack.Screen name="message" options={{ title: 'Tin nhắn' }} >
+                    {(props) => <Messager {...props} socket={socket} />}
+                </Stack.Screen>
                 <Stack.Screen name="createPost" component={CreatePostScreen} options={{ title: 'Tạo bài viết' }} />
-                <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }}/>
-                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }}/>
-                <Stack.Screen name="editProfile" component={EditProfileScreen} options={{title: 'Chỉnh sửa trang cá nhân'}}/>
-                <Stack.Screen name="setting" component={SettingScreen} options={{title: 'Cài đặt trang cá nhân'}}/>
-                <Stack.Screen name="editDescription" component={EditDescription} options={{title: 'Chỉnh sửa tiểu sử'}}/>
-                <Stack.Screen name="pickAvatar" component={AvatarPicker} options={{title: 'Thay đổi ảnh đại diện'}}/>
-                <Stack.Screen name="pickCover" component={CoverImagePicker} options={{title: 'Thay đổi ảnh bìa'}}/>
-                <Stack.Screen name="editPublicInfo" component={EditPublicInfor} options={{title: 'Thay đổi chi tiết'}}/>
-                <Stack.Screen name="editCity" component={EditCity} options={{title: 'Thay đổi chi tiết tỉnh/thành phố'}}/>
+                <Stack.Screen name="image" component={ImageLibrary} options={{ title: 'Thư viện' }} />
+                <Stack.Screen name="emoji" component={EmojiList} options={{ title: 'Cảm xúc' }} />
+                <Stack.Screen name="editProfile" component={EditProfileScreen} options={{ title: 'Chỉnh sửa trang cá nhân' }} />
+                <Stack.Screen name="setting" component={SettingScreen} options={{ title: 'Cài đặt trang cá nhân' }} />
+                <Stack.Screen name="editDescription" component={EditDescription} options={{ title: 'Chỉnh sửa tiểu sử' }} />
+                <Stack.Screen name="pickAvatar" component={AvatarPicker} options={{ title: 'Thay đổi ảnh đại diện' }} />
+                <Stack.Screen name="pickCover" component={CoverImagePicker} options={{ title: 'Thay đổi ảnh bìa' }} />
+                <Stack.Screen name="editPublicInfo" component={EditPublicInfor} options={{ title: 'Thay đổi chi tiết' }} />
+                <Stack.Screen name="editCity" component={EditCity} options={{ title: 'Thay đổi chi tiết tỉnh/thành phố' }} />
                 <Stack.Screen name="allfriend" component={AllFriendScreen} />
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
-                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
+                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{ title: 'Nhật ký hoạt động' }} />
 
                 {/* //chat */}
-                <Stack.Screen name="chatscreen" component={ChatScreen} options={{title: 'Tin nhắn'}} />
+                <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
+                    {(props) => <ChatScreen {...props} socket={socket} />}
+                </Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
