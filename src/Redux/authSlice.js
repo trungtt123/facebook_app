@@ -38,6 +38,7 @@ export const changeFirstLogin = createAction('changeFirstLogin');
 export const removeLoginInfoInRedux = createAction('removeLoginInfoInRedux');
 export const changeLoginWithCache = createAction('changeLoginWithCache');
 export const resetAuthSlice = createAction('resetAuthSlice');
+export const onChangeSocket = createAction('onChangeSocket');
 
 const initialState = {
   user: null,
@@ -48,7 +49,8 @@ const initialState = {
   loginPhonenumber: null,
   loginPassword: null,
   firstLogin: false, // true login lần đầu -> mở màn hình lưu thông tin đăng nhập
-  loginWithCache: false
+  loginWithCache: false,
+  socket: null
 };
 
 const authSlice = createSlice({
@@ -131,6 +133,9 @@ const authSlice = createSlice({
     },
     [changeLoginWithCache]: (state, action) => {
       state.loginWithCache = action.payload;
+    },
+    [onChangeSocket]: (state, action) => {
+      state.socket = action.payload;
     },
     [resetAuthSlice]: () => initialState
   },
