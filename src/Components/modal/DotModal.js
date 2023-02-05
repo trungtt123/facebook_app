@@ -7,7 +7,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { getTextWithIcon, getTimeUpdateCommentFromUnixTime } from '../../Services/Helper/common';
 //import {Picker} from "@react-native-picker/picker";
 import ReportModal from "./ReportModal";
-
+import { deletePost } from "../../Redux/postSlice";
 import { _getCache } from "../../Services/Helper/common";
 import { Paragraph } from "react-native-paper";
 import ViewWithIcon from "../ViewWithIcon";
@@ -68,14 +68,16 @@ export default function DotModal({ closeModal, postData, userID, setReportDot, n
                         },
                         {
                             text: "Chuyển",
-                            onPress: async()=> {
-                                await axios.post(`/post/delete_post?&id=${postData.id}`).then(res => {
+                            onPress: ()=> {
+                                /*await axios.post(`/post/delete_post?&id=${postData.id}`).then(res => {
                                     if(res.message == 'OK'){
                                         ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
                                     }else{
                                         ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
                                     }
-                                })
+                                })*/
+                                dispatch(deletePost({id: postData.id}));
+                                setModalVisible(false); closeModal(false);
                             }
                         }
                     ])     
