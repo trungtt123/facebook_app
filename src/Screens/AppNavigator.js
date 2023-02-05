@@ -36,6 +36,9 @@ import ChatScreen from './messenger/ChatScreen';
 import { CHAT_SERVER_URL } from '../Services/Helper/constant';
 import { io } from 'socket.io-client';
 import { onChangeSocket } from '../Redux/authSlice';
+import AccountSetting from './settings/AccountSetting';
+import NameSetting from './settings/NameSetting';
+import PasswordSetting from './settings/PasswordSetting';
 const socket = io(`${CHAT_SERVER_URL}`);
 export default function AppNavigator() {
     const netInfo = useNetInfo();
@@ -85,7 +88,9 @@ export default function AppNavigator() {
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
                 <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{ title: 'Nhật ký hoạt động' }} />
-
+                <Stack.Screen name="accountSetting" component={AccountSetting} options={{ title: 'Cài đặt' }} />
+                <Stack.Screen name="nameSetting" component={NameSetting} options={{ title: 'Tên' }} />
+                <Stack.Screen name="passwordSetting" component={PasswordSetting} options={{ title: 'Đổi mật khẩu' }} />
                 {/* //chat */}
                 <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
                     {(props) => <ChatScreen {...props} socket={socket} />}
