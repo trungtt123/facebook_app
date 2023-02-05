@@ -33,6 +33,7 @@ import SuggestFriendScreen from './SuggestFriendScreen';
 import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
 import ChatScreen from './messenger/ChatScreen';
+import ProfileScreen from './ProfileScreen';
 import { CHAT_SERVER_URL } from '../Services/Helper/constant';
 import { io } from 'socket.io-client';
 import { onChangeSocket } from '../Redux/authSlice';
@@ -91,6 +92,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="accountSetting" component={AccountSetting} options={{ title: 'Cài đặt' }} />
                 <Stack.Screen name="nameSetting" component={NameSetting} options={{ title: 'Tên' }} />
                 <Stack.Screen name="passwordSetting" component={PasswordSetting} options={{ title: 'Đổi mật khẩu' }} />
+                <Stack.Screen name="profile" component={ProfileScreen} options={{ title: 'Trang cá nhân' }}/>
                 {/* //chat */}
                 <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
                     {(props) => <ChatScreen {...props} socket={socket} />}
