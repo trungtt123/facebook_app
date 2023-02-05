@@ -82,6 +82,8 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         else {
             // popup noti đăng bài thành công
         }
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
+    useEffect(() => {
         if (isErrorEditPost) {
             Alert.alert("Chỉnh sửa bài không thành công", "Vui lòng thử lại sau.", [
                 { text: "OK", onPress: () => null }
@@ -89,8 +91,12 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         }
         else {
             // popup noti chỉnh sửa bài thành công
+            if(!isPendingEditPost){
+                onRefresh();
+                console.log("refesh", isErrorEditPost, isPendingEditPost);
+            }
         }
-    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost])
+    }, [isPendingEditPost, isErrorEditPost])
     useEffect(() => {
         console.log('is', !isPostListLoading);
         dispatch(getUserInfo({ user_id: user.id }));

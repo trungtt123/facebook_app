@@ -6,20 +6,20 @@ import Item from '../elements/chat_item';
 import styles from '../style/style_item';
 import FriendItem from '../elements/friend_item';
 
-function Messager({ navigation }) {
-    const inputRef = React.createRef(null);
-    const { user, socket } = useSelector(
+function Messager({ navigation, socket }) {
+    const { user } = useSelector(
         (state) => state.auth
     );
+    const inputRef = React.createRef(null);
     useEffect(() => {
-        socket.emit('client_get_list_conversation', {
+        socket?.emit('client_get_list_conversation', {
             token: user.token,
             thisUserId: user.id
         })
-        socket.on('server_send_list_conversation', (data) => {
+        socket?.on('server_send_list_conversation', (data) => {
             console.log('server_send_list_conversation', JSON.stringify(data));
         })
-    }, [])
+    }, [socket])
     return (
         <View style={styles.wrapper}>
             <View>
