@@ -19,6 +19,8 @@ import { logout, resetAuthSlice } from "../Redux/authSlice";
 import { resetPostSlice } from '../Redux/postSlice';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { COMMON_COLOR } from '../Services/Helper/constant';
+import { resetData } from '../Redux/emojiSlice';
+import { setUserID } from '../Redux/emojiSlice';
 function MenuScreen({ navigation }) {
     const dispatch = useDispatch();
     const { userInfor } = useSelector(state => state.user);
@@ -33,12 +35,19 @@ function MenuScreen({ navigation }) {
     const handleExitApp = () => {
         BackHandler.exitApp();
     }
+    const goToProfile = () => {
+        // dispatch(resetData());
+        // dispatch(setUserID(userInfor.id));
+        navigation.navigate("profile")
+    }
+    console.log(userInfor);
     return (
         <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}
             style={{ flex: 1, backgroundColor: '#f2f3f5', paddingTop: 5 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, paddingHorizontal: 10 }}>
                 <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Menu</Text>
-                <TouchableOpacity style={{ borderRadius: 20, backgroundColor: 'white', padding: 5 }}>
+                <TouchableOpacity onPress={() => navigation.navigate('search')}
+                    style={{ borderRadius: 20, backgroundColor: 'white', padding: 5 }}>
                     <MaterialIcons name="search" size={25} />
                 </TouchableOpacity>
             </View>
@@ -48,7 +57,7 @@ function MenuScreen({ navigation }) {
                 } />
                 <View style={{ flexDirection: 'column', marginLeft: 10 }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{userInfor?.username}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => goToProfile()}>
                         <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR, top: -2 }}>Xem trang cá nhân của bạn</Text>
                     </TouchableOpacity>
                 </View>
@@ -184,7 +193,7 @@ function MenuScreen({ navigation }) {
                     {
                         isShowSetting && <>
                             <TouchableOpacity onPress={() => navigation.navigate('accountSetting')}
-                            style={{ ...styles.item, justifyContent: 'flex-start' }}>
+                                style={{ ...styles.item, justifyContent: 'flex-start' }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', height: 50 }}>
                                     <Image style={{ width: 30, height: 30 }}
                                         source={require('../../assets/icons/icon-watch.png')} />
