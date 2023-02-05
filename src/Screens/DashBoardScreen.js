@@ -52,7 +52,7 @@ export default function DashBoardScreen({ navigation }) {
         <NotificationScreen />
     ), []);
     const SixRoute = useCallback(() => (
-        <MenuScreen />
+        <MenuScreen navigation={navigation}/>
     ), []);
     const renderScene = SceneMap({
         first: FirstRoute,

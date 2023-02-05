@@ -9,6 +9,9 @@ const signup = async (phonenumber, password, name, birthday,) => {
   console.log(password, phonenumber);
   return axios.post(`/auth/signup?phonenumber=${phonenumber}&password=${password}&name=${name}&birthday=${birthday}`);
 };
+const changePassword = async (password, newPassword) => {
+  return axios.post(`/auth/change_password?password=${password}&new_password=${newPassword}`);
+}
 const checkExistPhoneNumber = async (phonenumber) => {
   console.log(phonenumber);
   return axios.post(`/auth/checkexistphonenumber?phonenumber=${phonenumber}`);
@@ -91,6 +94,7 @@ const removeLoginInfo = async (user) => {
       loginInfo.splice(index, 1);
     }
     await _setCache("loginInfo", JSON.stringify(loginInfo));
+    console.log(loginInfo);
   }
   catch(e){
     console.log(e);
@@ -100,6 +104,6 @@ const authService = {
   login, logout, verifyToken, setToken,
   getToken, signup, checkExistPhoneNumber, checkVerifyCode,
   getVerifyCode, saveLoginInfo, getListLoginInfo,
-  removeLoginInfo
+  removeLoginInfo, changePassword
 };
 export default authService;

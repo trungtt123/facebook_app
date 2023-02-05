@@ -142,8 +142,8 @@ export default function LoginScreen({ navigation }) {
     useEffect(() => {
         handleGetListLoginInfo();
     }, []);
-    if (loginWithCache && loginType !== 2) {
-        return <View style={styles.container}>
+    if (loginWithCache && loginType !== 0) {
+        if  (loginType !== 2) {return <View style={styles.container}>
             {showRemoveLoginModal && 
             <RemoveLoginInfoModal user={loginInfoSelected.current}
             onClose={() => setShowRemoveLoginModal(false)}
@@ -206,6 +206,43 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
         </View>
+        }
+        else return <View style={styles.container}>
+        <View style={styles.viewIndex}>
+            <View style={{ flexDirection: 'column', width: '100%' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center', marginBottom: 10 }}>
+                    {(verifyCodeServer !== undefined) ? `Nhập mã code ${verifyCodeServer} để xác nhận tài khoản`
+                        : awaitCode !== undefined && `Vui lòng đợi trong ${awaitCode} giây để lấy lại mã xác nhận`}
+                </Text>
+                {verifyCodeServer !== undefined ?
+                    <>
+                        <TextInput value={verifyCode} label="Mã code"
+                            onChangeText={(e) => handleSetVerifyCode(e)}
+                            style={{ width: '100%', marginTop: 30, paddingHorizontal: 10 }} variant="outlined" 
+                            color={validate.current.phonenumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
+                        {!validate.current.verifyCode.exactly &&
+                            <Text style={{ color: 'red', marginHorizontal: 10, textAlign: 'center' }}>
+                                {validate.current.verifyCode.errorName}
+                            </Text>}
+                        <Button title="Xác nhận"
+                            uppercase={false}
+                            color={COMMON_COLOR.BLUE_COLOR}
+                            style={{ marginTop: 30 }}
+                            onPress={() => handleVerifyCode()}
+                        />
+                    </>
+                    : <Button title="Lấy lại mã xác nhận"
+                        uppercase={false}
+                        color={COMMON_COLOR.BLUE_COLOR}
+                        style={{ marginTop: 30 }}
+                        onPress={() => handleGetVerifyCode()}
+                    />
+                }
+
+            </View>
+
+        </View>
+    </View>
     }
     else {
         if (loginType === 0 || loginType === null)
@@ -259,43 +296,6 @@ export default function LoginScreen({ navigation }) {
                     style={styles.btnSignup}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>Tạo tài khoản Facebook mới</Text>
                 </TouchableOpacity>
-            </View>
-        else if (loginType === 2)
-            return <View style={styles.container}>
-                <View style={styles.viewIndex}>
-                    <View style={{ flexDirection: 'column', width: '100%' }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center', marginBottom: 10 }}>
-                            {(verifyCodeServer !== undefined) ? `Nhập mã code ${verifyCodeServer} để xác nhận tài khoản`
-                                : awaitCode !== undefined && `Vui lòng đợi trong ${awaitCode} giây để lấy lại mã xác nhận`}
-                        </Text>
-                        {verifyCodeServer !== undefined ?
-                            <>
-                                <TextInput value={verifyCode} label="Mã code"
-                                    onChangeText={(e) => handleSetVerifyCode(e)}
-                                    style={{ width: '100%', marginTop: 30, paddingHorizontal: 10 }} variant="outlined" 
-                                    color={validate.current.phonenumber.exactly ? COMMON_COLOR.BLUE_COLOR : 'red'} />
-                                {!validate.current.verifyCode.exactly &&
-                                    <Text style={{ color: 'red', marginHorizontal: 10, textAlign: 'center' }}>
-                                        {validate.current.verifyCode.errorName}
-                                    </Text>}
-                                <Button title="Xác nhận"
-                                    uppercase={false}
-                                    color={COMMON_COLOR.BLUE_COLOR}
-                                    style={{ marginTop: 30 }}
-                                    onPress={() => handleVerifyCode()}
-                                />
-                            </>
-                            : <Button title="Lấy lại mã xác nhận"
-                                uppercase={false}
-                                color={COMMON_COLOR.BLUE_COLOR}
-                                style={{ marginTop: 30 }}
-                                onPress={() => handleGetVerifyCode()}
-                            />
-                        }
-
-                    </View>
-
-                </View>
             </View>
     }
 }
