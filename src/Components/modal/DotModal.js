@@ -12,7 +12,7 @@ import { _getCache } from "../../Services/Helper/common";
 import { Paragraph } from "react-native-paper";
 import ViewWithIcon from "../ViewWithIcon";
 import { useDispatch } from "react-redux";
-import { setOriginalData, setDescribed, showEmoji, resetData, setEdit, setImage, setVideo, setPostID } from "../../Redux/emojiSlice";
+import { setOriginalData, setDescribed, showEmoji, resetData, setEdit, setImage, setVideo, setVideoSize, setPostID } from "../../Redux/emojiSlice";
 import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
 
@@ -51,6 +51,7 @@ export default function DotModal({ closeModal, postData, userID, setReportDot, n
                     }
                     if (postData.video) {
                         dispatch(setVideo());
+                        dispatch(setVideoSize({ videoWidth: postData.video.width, videoHeight: postData.video.height }))
                         dispatch(setOriginalData([postData.video]));
                     }
                     setModalVisible(false); closeModal(false);

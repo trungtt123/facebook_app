@@ -11,7 +11,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { getUserInfo } from '../Redux/userSlice';
 
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData } from "../Redux/emojiSlice";
+import { resetData, setUserID } from "../Redux/emojiSlice";
 //@trungtt123
 function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 10;
@@ -21,7 +21,8 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const netInfo = useNetInfo();
     const layoutOffset = useRef(0);
     const endScroll = useRef(true);
-    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost, isPendingDeletePost, isErrorDeletePost } = useSelector(
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+         isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
         (state) => state.post
     );
     const { user } = useSelector(
@@ -90,25 +91,25 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         }
         else {
             // popup noti chỉnh sửa bài thành công
-            if(!isPendingEditPost){
+            if(!isPendingEditPost && messageEditPost){
                 ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
                 onRefresh();
                 //console.log("refesh", isErrorEditPost, isPendingEditPost);
             }
         }
-    }, [isPendingEditPost, isErrorEditPost])
+    }, [isPendingEditPost, isErrorEditPost, messageEditPost])
     useEffect(() => {
         if (isErrorDeletePost) {
             ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
         }
         else {
             // popup noti chỉnh sửa bài thành công
-            if(!isPendingDeletePost){
+            if(!isPendingDeletePost && messageDeletePost){
                 ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
                 onRefresh();
             }
         }
-    }, [isPendingDeletePost, isErrorDeletePost])
+    }, [isPendingDeletePost, isErrorDeletePost, messageDeletePost])
     useEffect(() => {
         console.log('is', !isPostListLoading);
         dispatch(getUserInfo({ user_id: user.id }));
@@ -175,9 +176,14 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                 if (data.index === 0) {
                     return <>
                         <View style={{ flex: 1, height: 70, backgroundColor: 'white', flexDirection: 'row', padding: 15 }}>
+                            <TouchableOpacity onPress={()=> {
+                                dispatch(resetData());
+                                navigation.navigate("profile");
+                            }}>
                             <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
                                 userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }
                             } />
+                            </TouchableOpacity>
                             <TouchableOpacity style={{ flex: 1 }} onPress={() => goToCreatePost()}>
                                 <TextInput selectTextOnFocus={false}
                                     editable={false}

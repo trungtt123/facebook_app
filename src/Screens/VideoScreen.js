@@ -23,7 +23,8 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const { user } = useSelector(
         (state) => state.auth
     );
-    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost, isPendingDeletePost, isErrorDeletePost } = useSelector(
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+         isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
         (state) => state.post
     );
     const [postListTotal, setPostListTotal] = useState([]);
@@ -55,15 +56,15 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         handleGetListVideos();
     }, []);
     useEffect(() => {
-            if(!isErrorEditPost && !isPendingEditPost){
+            if(!isErrorEditPost && !isPendingEditPost && messageEditPost){
                 onRefresh();
             }
-    }, [ isPendingEditPost, isErrorEditPost]);
+    }, [ isPendingEditPost, isErrorEditPost, messageEditPost]);
     useEffect(() => {
-        if(!isErrorDeletePost && !isPendingDeletePost){
+        if(!isErrorDeletePost && !isPendingDeletePost && messageDeletePost){
             onRefresh();
         }
-}, [ isPendingDeletePost, isErrorDeletePost]);
+}, [ isPendingDeletePost, isErrorDeletePost, messageDeletePost]);
     return <View style={styles.container}>
         <FlatList
             showsVerticalScrollIndicator={false}

@@ -43,7 +43,7 @@ function PostInHome({ navigation, postData, userID }) {
     const [post, setPost] = useState(postData);
     const [seemore, setSeemore] = useState(post?.described && post?.described?.length <= 200);
     const [isError, setIsError] = useState(false);
-    const [videoDimension, setVideoDimension] = useState({width: 0, height: 0});
+    const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
     const postUpdated = () => {
@@ -56,28 +56,25 @@ function PostInHome({ navigation, postData, userID }) {
     }
     const LeftContent = () => {
         return (
-            <TouchableOpacity onPress={()=> {
+            <TouchableOpacity onPress={() => {
                 dispatch(resetData());
                 dispatch(setUserID(post?.author?.id));
-                console.log("userId",post?.author?.id);
+                //console.log("userId", post?.author?.id);
                 navigation.navigate("profile")
             }}>
                 <Avatar.Image size={45} source={
-                post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
-            } />
+                    post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+                } />
             </TouchableOpacity>
         );
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={()=> {setShowDot(true)}}>
-            <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
+            <TouchableOpacity onPress={() => { setShowDot(true) }}>
+                <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=> {console.log(post);
-            
-
-            }}>
-            <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            <TouchableOpacity onPress={() => { }}>
+                <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
             </TouchableOpacity>
         </View>
     }
@@ -90,9 +87,9 @@ function PostInHome({ navigation, postData, userID }) {
             setIsError(true);
         });
     }
-    const handleLikeSound = async() => {
+    const handleLikeSound = async () => {
         try {
-            const {sound} = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'),{shouldPlay: true});
+            const { sound } = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'), { shouldPlay: true });
             await sound.playAsync();
         } catch (e) {
             console.log(e);
@@ -120,8 +117,8 @@ function PostInHome({ navigation, postData, userID }) {
 
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
-            {showDot && <DotModal postData={post} userID={userID} closeModal={()=> setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
-            {showReport && <ReportModal closeModal={()=> setShowReport(false)} postID={post?.id}></ReportModal>}
+            {showDot && <DotModal postData={post} userID={userID} closeModal={() => setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
+            {showReport && <ReportModal closeModal={() => setShowReport(false)} postID={post?.id}></ReportModal>}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
             <Card>
                 <Card.Title
@@ -130,7 +127,14 @@ function PostInHome({ navigation, postData, userID }) {
                         <Text>
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
+                                    <TouchableOpacity onPress={() => {
+                                        dispatch(resetData());
+                                        dispatch(setUserID(post?.author?.id));
+                                        console.log("userId", post?.author?.id);
+                                        navigation.navigate("profile");
+                                    }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
+                                    </TouchableOpacity>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
