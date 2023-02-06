@@ -9,7 +9,8 @@ import {
     Dimensions,
     ScrollView,
     ToastAndroid,
-    RefreshControl
+    RefreshControl,
+    Alert
 } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { connect } from 'react-redux';
@@ -60,8 +61,9 @@ function ProfileScreen({ navigation, route }) {
         setRefreshing(true);
         postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
             setListPost(result.data);
-            console.log(listPost.length);
             setRefreshing(false);
+        }).catch(e => {
+            console.log(e);
         });
     }
     useEffect(() => {
@@ -69,7 +71,6 @@ function ProfileScreen({ navigation, route }) {
             try {
                 postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
                     setListPost(result.data);
-                    console.log(listPost.length)
                 });
                 userService.getUserFriends(userId? userId : user.id, 0, 0).then((result) => {
                     setCntFriend(result.data.friends.length);
@@ -89,13 +90,9 @@ function ProfileScreen({ navigation, route }) {
     }, [reload, userId])
 
     useEffect(() => {
-        console.log('abc');
         if (!isPendingCreatePost && newCreatePostData) {
-            let newPostList = [];
-            newPostList.push(newCreatePostData);
-            newPostList = newPostList.concat(listPost);
-            setListPost(newPostList);
-            console.log(listPost.length)
+            ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            onRefresh();
         }
         if (isErrorCreatePost) {
             Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
@@ -135,6 +132,7 @@ function ProfileScreen({ navigation, route }) {
     const  showModalAvatar = () => {
         setShowModalAva(true);
     }
+    console.log('length', JSON.stringify(listPost));
     return (
         <>
             {!userId?
@@ -224,7 +222,9 @@ function ProfileScreen({ navigation, route }) {
                 </ModalBottom>
                 </>:<></>
             }
-        <ScrollView style={styles.container}
+        <ScrollView showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={styles.container}
             refreshControl={
             <RefreshControl
                 refreshing={refreshing}
@@ -403,7 +403,7 @@ function ProfileScreen({ navigation, route }) {
                 </TouchableOpacity>
             </View>
             {listPost?.map((item, index) => {
-                return <PostInHome navigation={navigation} key={index} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} userID={user.id}/>
+                return <PostInHome navigation={navigation} key={item.id} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} userID={user.id}/>
             })}
         </ScrollView>
         </>
