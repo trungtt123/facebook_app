@@ -1,5 +1,6 @@
 import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
+import {ToastAndroid} from 'react-native'
 
 const getAllUsers = () => {
   return axios.get("/get-all-users");
@@ -19,7 +20,8 @@ const setUserName = (userName) => {
 
 const setAvatar = async (data) => {
   const {formData, userId} = data;
-  return axios.post(`/user/set_user_info?user_id=${userId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  let response =  axios.post(`/user/set_user_info?user_id=${userId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  return response;
 }
 
 const setCoverImage = async (data) => {

@@ -9,15 +9,19 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import {FontAwesome5, Feather, AntDesign, EvilIcons} from 'react-native-vector-icons';
 import styles from './style/setting';
 
-function SettingScreen() {
+function SettingScreen({navigation}) {
     return <ScrollView style={styles.container}>
         <View style = {styles.firstList}>
-            <View style={styles.item}>
-                <Feather name='edit-2' size={25}/>
-                <Text style={styles.text}>
-                    Chỉnh sửa trang cá nhân
-                </Text>
-            </View>
+            <TouchableOpacity
+                onPress={()=> navigation.navigate('editProfile')}
+            >
+                <View style={styles.item}>
+                    <Feather name='edit-2' size={25}/>
+                    <Text style={styles.text}>
+                        Chỉnh sửa trang cá nhân
+                    </Text>
+                </View>
+            </TouchableOpacity>
             <View style={styles.item}>
                 <AntDesign name='clockcircleo' size={25}/>
                 <Text style={styles.text}>
@@ -68,7 +72,6 @@ function SettingScreen() {
                 flexDirection: 'row',
                 paddingVertical: 12,
                 paddingHorizontal: 15,
-                borderBottomWidth: 0.5
             }}>
                 <AntDesign name='search1' size={25}/>
                 <Text style={styles.text}>
@@ -94,14 +97,36 @@ function SettingScreen() {
                     Liên kết của riêng bạn trên Facebook
                 </Text>
            </View>
+           <View>
+                <Text style={{
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    marginTop: 10
+                }}>
+                    https://www.facebook.com/mangekyou.sharingan.anvu
+                </Text>
+            </View>
+            <View style={{
+                    marginTop: 20,
+                    marginBottom: 20,
+                    backgroundColor: '#E4E6EB',
+                    height: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    borderRadius: 5
+                }}>
+                    <Text style={{
+                        fontSize: 15,
+                        color: '#000000',
+                        paddingStart: 10,
+                        fontWeight: '500'
+                    }}>
+                        Sao chép liên kết
+                    </Text>
+            </View>
         </View>
-        <View>
-            <Text style={{
 
-            }}>
-
-            </Text>
-        </View>
 
     </ScrollView>
 }

@@ -19,12 +19,10 @@ export default styles = StyleSheet.create({
         marginStart: 10,
     },
     secondList: {
-        height: 300,
         marginTop: 15,
         backgroundColor: '#FFFFFF',
     },
     thirdList: {
-        height: 200,
         backgroundColor: '#FFFFFF',
         paddingHorizontal: 15,
         marginTop: 15

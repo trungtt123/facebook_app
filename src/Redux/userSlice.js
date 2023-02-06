@@ -87,14 +87,15 @@ export const setUserCountry  = createAsyncThunk(
 )
 export const resetStatusSetUser = createAction('resetStatusSetUser');
 
-export const resetUserInfor = createAction('resetUserInfor')
+export const resetUserInfor = createAction('resetUserInfor');
+export const resetInforWithData = createAction('reset');
 
 const initialState = {
   userList: [],
   isLoading: false,
   userInfor: null,
   isErrorUpdateUserName: null,
-  isEdit: false
+  successChangeCover: false
 };
 
 const userSlice = createSlice({
@@ -135,7 +136,6 @@ const userSlice = createSlice({
     },
     [setAvatar.rejected]: (state, action) => {
       state.isLoading = false;
-      state.isEdit = true;
     },
     [resetUserInfor]: (state, action) => {
       state.userInfor = null
@@ -155,6 +155,9 @@ const userSlice = createSlice({
     },
     [resetStatusSetUser]: (state, action) => {
       state.isErrorUpdateUserName = null;
+    },
+    [resetInforWithData]: (state, action) => {
+      state.userInfor = action?.payload?.data;
     }
   },
 });

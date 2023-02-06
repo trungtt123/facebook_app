@@ -6,7 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { getTextWithIcon } from "../../Services/Helper/common";
 //đây là mỗi phần tử tin nhắn, props gồm mess, avt, role(của ai)
-
+import useKeyBoard from '../../Components/UseKeyBoard';
 function MessageItem(props) {
   // const {socket} = props;
 
@@ -32,22 +32,20 @@ function MessageItem(props) {
   //   })
   // }, [])
 
-  let avatar = "https://hieumobile.com/wp-content/uploads/tich-xanh.png";
-  if (props.unread == 0)
-    avatar = props.avt;
+  
   if (props.idSender != props.idUser)
     return (
       <View style={[styles.messContainer, { alignSelf: "flex-start" }]}>
 
         <Image
-          style={{ width: 40, height: 40, borderRadius: 100 }}
+          style={{ width: 25, height: 25, borderRadius: 100 }}
           source={{
             uri: props?.avt,
           }}
         />
         {/* //nội dung tin nhắn */}
         <View style={styles.messItemLeft}>
-          <Text style={{ color: "#0b0b0b", fontSize: 17 }}>{props.mess}</Text>
+          <Text style={{ color: "#0b0b0b", fontSize: 16 }}>{props.mess}</Text>
         </View>
       </View>
     );
@@ -57,13 +55,19 @@ function MessageItem(props) {
         {/* //nội dung tin nhắn */}
         <View style={{ flexDirection: "row-reverse", alignSelf: "flex-end", width: "100%", alignItems: "flex-end", paddingRight: 12 }}>
           <Image
-            style={{ width: 20, height: 20, borderRadius: 100 }}
-            source={{
-              uri: avatar,
-            }}
+            style={{ width: 16, height: 16, borderRadius: 100, top: -2 }}
+            source={
+              props.unread == 0 ?
+              props.lastSeenMessage ? {
+                uri: props.avt,
+              }
+              : {uri: 'no'}
+              
+              : require('../../../assets/icons/tich-xanh.png')
+            }
           />
           <View style={styles.messItemRight}>
-            <Text style={{ color: "white", fontSize: 17 }}>{props.mess}</Text>
+            <Text style={{ color: "white", fontSize: 16 }}>{props.mess}</Text>
           </View>
 
         </View>
@@ -85,6 +89,7 @@ export default function ChatScreen({ navigation, socket, route }) {
   const { userName, userId, avatar } = route.params;
   //tin nhắn muốn gửi
   const [textMessage, setTextMessage] = useState("");
+  const [lastSeenMessage, setLastSeenMessage] = useState();
   const mess = useRef();
   const handleAddDialog = (mess) => {
     socket?.emit('client_add_dialog', {
@@ -94,6 +99,10 @@ export default function ChatScreen({ navigation, socket, route }) {
       content: mess
     })
   }
+  const isKeyboardVisible = useKeyBoard();
+  useEffect(() => {
+    mess.current.scrollToEnd({ animated: true })
+  }, [isKeyboardVisible])
   useEffect(() => {
     socket?.emit('client_join_conversation', {
       // thisUserId, targetUserId, token
@@ -102,11 +111,17 @@ export default function ChatScreen({ navigation, socket, route }) {
       targetUserId: userId
     })
     socket?.on('server_send_conversation', (data) => {
-      console.log('server_send_conversation', JSON.stringify(data));
+      console.log('server_send_conversation', JSON.stringify(data.data.dialog));
       setCoversation(data.data.dialog);
+      let list = data.data.dialog;
+      for (let i = list.length - 1; i >= 0; i--){
+        if (list[i].unread == "0" && list[i].sender == user.id){
+          setLastSeenMessage(list[i]._id);
+          break;
+        }
+      }
       // console.log("data kkkkkk", typeof conversation);
     })
-
     //set option cho thanh tren cung
     navigation.setOptions({
       headerTitle: () => (
@@ -157,23 +172,15 @@ export default function ChatScreen({ navigation, socket, route }) {
         ref={ref => { mess.current = ref }}
         onContentSizeChange={() => mess.current.scrollToEnd({ animated: true })}
         style={{ width: "100%" }}>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", marginLeft: 5, marginRight: 2 }}>
           <Image source={{ uri: avatar }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
           <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{userName}</Text>
           <Text style={{ fontSize: 15, marginTop: 10 }}>Các bạn là bạn bè trên Facebook</Text>
           <Text style={{ fontSize: 15, marginTop: 5, color: "grey" }}>{info}</Text>
           <Text style={{ fontSize: 15, marginTop: 35, color: "grey", marginBottom: 25 }}>{time}</Text>
-
-          {/* tin nhan */}
-          {/* <MessageItem mess={avatar} avt={avt} role="0" />
-          <MessageItem mess="Hello my friend" avt={avt} role="0" />
-          <MessageItem mess="Hello my friend hh h hh h hhh hh hh h" avt={avt} role="1" />
-          <MessageItem mess="Hello my friend" avt={avt} role="0" />
-          <MessageItem mess="Hello my friend" avt={avt} role="0" />
-          <MessageItem mess="Hello my friend, hghg hgh  hg hgh h gh g ghghg h h g" avt={avt} role="0" /> */}
-
           {conversation.map((e, index) =>
-            <MessageItem mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
+            <MessageItem key={index} lastSend={index === conversation.length - 1} lastSeenMessage={lastSeenMessage == e._id}
+            mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
           )}
         </View>
       </ScrollView>
