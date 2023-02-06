@@ -27,19 +27,17 @@ import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
 
-function ProfileScreen({ navigation, token, userId }) {
+function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
     const {width} = Dimensions.get('window');
     const { userList, isLoading } = useSelector(
         (state) => state.user
     );
 
+    const userId =  route?.params?.userId;
+
     const [showModalAva, setShowModalAva] = useState(false);
     const [showModalCover, setShowModalCover] = useState(false);
-
-    const userId = useSelector((state) => state.emoji.userId);
-    console.log("userId", userId);
-    const currentTabIndex = useSelector((state) => state.tab.currentTabIndex)
     const [listPost, setListPost] = useState([]);
     const [friends, setFriends] = useState([]);
     const [cntFriend, setCntFriend]  = useState(0);
@@ -52,24 +50,21 @@ function ProfileScreen({ navigation, token, userId }) {
     useEffect(() => {
         const fetchListPost = async () => {
             try {
-//                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
+                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
                 let resFri = await userService.getUserFriends(userId? userId : user.id, 0, 0);
                 setCntFriend(resFri.data.friends.length);
                 setFriends(resFri.data.friends.slice(0, 6));
                 console.log(friends);
-                let responese = await postService.getListPostByUserId(currentTabIndex!=3 ? userId:user.id);
                 setListPost(responese.data);
-                if (currentTabIndex!=3) {
-                    let responseInfor = await userService.getUserInfor(userId);
-                    setUserInfors(responseInfor.data);
-                }
+                let responseInfor = await userService.getUserInfor(userId);
+                setUserInfors(responseInfor.data);
             } catch (e) {
                 console.log('Bug: ',e);
             }
         }
 
         fetchListPost();
-    }, [reload])
+    }, [reload, userId])
 
     const  showModalAvatar = () => {
         setShowModalAva(true);

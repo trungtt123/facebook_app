@@ -60,7 +60,7 @@ function PostInHome({ navigation, postData, userID, avatar }) {
                 dispatch(resetEmojiSlice());
                 dispatch(setUserID(post?.author?.id));
                 //console.log("userId", post?.author?.id);
-                navigation.navigate("profile")
+                navigation.navigate("profile", {userId: post?.author?.id})
             }}>
                 <Avatar.Image size={45} source={
                     avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }

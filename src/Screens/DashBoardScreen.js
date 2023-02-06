@@ -43,7 +43,7 @@ export default function DashBoardScreen({ navigation }) {
         <VideoScreen navigation={navigation} />
     ), []);
     const FourRoute = useCallback(() => (
-        <ProfileScreen navigation={navigation}/>
+        <ProfileScreen navigation={navigation} />
         //userId= {'639315083fa4155480da25f0'}
         //63949ce3c9255942b0c05d76
         //token ={token}
