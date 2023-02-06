@@ -13,8 +13,10 @@ function Item (props) {
         const {navigation} = props;
         let av = "https://phongreviews.com/wp-content/uploads/2022/11/avatar-facebook-mac-dinh-13.jpg";
         const [lastMessage, setLastMessage] = useState("ô");
+        const [numNewMessage, setNumNewMessage] = useState("");
         useEffect(() => {
-            setLastMessage(item.lastMessage.message)
+            setLastMessage(item.lastMessage.message);
+            setNumNewMessage(item.numNewMessage);
         })
        return (
         <TouchableOpacity onPress={()=>{navigation.navigate('chatscreen', {userId: item.partner.id, userName: item.partner.username, avatar: (item.partner.avatar==null)?av:item.partner.avatar})}}>
@@ -27,14 +29,22 @@ function Item (props) {
             </View>
             <View style={styles.info}>
                 <Text style={styles.name}>{item.partner.username}</Text>
-                <Text numberOfLines={1}>{lastMessage}</Text>
+                {(numNewMessage>0)? (<Text numberOfLines={1} style={{fontSize: 15, fontWeight: 'bold'}}>{lastMessage}</Text>):(<Text numberOfLines={1}>{lastMessage}</Text>)}
             </View>
-            <View style={styles.bgSeen}>
+
+            {(numNewMessage<=0)? (<View style={styles.bgSeen}>
                 <Image
                     source={{uri: (item.partner.avatar==null)?av:item.partner.avatar}}
                     style={styles.avatarSeen}
                 />
-            </View>
+            </View>):(<View style={styles.bgSeen}>
+                <Image
+                    source={
+                        require('../../../../assets/icons/tich-xanh.png')
+                      }
+                    style={styles.avatarSeen}
+                />
+            </View>)}
         </View>
     </TouchableOpacity>
     )

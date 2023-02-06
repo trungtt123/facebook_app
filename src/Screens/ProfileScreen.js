@@ -34,7 +34,7 @@ function ProfileScreen({ navigation, route }) {
     const { userList, isLoading } = useSelector(
         (state) => state.user
     );
-
+    let av = "https://phongreviews.com/wp-content/uploads/2022/11/avatar-facebook-mac-dinh-13.jpg";
     const userId =  route?.params?.userId;
 
     const [showModalAva, setShowModalAva] = useState(false);
@@ -180,9 +180,9 @@ function ProfileScreen({ navigation, route }) {
                     </Text>
                     <View style={styles.addNews}>
                         {userId ? <Fontisto name="messenger" size={20} color="#ffffff"/> : <Icon name="add-circle-sharp" size={20} color="#ffffff"/>}
-                        <Text style={styles.addNewsText}>
-                            {userId ? 'Nhắn tin' :'Thêm vào tin'}
-                        </Text>
+                        
+                            {userId ?(<Text style={styles.addNewsText} onPress={()=>{navigation.navigate('chatscreen', {userId: userId, userName: userInfors?.username, avatar: (userInfors.avatar==null)?av:userInfors.avatar})}}>Nhắn tin</Text>) :(<Text style={styles.addNewsText} >Thêm vào tin</Text>)}
+                        
                     </View>
                     <View style={{flexDirection: 'row', width: 0.9*width}}>
                         <TouchableOpacity
