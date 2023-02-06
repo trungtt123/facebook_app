@@ -111,7 +111,7 @@ function NotificationScreen() {
                             <>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 90, padding: 20}}>
                                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>Thông báo</Text>
-                                <View style={{backgroundColor: '#DCDCDC', borderRadius: 30, width: 30, height: 30, alignItems: 'center'}}>
+                                <View style={{backgroundColor: '#DCDCDC', borderRadius: 30, width: 30, height: 30, alignItems: 'center', justifyContent: 'center'}}>
                                 <FontAwesome name="search" size={22} color="black" />
                                 </View>
                             </View>

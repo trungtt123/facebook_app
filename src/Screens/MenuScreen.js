@@ -35,6 +35,9 @@ function MenuScreen({ navigation }) {
         dispatch(logout());
         dispatch(resetUserInfor());
     }
+    const handleExitApp = () => {
+        BackHandler.exitApp();
+    }
     return (
         <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}
             style={{ flex: 1, backgroundColor: '#f2f3f5', paddingTop: 5 }}>

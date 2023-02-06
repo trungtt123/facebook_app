@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { Colors } from 'react-native-paper';
+import { COMMON_COLOR } from '../../Services/Helper/constant';
 const { width, height } = Dimensions.get('window');
 
 export default styles = StyleSheet.create({
@@ -127,7 +128,7 @@ export default styles = StyleSheet.create({
     },
     textEditPublic: {
         fontSize: 15,
-        color: 'blue'
+        color: COMMON_COLOR.BLUE_COLOR
     },
     thirdView: {
         marginTop: 10,
@@ -203,7 +204,7 @@ export default styles = StyleSheet.create({
         paddingTop: 30
     },
     friendCard: {
-        height: 140,
+        // height: 140,
     },
     imageFr: {
         height: 110,
@@ -215,7 +216,7 @@ export default styles = StyleSheet.create({
     titleButton: {
         fontSize: 15,
         fontWeight: '400',
-        color: 'blue',
+        color: COMMON_COLOR.BLUE_COLOR,
         marginTop: height*0.03
     },
 

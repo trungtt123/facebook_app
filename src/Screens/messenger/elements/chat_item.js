@@ -19,11 +19,11 @@ function Item (props) {
             setNumNewMessage(item.numNewMessage);
         })
        return (
-        <TouchableOpacity onPress={()=>{navigation.navigate('chatscreen', {userId: item.partner.id, userName: item.partner.username, avatar: (item.partner.avatar==null)?av:item.partner.avatar})}}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('chatscreen', {userId: item.partner.id, userName: item.partner.username, avatar: item.partner.avatar})}}>
         <View style={styles.container}>
             <View style={styles.bgAvatar}>
                 <Image
-                    source={{uri: (item.partner.avatar==null)?av:item.partner.avatar}}
+                    source={(!item.partner?.avatar) ? require('../../../../assets/images/default_avatar.jpg'): {uri: item.partner.avatar}}
                     style={styles.avatar}
                 />
             </View>
@@ -34,7 +34,7 @@ function Item (props) {
 
             {(numNewMessage<=0)? (<View style={styles.bgSeen}>
                 <Image
-                    source={{uri: (item.partner.avatar==null)?av:item.partner.avatar}}
+                    source={(!item.partner?.avatar) ? require('../../../../assets/images/default_avatar.jpg'): {uri: item.partner.avatar}}
                     style={styles.avatarSeen}
                 />
             </View>):(<View style={styles.bgSeen}>

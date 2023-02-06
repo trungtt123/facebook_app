@@ -128,9 +128,7 @@ export default function ChatScreen({ navigation, socket, route }) {
         <View style={{ flexDirection: "row" }}>
           <Image
             style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20 }}
-            source={{
-              uri: avatar,
-            }}
+            source={(!avatar) ? require('../../../assets/images/default_avatar.jpg'): {uri: avatar}}
           />
           <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8, marginLeft: 5 }}>{userName}</Text>
         </View>
@@ -173,7 +171,7 @@ export default function ChatScreen({ navigation, socket, route }) {
         onContentSizeChange={() => mess.current.scrollToEnd({ animated: true })}
         style={{ width: "100%" }}>
         <View style={{ alignItems: "center", marginLeft: 5, marginRight: 2 }}>
-          <Image source={{ uri: avatar }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
+          <Image source={(!avatar) ? require('../../../assets/images/default_avatar.jpg'): {uri: avatar}} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
           <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{userName}</Text>
           <Text style={{ fontSize: 15, marginTop: 10 }}>Các bạn là bạn bè trên Facebook</Text>
           <Text style={{ fontSize: 15, marginTop: 5, color: "grey" }}>{info}</Text>
