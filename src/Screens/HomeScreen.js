@@ -3,7 +3,7 @@ import { useState, useEffect, memo, useRef } from "react";
 import { deepCopy, onlyNumber, _getCache, _setCache } from "../Services/Helper/common";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView, SafeAreaView, FlatList } from "react-native";
-import { fetchListPost } from "../Redux/postSlice";
+import { fetchListPost, resetAddUpdateDeletePost } from "../Redux/postSlice";
 import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import PostInHome from "../Components/PostInHome";
@@ -27,6 +27,9 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     );
     const { user } = useSelector(
         (state) => state.auth
+    );
+    const { currentTabIndex } = useSelector(
+        (state) => state.tab
     );
     const {userInfor, isLoading} = useSelector((state) => state.user);
     const [postListTotal, setPostListTotal] = useState([]);
@@ -75,12 +78,14 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
             console.log(newCreatePostData);
             newPostList = newPostList.concat(postListTotal);
             setPostListTotal(newPostList);
-            ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            if (currentTabIndex === 0) ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost());
         }
         if (isErrorCreatePost) {
-            Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
+            if (currentTabIndex === 0) Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
                 { text: "OK", onPress: () => null }
             ]);
+            dispatch(resetAddUpdateDeletePost());
         }
         else {
             // popup noti đăng bài thành công
@@ -88,12 +93,14 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
     useEffect(() => {
         if (isErrorEditPost) {
-            ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            if (currentTabIndex === 0) ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost());
         }
         else {
             // popup noti chỉnh sửa bài thành công
             if(!isPendingEditPost && messageEditPost){
-                ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                if (currentTabIndex === 0) ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                dispatch(resetAddUpdateDeletePost());
                 onRefresh();
                 //console.log("refesh", isErrorEditPost, isPendingEditPost);
             }
@@ -101,12 +108,14 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     }, [isPendingEditPost, isErrorEditPost, messageEditPost])
     useEffect(() => {
         if (isErrorDeletePost) {
-            ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            if (currentTabIndex === 0) ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost());
         }
         else {
             // popup noti chỉnh sửa bài thành công
             if(!isPendingDeletePost && messageDeletePost){
-                ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                if (currentTabIndex === 0) ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                dispatch(resetAddUpdateDeletePost());
                 onRefresh();
             }
         }

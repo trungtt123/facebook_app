@@ -56,6 +56,9 @@ function ProfileScreen({ navigation, route }) {
     const { user } = useSelector(
         (state) => state.auth
     );
+    const { currentTabIndex } = useSelector(
+        (state) => state.tab
+    );
     const [refreshing, setRefreshing] = useState(false);
     const [reload, setReload] = useState(false);
     const { userInfor, successChangeAva } = useSelector((state) => state.user);
@@ -92,13 +95,13 @@ function ProfileScreen({ navigation, route }) {
 
     useEffect(() => {
         if (isPendingCreatePost === false && isErrorCreatePost === false) {
-            ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            if (currentTabIndex === 3) ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
             dispatch(resetAddUpdateDeletePost())
             onRefresh();
         }
         if (isErrorCreatePost) {
             dispatch(resetAddUpdateDeletePost())
-            Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
+            if (currentTabIndex === 3) Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
                 { text: "OK", onPress: () => null }
             ]);
         }
@@ -108,13 +111,13 @@ function ProfileScreen({ navigation, route }) {
     }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
     useEffect(() => {
         if (isErrorEditPost === false) {
-            ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            if (currentTabIndex === 3) ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
             dispatch(resetAddUpdateDeletePost())
         }
         if (isErrorEditPost === true) {
             // popup noti chỉnh sửa bài thành công
             if (isPendingEditPost === false && messageEditPost) {
-                ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                if (currentTabIndex === 3) ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
                 dispatch(resetAddUpdateDeletePost())
                 onRefresh();
                 //console.log("refesh", isErrorEditPost, isPendingEditPost);
@@ -123,13 +126,13 @@ function ProfileScreen({ navigation, route }) {
     }, [isPendingEditPost, isErrorEditPost, messageEditPost])
     useEffect(() => {
         if (isErrorDeletePost) {
-            ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            if (currentTabIndex === 3) ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
             dispatch(resetAddUpdateDeletePost())
         }
         else if (isErrorDeletePost === false){
             // popup noti chỉnh sửa bài thành công
             if (isPendingDeletePost === false && messageDeletePost) {
-                ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                if (currentTabIndex === 3) ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
                 dispatch(resetAddUpdateDeletePost())
                 onRefresh();
             }
