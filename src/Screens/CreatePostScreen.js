@@ -45,7 +45,6 @@ export default function CreatePostScreen({ route, navigation }) {
     const image_del = useSelector((state) => state.emoji.image_del);
     const post = useSelector((state) => state.emoji);
     const [text, setText] = useState(post.described);
-    const [height, setHeight] = useState(50);
     const widthLayout = Dimensions.get('window').width;
     const isKeyboardVisible = useKeyBoard();
     const [showMenu, setShowMenu] = useState(false);
@@ -215,9 +214,9 @@ export default function CreatePostScreen({ route, navigation }) {
                             </View>
                         </View>
                     </View>
-                    <TextInput multiline style={{ fontSize: 16, padding: 16, paddingTop: 0, textAlignVertical: "top", height: height, }} selectionColor={'gray'} placeholderTextColor={'gray'}
+                    <TextInput multiline style={{ fontSize: 16, padding: 16, paddingTop: 0, textAlignVertical: "top", minHeight: 50 }} selectionColor={'gray'} placeholderTextColor={'gray'}
                         placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(getTextWithIcon(newText))} autoCorrect={false}
-                        onContentSizeChange={(event) => { setHeight(event.nativeEvent.contentSize.height) }} />
+                         />
                 </View>
 
 
