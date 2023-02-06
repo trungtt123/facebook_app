@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button, Touchable, TouchableOpacity, Image, ScrollView } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
@@ -9,7 +9,7 @@ import { getTextWithIcon } from "../../Services/Helper/common";
 
 function MessageItem(props) {
   // const {socket} = props;
-  
+
   // const handleAddDialog = () => {
   //   socket?.emit('client_add_dialog', {
   //     token: user.token,
@@ -33,8 +33,8 @@ function MessageItem(props) {
   // }, [])
 
   let avatar = "https://hieumobile.com/wp-content/uploads/tich-xanh.png";
-  if(props.unread == 0)
-  avatar = props.avt;
+  if (props.unread == 0)
+    avatar = props.avt;
   if (props.idSender != props.idUser)
     return (
       <View style={[styles.messContainer, { alignSelf: "flex-start" }]}>
@@ -65,13 +65,13 @@ function MessageItem(props) {
           <View style={styles.messItemRight}>
             <Text style={{ color: "white", fontSize: 17 }}>{props.mess}</Text>
           </View>
-          
+
         </View>
       </View>
     );
 }
 
-export default function ChatScreen({ navigation, socket, route}) {
+export default function ChatScreen({ navigation, socket, route }) {
   const avt = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjpbpY1XBGZRCPHLc5Rrb__Qb1g5XS1T6fgg&usqp=CAU";
   const time = "17 THG 12, 2022 LÚC 10:00";
   const name = "Nguyễn A";
@@ -85,6 +85,7 @@ export default function ChatScreen({ navigation, socket, route}) {
   const { userName, userId, avatar } = route.params;
   //tin nhắn muốn gửi
   const [textMessage, setTextMessage] = useState("");
+  const mess = useRef();
   const handleAddDialog = (mess) => {
     socket?.emit('client_add_dialog', {
       token: user.token,
@@ -103,29 +104,29 @@ export default function ChatScreen({ navigation, socket, route}) {
     socket?.on('server_send_conversation', (data) => {
       console.log('server_send_conversation', JSON.stringify(data));
       setCoversation(data.data.dialog);
-      console.log("data kkkkkk", typeof conversation);
+      // console.log("data kkkkkk", typeof conversation);
     })
 
     //set option cho thanh tren cung
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{flexDirection: "row" }}>
+        <View style={{ flexDirection: "row" }}>
           <Image
-          style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20}}
-          source={{
-            uri: avatar,
-          }}
-        />
-          <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8 , marginLeft: 5}}>{userName}</Text>
+            style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20 }}
+            source={{
+              uri: avatar,
+            }}
+          />
+          <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8, marginLeft: 5 }}>{userName}</Text>
         </View>
       ),
       headerRight: () => (
-        <View style={{flexDirection: "row",height: 50,alignItems: "center"}}> 
-        <Ionicons name="call" size={24} color="#0099ff" style={{ marginLeft: 5 }}/>
-        <FontAwesome name="video-camera" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
-        <FontAwesome name="info-circle" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
+        <View style={{ flexDirection: "row", height: 50, alignItems: "center" }}>
+          <Ionicons name="call" size={24} color="#0099ff" style={{ marginLeft: 5 }} />
+          <FontAwesome name="video-camera" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
+          <FontAwesome name="info-circle" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
         </View>
-          )
+      )
     });
   }, [socket])
   return (
@@ -151,7 +152,11 @@ export default function ChatScreen({ navigation, socket, route}) {
       </View>
 
 
-      <ScrollView style={{ width: "100%" }}>
+      <ScrollView showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        ref={ref => { mess.current = ref }}
+        onContentSizeChange={() => mess.current.scrollToEnd({ animated: true })}
+        style={{ width: "100%" }}>
         <View style={{ alignItems: "center" }}>
           <Image source={{ uri: avatar }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
           <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{userName}</Text>
@@ -168,8 +173,8 @@ export default function ChatScreen({ navigation, socket, route}) {
           <MessageItem mess="Hello my friend, hghg hgh  hg hgh h gh g ghghg h h g" avt={avt} role="0" /> */}
 
           {conversation.map((e, index) =>
-                        <MessageItem mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id}/>
-                    )}
+            <MessageItem mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
+          )}
         </View>
       </ScrollView>
 
@@ -194,7 +199,7 @@ export default function ChatScreen({ navigation, socket, route}) {
           keyboardType="default"
           value={getTextWithIcon(textMessage)}
           onChangeText={(text) => { setTextMessage(text); }}
-          onSubmitEditing={async() => {await handleAddDialog(textMessage); setTextMessage("")}}
+          onSubmitEditing={async () => { await handleAddDialog(textMessage); setTextMessage("") }}
         ></TextInput>
         <AntDesign name="like1" size={24} color="#0099ff" style={{ marginLeft: 10 }} />
       </View>
