@@ -47,6 +47,7 @@ export const deletePost = createAsyncThunk(
   }
 );
 export const resetPostSlice = createAction('resetPostSlice');
+export const resetAddUpdateDeletePost = createAction('resetAddUpdateDeletePost');
 const initialState = {
   postList: [],
   isPostListLoading: false,
@@ -131,7 +132,18 @@ const postSlice = createSlice({
       state.isPendingDeletePost = false;
       state.isErrorDeletePost = true;
     },
-    [resetPostSlice]: () => initialState
+    [resetPostSlice]: () => initialState,
+    [resetAddUpdateDeletePost]: (state, action) => {
+      state.isPendingCreatePost = false;
+      state.isErrorCreatePost = undefined;
+      state.isPendingEditPost = false;
+      state.isErrorEditPost = undefined;
+      state.messageEditPost = undefined;
+      state.isPendingDeletePost = false;
+      state.isErrorDeletePost = undefined;
+      state.messageDeletePost = undefined;
+      state.newCreatePostData = undefined;
+    }
   },
 });
 

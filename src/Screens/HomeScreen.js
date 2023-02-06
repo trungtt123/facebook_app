@@ -69,7 +69,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         navigation.navigate('createPost');
     }
     useEffect(() => {
-        if (!isPendingCreatePost && newCreatePostData) {
+        if (isPendingCreatePost === false && newCreatePostData) {
             let newPostList = [];
             newPostList.push(newCreatePostData);
             console.log(newCreatePostData);

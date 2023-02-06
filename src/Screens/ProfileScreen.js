@@ -22,6 +22,7 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { FontAwesome5, FontAwesome, AntDesign, Fontisto } from 'react-native-vector-icons';
 import ModalBottom from 'react-native-modalbox';
 import {
+    delay,
     _getCache,
     _setCache
 } from '../Services/Helper/common';
@@ -30,6 +31,7 @@ import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
 import { resetEmojiSlice } from '../Redux/emojiSlice';
+import { resetAddUpdateDeletePost } from '../Redux/postSlice';
 
 function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
@@ -60,42 +62,42 @@ function ProfileScreen({ navigation, route }) {
     const [userInfors, setUserInfors] = useState(userInfor);
     const onRefresh = async () => {
         setRefreshing(true);
+        handleGetData();
+        // await delay(2000);
+        setRefreshing(false);
+    }
+    const handleGetData = async () => {
         postService.getListPostByUserId(userId ? userId : user.id).then((result) => {
             setListPost(result.data);
-            setRefreshing(false);
         }).catch(e => {
             console.log(e);
         });
+        userService.getUserFriends(userId ? userId : user.id, 0, 0).then((result) => {
+            setCntFriend(result.data.friends.length);
+            setFriends(result.data.friends.slice(0, 6));
+        }).catch(e => {
+            console.log(e);
+        });
+        if (userId) {
+            userService.getUserInfor(userId).then((result) => {
+                setUserInfors(result.data);
+            }).catch(e => {
+                console.log(e);
+            });
+        }
     }
     useEffect(() => {
-        const fetchListPost = async () => {
-            try {
-                postService.getListPostByUserId(userId ? userId : user.id).then((result) => {
-                    setListPost(result.data);
-                });
-                userService.getUserFriends(userId ? userId : user.id, 0, 0).then((result) => {
-                    setCntFriend(result.data.friends.length);
-                    setFriends(result.data.friends.slice(0, 6));
-                });
-                if (userId) {
-                    userService.getUserInfor(userId).then((result) => {
-                        setUserInfors(result.data);
-                    });
-                }
-            } catch (e) {
-                console.log('Bug: ', e.response);
-            }
-        }
-
-        fetchListPost();
+        handleGetData();
     }, [reload, userId])
 
     useEffect(() => {
-        if (!isPendingCreatePost && newCreatePostData) {
+        if (isPendingCreatePost === false && isErrorCreatePost === false) {
             ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost())
             onRefresh();
         }
         if (isErrorCreatePost) {
+            dispatch(resetAddUpdateDeletePost())
             Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
                 { text: "OK", onPress: () => null }
             ]);
@@ -105,13 +107,15 @@ function ProfileScreen({ navigation, route }) {
         }
     }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
     useEffect(() => {
-        if (isErrorEditPost) {
+        if (isErrorEditPost === false) {
             ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost())
         }
-        else {
+        if (isErrorEditPost === true) {
             // popup noti chỉnh sửa bài thành công
-            if (!isPendingEditPost && messageEditPost) {
+            if (isPendingEditPost === false && messageEditPost) {
                 ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                dispatch(resetAddUpdateDeletePost())
                 onRefresh();
                 //console.log("refesh", isErrorEditPost, isPendingEditPost);
             }
@@ -120,11 +124,13 @@ function ProfileScreen({ navigation, route }) {
     useEffect(() => {
         if (isErrorDeletePost) {
             ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+            dispatch(resetAddUpdateDeletePost())
         }
-        else {
+        else if (isErrorDeletePost === false){
             // popup noti chỉnh sửa bài thành công
-            if (!isPendingDeletePost && messageDeletePost) {
+            if (isPendingDeletePost === false && messageDeletePost) {
                 ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                dispatch(resetAddUpdateDeletePost())
                 onRefresh();
             }
         }
