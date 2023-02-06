@@ -247,7 +247,7 @@ function ProfileScreen({ navigation, route }) {
                         <Text style={styles.name}>
                             {userInfors?.username}
                         </Text>
-                        <TouchableOpacity onPress={() => { navigation.navigate('chatscreen', { userId: userId, userName: userInfors?.username, avatar: (userInfors?.avatar) ? av : userInfors.avatar }) }}
+                        <TouchableOpacity onPress={() => { navigation.navigate('chatscreen', { userId: userId, userName: userInfors?.username, avatar: userInfors?.avatar }) }}
                             style={styles.addNews}>
                             {userId ? <Fontisto name="messenger" size={20} color="#ffffff" /> : <Icon name="add-circle-sharp" size={20} color="#ffffff" />}
 
