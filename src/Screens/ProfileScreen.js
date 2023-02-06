@@ -28,33 +28,6 @@ import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
 
 function ProfileScreen({ navigation, token, userId }) {
-
-    const listFriend =[
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        },
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        },
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        },
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        },
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        },
-        {
-            avatar: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/66266963_101143601202898_5231374645902442496_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=2JJF9ypo7CYAX9KaWm0&_nc_ht=scontent.fhan5-3.fna&oh=00_AfBETtD72W9zWphBXkFgFVj68uPWHmau_qaN9dV-Z2pRBQ&oe=640195A1',
-            username: 'An Vu'
-        }
-    ]
     const dispatch = useDispatch();
     const {width} = Dimensions.get('window');
     const { userList, isLoading } = useSelector(
@@ -66,16 +39,22 @@ function ProfileScreen({ navigation, token, userId }) {
 
 
     const [listPost, setListPost] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [cntFriend, setCntFriend]  = useState(0);
     const { user } = useSelector(
         (state) => state.auth
     );
+    const [reload, setReload] = useState(false);
     const {userInfor, isEdit} = useSelector((state) => state.user);
     const [userInfors, setUserInfors] = useState(userInfor);
-    console.log('userPr: ', user);
     useEffect(() => {
         const fetchListPost = async () => {
             try {
                 let responese = await postService.getListPostByUserId(userId ? userId:user.id);
+                let resFri = await userService.getUserFriends(userId? userId : user.id, 0, 0);
+                setCntFriend(resFri.data.friends.length);
+                setFriends(resFri.data.friends.slice(0, 6));
+                console.log(friends);
                 setListPost(responese.data);
                 if (userId) {
                     let responseInfor = await userService.getUserInfor(userId);
@@ -87,7 +66,7 @@ function ProfileScreen({ navigation, token, userId }) {
         }
 
         fetchListPost();
-    }, [])
+    }, [reload])
 
     const  showModalAvatar = () => {
         setShowModalAva(true);
@@ -285,12 +264,15 @@ function ProfileScreen({ navigation, token, userId }) {
                         Xem thông tin giới thiệu của bạn
                     </Text>
                 </View>
-                <View style={styles.editPublicInfor}>
-                    <Text style={styles.textEditPublic}>
-                        Chỉnh sửa chi tiết công khai
-                    </Text>
-                </View>
-
+                <TouchableOpacity
+                    onPress={()=> navigation.navigate('editProfile')}
+                >
+                    <View style={styles.editPublicInfor}>
+                        <Text style={styles.textEditPublic}>
+                            Chỉnh sửa chi tiết công khai
+                        </Text>
+                    </View>
+                </TouchableOpacity>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Text style={styles.title}>
                         Bạn bè
@@ -300,10 +282,10 @@ function ProfileScreen({ navigation, token, userId }) {
                     </Text>
                 </View>
                 <Text style={{ fontSize: 18, color:'#7a7c7d', marginTop: 5 }}>
-                    290 người bạn
+                    {`${cntFriend} người bạn`}
                 </Text>
                 <SimpleGrid
-                    data={listFriend}
+                    data={friends}
                     spacing={2}
                     renderItem={({ item }) => (
                         <Friend data={item}/>
@@ -332,7 +314,7 @@ function ProfileScreen({ navigation, token, userId }) {
                     onPress={() => navigation.navigate('createPost')}
                 >
                     <View style={styles.thinking}>
-                        <Image source={!userInfors?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: userInfors?.avatar }} style={styles.postImage}/>
+                        <Image source={(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} style={styles.postImage}/>
                         <Text style={styles.thinkText}>
                             Bạn dang nghĩ gì?
                         </Text>
@@ -343,7 +325,7 @@ function ProfileScreen({ navigation, token, userId }) {
                 </TouchableOpacity>
             </View>
             {listPost?.map((item, index) => {
-                return <PostInHome navigation={navigation} key={index} postData={item} />
+                return <PostInHome navigation={navigation} key={index} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}}/>
             })}
         </ScrollView>
         </>

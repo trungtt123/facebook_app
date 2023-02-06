@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import userService from "../Services/Api/userService";
 export const fetchAllUsers = createAsyncThunk(
   "user/fetchAllUsers",
@@ -76,6 +76,8 @@ export const setUserCountry  = createAsyncThunk(
   }
 )
 
+export const resetUserInfor = createAction('resetUserInfor')
+
 const initialState = {
   userList: [],
   isLoading: false,
@@ -118,11 +120,14 @@ const userSlice = createSlice({
     [setAvatar.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.userInfor = action?.payload?.data;
-      state.isEdit = !state.isEdit;
     },
     [setAvatar.rejected]: (state, action) => {
       state.isLoading = false;
+      state.isEdit = true;
     },
+    [resetUserInfor]: (state, action) => {
+      state.userInfor = null
+    }
   },
 });
 

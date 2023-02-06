@@ -14,6 +14,7 @@ import {
 } from '../Services/Helper/common';
 import { logout, resetAuthSlice } from "../Redux/authSlice";
 import { resetPostSlice } from '../Redux/postSlice';
+import {resetUserInfor} from '../Redux/userSlice'
 function MenuScreen() {
     const dispatch = useDispatch();
     const handleLogout = () => {
@@ -21,7 +22,8 @@ function MenuScreen() {
         dispatch(resetPostSlice());
         dispatch(resetAuthSlice());
         dispatch(logout());
-    }   
+        dispatch(resetUserInfor());
+    }
     return (
         <View style={{flex: 1}}>
             <Text>Setting</Text>

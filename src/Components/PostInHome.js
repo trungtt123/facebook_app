@@ -30,7 +30,7 @@ import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
-function PostInHome({ navigation, postData, userID }) {
+function PostInHome({ navigation, postData, userID, avatar }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
     const [showDot, setShowDot] = useState(false);
@@ -54,7 +54,7 @@ function PostInHome({ navigation, postData, userID }) {
     }
     const LeftContent = () => {
         return <Avatar.Image size={45} source={
-            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+            avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
         } />
     }
     const RightContent = () => {
