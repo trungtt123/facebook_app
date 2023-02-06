@@ -18,6 +18,7 @@ const initialState = {
     assets: [],
     mergeData: [],
     aggregateData: [],
+    userId: null,
 
 }
 
@@ -94,10 +95,13 @@ const emojiSlice = createSlice({
         },
         setPostID: (state, action) => {
             state.postID = action.payload;
+        },
+        setUserID: (state, action) => {
+            state.userId = action.payload;
         }
 
     }
 });
 export const { showEmoji, hideEmoji, setDescribed, setEdit, resetData, setNewData, setImage, setVideo, 
-    setVideoSize, setAsset, setOriginalData, addImageDel, setVideoDel, setPostID } = emojiSlice.actions;
+    setVideoSize, setAsset, setOriginalData, addImageDel, setVideoDel, setPostID, setUserID } = emojiSlice.actions;
 export default emojiSlice.reducer

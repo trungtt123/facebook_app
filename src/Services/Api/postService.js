@@ -1,3 +1,4 @@
+import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
 import { deepCopy, _getCache, _setCache } from "../Helper/common";
 
@@ -22,6 +23,10 @@ const editPost = (data) => {
   }
   return axios.post(`/post/edit_post?&id=${id}&described=${described}&status=${status}&image_del=${image_del}`);
 
+}
+const deletePost = (data) => {
+  const {id} = data;
+  return axios.post(`/post/delete_post?&id=${id}`);
 }
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
@@ -85,5 +90,6 @@ const postService = {
   createPost,
   reportPost,
   editPost,
+  deletePost,
 };
 export default postService;

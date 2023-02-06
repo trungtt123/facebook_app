@@ -31,6 +31,7 @@ import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
 import { Audio } from 'expo-av';
+import { resetData, setUserID } from '../Redux/emojiSlice';
 function PostInHome({ navigation, postData, userID }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
@@ -54,9 +55,18 @@ function PostInHome({ navigation, postData, userID }) {
         })
     }
     const LeftContent = () => {
-        return <Avatar.Image size={45} source={
-            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
-        } />
+        return (
+            <TouchableOpacity onPress={()=> {
+                dispatch(resetData());
+                dispatch(setUserID(post?.author?.id));
+                console.log("userId",post?.author?.id);
+                navigation.navigate("profile")
+            }}>
+                <Avatar.Image size={45} source={
+                post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+            } />
+            </TouchableOpacity>
+        );
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>

@@ -5,12 +5,16 @@ import styles from '../style/style_friend';
 class FriendItem extends Component {
     render() {
         const {item} = this.props;
+        const {navigation} = this.props;
+        let av = "https://phongreviews.com/wp-content/uploads/2022/11/avatar-facebook-mac-dinh-13.jpg";
         return (
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=>{navigation.navigate('chatscreen', {userId: item.id, userName: item.name, avatar: (item.avatar==null)?av:item.avatar})}}
+            >
                 <View style={styles.container}>
                     <View style={styles.bgAvatar}>
                         <Image
-                            source={{uri: item.avatar}}
+                            source={{uri: (item.avatar==null)?av:item.avatar}}
                             style={styles.avatar}
                         />
                     </View>

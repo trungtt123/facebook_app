@@ -33,6 +33,7 @@ import SuggestFriendScreen from './SuggestFriendScreen';
 import AnotherVideoScreen from './AnotherVideoScreen';
 import Messager from './messenger/screen';
 import ChatScreen from './messenger/ChatScreen';
+import ProfileScreen from './ProfileScreen';
 import { CHAT_SERVER_URL } from '../Services/Helper/constant';
 import { io } from 'socket.io-client';
 import { onChangeSocket } from '../Redux/authSlice';
@@ -85,7 +86,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
                 <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{ title: 'Nhật ký hoạt động' }} />
-
+                <Stack.Screen name="profile" component={ProfileScreen} options={{ title: 'Trang cá nhân' }}/>
                 {/* //chat */}
                 <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
                     {(props) => <ChatScreen {...props} socket={socket} />}

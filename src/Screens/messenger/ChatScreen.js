@@ -1,34 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button, Touchable, TouchableOpacity, Image, ScrollView } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
+import { getTextWithIcon } from "../../Services/Helper/common";
 //đây là mỗi phần tử tin nhắn, props gồm mess, avt, role(của ai)
-function MessageItem(props) {
-  const handleAddDialog = () => {
-    socket?.emit('client_add_dialog', {
-      token: user.token,
-      senderId: user.id,
-      //id của người muốn nhắn
-      targetUserId: '639315083fa4155480da25f0',
-      content: 'Tin nhắn 3'
-    })
-  }
-  useEffect(() => {
-    socket?.emit('client_join_conversation', {
-      // thisUserId, targetUserId, token
-      token: user.token,
-      thisUserId: user.id,
-      //id của người muốn nhắn
-      targetUserId: '639315083fa4155480da25f0'
-    })
-    socket?.on('server_send_conversation', (data) => {
-      console.log('server_send_conversation', data);
-    })
-  }, [])
 
-  if (props.role == 0)
+function MessageItem(props) {
+  // const {socket} = props;
+  
+  // const handleAddDialog = () => {
+  //   socket?.emit('client_add_dialog', {
+  //     token: user.token,
+  //     senderId: user.id,
+  //     //id của người muốn nhắn
+  //     targetUserId: '639315083fa4155480da25f0',
+  //     content: 'Tin nhắn 3'
+  //   })
+  // }
+  // useEffect(() => {
+  //   socket?.emit('client_join_conversation', {
+  //     // thisUserId, targetUserId, token
+  //     token: user.token,
+  //     thisUserId: user.id,
+  //     //id của người muốn nhắn
+  //     targetUserId: '639315083fa4155480da25f0'
+  //   })
+  //   socket?.on('server_send_conversation', (data) => {
+  //     console.log('server_send_conversation', data);
+  //   })
+  // }, [])
+
+  let avatar = "https://hieumobile.com/wp-content/uploads/tich-xanh.png";
+  if(props.unread == 0)
+  avatar = props.avt;
+  if (props.idSender != props.idUser)
     return (
       <View style={[styles.messContainer, { alignSelf: "flex-start" }]}>
 
@@ -48,22 +55,23 @@ function MessageItem(props) {
     return (
       <View style={[styles.messContainer, { alignSelf: "flex-end" }]}>
         {/* //nội dung tin nhắn */}
-        <View style={{ flexDirection: "row", alignSelf: "flex-end", width: "100%", alignItems: "flex-end", paddingRight: 12 }}>
-          <View style={styles.messItemRight}>
-            <Text style={{ color: "white", fontSize: 17 }}>{props.mess}</Text>
-          </View>
+        <View style={{ flexDirection: "row-reverse", alignSelf: "flex-end", width: "100%", alignItems: "flex-end", paddingRight: 12 }}>
           <Image
             style={{ width: 20, height: 20, borderRadius: 100 }}
             source={{
-              uri: props?.avt,
+              uri: avatar,
             }}
           />
+          <View style={styles.messItemRight}>
+            <Text style={{ color: "white", fontSize: 17 }}>{props.mess}</Text>
+          </View>
+          
         </View>
       </View>
     );
 }
 
-export default function ChatScreen({ navigation, socket }) {
+export default function ChatScreen({ navigation, socket, route}) {
   const avt = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjpbpY1XBGZRCPHLc5Rrb__Qb1g5XS1T6fgg&usqp=CAU";
   const time = "17 THG 12, 2022 LÚC 10:00";
   const name = "Nguyễn A";
@@ -71,12 +79,18 @@ export default function ChatScreen({ navigation, socket }) {
   const { user } = useSelector(
     (state) => state.auth
   );
-  const handleAddDialog = () => {
+  // danh sach cac tin nhan
+  const [conversation, setCoversation] = useState([]);
+  //thông tin người đang nhắn
+  const { userName, userId, avatar } = route.params;
+  //tin nhắn muốn gửi
+  const [textMessage, setTextMessage] = useState("");
+  const handleAddDialog = (mess) => {
     socket?.emit('client_add_dialog', {
       token: user.token,
       senderId: user.id,
-      targetUserId: '639315083fa4155480da25f0',
-      content: 'Tin nhắn 3'
+      targetUserId: userId,
+      content: mess
     })
   }
   useEffect(() => {
@@ -84,11 +98,35 @@ export default function ChatScreen({ navigation, socket }) {
       // thisUserId, targetUserId, token
       token: user.token,
       thisUserId: user.id,
-      targetUserId: '639315083fa4155480da25f0'
+      targetUserId: userId
     })
     socket?.on('server_send_conversation', (data) => {
       console.log('server_send_conversation', JSON.stringify(data));
+      setCoversation(data.data.dialog);
+      console.log("data kkkkkk", typeof conversation);
     })
+
+    //set option cho thanh tren cung
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={{flexDirection: "row" }}>
+          <Image
+          style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20}}
+          source={{
+            uri: avatar,
+          }}
+        />
+          <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8 , marginLeft: 5}}>{userName}</Text>
+        </View>
+      ),
+      headerRight: () => (
+        <View style={{flexDirection: "row",height: 50,alignItems: "center"}}> 
+        <Ionicons name="call" size={24} color="#0099ff" style={{ marginLeft: 5 }}/>
+        <FontAwesome name="video-camera" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
+        <FontAwesome name="info-circle" size={24} color="#0099ff" style={{ marginLeft: 15 }} />
+        </View>
+          )
+    });
   }, [socket])
   return (
     <View style={styles.container}>
@@ -115,19 +153,23 @@ export default function ChatScreen({ navigation, socket }) {
 
       <ScrollView style={{ width: "100%" }}>
         <View style={{ alignItems: "center" }}>
-          <Image source={{ uri: avt }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
-          <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{name}</Text>
+          <Image source={{ uri: avatar }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
+          <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{userName}</Text>
           <Text style={{ fontSize: 15, marginTop: 10 }}>Các bạn là bạn bè trên Facebook</Text>
           <Text style={{ fontSize: 15, marginTop: 5, color: "grey" }}>{info}</Text>
           <Text style={{ fontSize: 15, marginTop: 35, color: "grey", marginBottom: 25 }}>{time}</Text>
 
           {/* tin nhan */}
-          <MessageItem mess="Hello my friend" avt={avt} role="0" />
+          {/* <MessageItem mess={avatar} avt={avt} role="0" />
           <MessageItem mess="Hello my friend" avt={avt} role="0" />
           <MessageItem mess="Hello my friend hh h hh h hhh hh hh h" avt={avt} role="1" />
           <MessageItem mess="Hello my friend" avt={avt} role="0" />
           <MessageItem mess="Hello my friend" avt={avt} role="0" />
-          <MessageItem mess="Hello my friend, hghg hgh  hg hgh h gh g ghghg h h g" avt={avt} role="0" />
+          <MessageItem mess="Hello my friend, hghg hgh  hg hgh h gh g ghghg h h g" avt={avt} role="0" /> */}
+
+          {conversation.map((e, index) =>
+                        <MessageItem mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id}/>
+                    )}
         </View>
       </ScrollView>
 
@@ -150,6 +192,9 @@ export default function ChatScreen({ navigation, socket }) {
           }}
           placeholder=" Aa"
           keyboardType="default"
+          value={getTextWithIcon(textMessage)}
+          onChangeText={(text) => { setTextMessage(text); }}
+          onSubmitEditing={async() => {await handleAddDialog(textMessage); setTextMessage("")}}
         ></TextInput>
         <AntDesign name="like1" size={24} color="#0099ff" style={{ marginLeft: 10 }} />
       </View>

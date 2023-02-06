@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import data from "../Screens/img/emoji";
 import postService from "../Services/Api/postService";
 export const fetchListPost = createAsyncThunk(
   "post/fetchListPost",
@@ -30,7 +31,18 @@ export const editPost = createAsyncThunk(
       return await postService.editPost(data);
     } catch (e) {
       console.log("error", e);
-      return thunkAPI.rejectWithValue("somethign went wrong");
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+);
+export const deletePost = createAsyncThunk(
+  "post/deletePost",
+  async (data, thunkAPI) => {
+    try {
+      return await postService.deletePost(data);
+    }catch (e) {
+      console.log("error", e);
+      return thunkAPI.rejectWithValue("something went wrong");
     }
   }
 );
@@ -43,6 +55,8 @@ const initialState = {
   newCreatePostData: undefined,
   isPendingEditPost: false,
   isErrorEditPost: undefined,
+  isPendingDeletePost: false,
+  isErrorDeletePost: undefined,
 };
 
 const postSlice = createSlice({
@@ -97,6 +111,21 @@ const postSlice = createSlice({
       console.log("editPost action rej", action);
       state.isPendingEditPost = false;
       state.isErrorEditPost = true;
+    },
+    [deletePost.pending]: (state) => {
+      console.log("deletePost pending");
+      state.isPendingDeletePost = true;
+      state.isErrorDeletePost = undefined;
+    },
+    [deletePost.fulfilled]: (state, action) => {
+      console.log("deletePost actiion ful", action);
+      state.isPendingDeletePost = false;
+      state.isErrorDeletePost = false;
+    },
+    [deletePost.rejected]: (state, action) => {
+      console.log("deletePost action rej", action);
+      state.isPendingDeletePost = false;
+      state.isErrorDeletePost = true;
     },
     [resetPostSlice]: () => initialState
   },
