@@ -30,7 +30,7 @@ export const editPost = createAsyncThunk(
     try {
       return await postService.editPost(data);
     } catch (e) {
-      console.log("error", e);
+      console.log("error", e.response.data);
       return thunkAPI.rejectWithValue("something went wrong");
     }
   }

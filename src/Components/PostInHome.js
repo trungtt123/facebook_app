@@ -96,6 +96,9 @@ function PostInHome({ navigation, postData, userID, avatar }) {
     const uriEmoji = () => {
         return data.find(x => x.name === (post?.state)).img;
     }
+    useEffect(() => {
+        setPost(postData);
+    }, [postData])
     return (
         <View style={{ flex: 1, marginTop: 10 }}>
             {isShowDetailPost && post?.image && post?.image?.length > 1 && <DetailPostModal callBackPostUpdated={() => postUpdated()} onClose={() => setIsShowDetailPost(false)}

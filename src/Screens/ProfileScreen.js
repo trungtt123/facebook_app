@@ -66,10 +66,10 @@ function ProfileScreen({ navigation, route }) {
     const onRefresh = async () => {
         setRefreshing(true);
         handleGetData();
-        // await delay(2000);
+        await delay(2000);
         setRefreshing(false);
     }
-    const handleGetData = async () => {
+    const handleGetData = () => {
         postService.getListPostByUserId(userId ? userId : user.id).then((result) => {
             setListPost(result.data);
         }).catch(e => {
@@ -110,11 +110,11 @@ function ProfileScreen({ navigation, route }) {
         }
     }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
     useEffect(() => {
-        if (isErrorEditPost === false) {
+        if (isErrorEditPost === true) {
             if (currentTabIndex === 3) ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
             dispatch(resetAddUpdateDeletePost())
         }
-        if (isErrorEditPost === true) {
+        if (isErrorEditPost === false) {
             // popup noti chỉnh sửa bài thành công
             if (isPendingEditPost === false && messageEditPost) {
                 if (currentTabIndex === 3) ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
