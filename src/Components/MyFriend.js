@@ -81,7 +81,10 @@ function ModalExpand({ navigation, friendData, closeModal, updateListFriends, un
     >
         <View style={styles.container}>
             <View style={styles.modalView}>
-                <TouchableOpacity style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 15 }}>
+                <TouchableOpacity onPress={() => {
+                    navigation.navigate("profile", { userId: friendData?.id });
+                }}
+                    style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 15 }}>
                     <View style={{ flexDirection: 'column', flex: 2, justifyContent: 'center' }}>
                         <Image style={{ width: 60, height: 60, borderColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND, borderRadius: 30, borderWidth: 1 }}
                             source={
@@ -181,7 +184,7 @@ function ModalAcceptFriend({ navigation, friendData, closeModal, acceptFriendFis
             Alert.alert("Có lỗi xảy ra", "Vui lòng thử lại sau.", [
                 { text: "OK", onPress: () => null }
             ]);
-           
+
         });
     }
     const remove = () => {
@@ -206,10 +209,10 @@ function ModalAcceptFriend({ navigation, friendData, closeModal, acceptFriendFis
         <View style={styles.container}>
             <View style={styles.modalView}>
                 <View style={{ flex: 1, flexDirection: 'row' }} >
-                    <View 
+                    <View
                         style={{ zIndex: 9999, flexDirection: 'column', position: 'absolute', justifyContent: 'center', top: 18, left: 10 }}>
                         <AntDesign onPress={() => closeModal()}
-                        name="close" size={25} />
+                            name="close" size={25} />
                     </View>
                     <View style={{ flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
                         <Text style={{ fontWeight: '700', fontSize: 17, textAlign: 'center' }}>{`Trả lời mời mời của ${friendData.username}`}</Text>
@@ -279,7 +282,7 @@ export default function MyFriend({ navigation, data, updateListFriends }) {
     }
     const handleAcceptFriend = (accept) => {
         console.log('accept', accept)
-        if (accept){
+        if (accept) {
             setAction(4);
             setIsFriendStatus(3);
         }
@@ -301,7 +304,9 @@ export default function MyFriend({ navigation, data, updateListFriends }) {
         {isShowModalAcceptFriend && <ModalAcceptFriend navigation={navigation}
             friendData={friendData} acceptFriendFisished={(accept) => handleAcceptFriend(accept)}
             closeModal={() => setIsShowModalAcceptFriend(false)} />}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("profile", { userId: friendData?.id });
+        }}>
             <Image source={
                 !friendData?.avatar ? require('../../assets/images/default_avatar.jpg')
                     : { uri: friendData?.avatar }

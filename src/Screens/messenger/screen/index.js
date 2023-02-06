@@ -1,12 +1,13 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { View, FlatList, Text, TextInput, ScrollView } from 'react-native'
 import { useDispatch, useSelector } from "react-redux";
-import data from '../data';
+import dataFake from '../data';
 import Item from '../elements/chat_item';
 import styles from '../style/style_item';
 import FriendItem from '../elements/friend_item';
 
 function Messager({ navigation, socket }) {
+    const [listConversation, setListCoversation] = useState([]);
     const { user } = useSelector(
         (state) => state.auth
     );
@@ -18,6 +19,8 @@ function Messager({ navigation, socket }) {
         })
         socket?.on('server_send_list_conversation', (data) => {
             console.log('server_send_list_conversation', JSON.stringify(data));
+            setListCoversation(data.data);
+            console.log("kkk: " +  typeof listConversation);
         })
     }, [socket])
     return (
@@ -38,9 +41,9 @@ function Messager({ navigation, socket }) {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         ref={inputRef}
-                        data={data}
+                        data={dataFake}
                         renderItem={({ item }) => (
-                            <FriendItem item={item} />
+                            <FriendItem item={item} navigation={navigation}/>
                         )}
                         keyExtractor={(item) => item.id} // tránh trùng các item với nhau
                     />
@@ -54,7 +57,7 @@ function Messager({ navigation, socket }) {
                         )}
                         keyExtractor={(item) => item.id } // tránh trùng các item với nhau
                     /> */}
-                    {data.map((e, index) =>
+                    {listConversation.map((e, index) =>
                         <Item item={e} navigation={navigation} keyExtractor={(e) => e.id} />
                     )}
                 </View>

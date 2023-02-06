@@ -91,10 +91,15 @@ export default function RequestFriend({ navigation, data }) {
     }, [data])
     return <View style={{ width: '100%', paddingVertical: 5, flexDirection: 'row' }}>
         {isShowModalExpand && <ModalExpand requestFriendData={requestFriendData} closeModal={() => setIsShowModalExpand(false)} />}
-        <Image source={
-            !requestFriendData?.avatar ? require('../../assets/images/default_avatar.jpg')
-                : { uri: requestFriendData?.avatar }
-        } style={{ width: 80, height: 80, borderRadius: 40, borderColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND, borderWidth: 1 }} />
+        <TouchableOpacity onPress={() => {
+            console.log(requestFriendData);
+            navigation.navigate("profile", { userId: requestFriendData?.id });
+        }}>
+            <Image source={
+                !requestFriendData?.avatar ? require('../../assets/images/default_avatar.jpg')
+                    : { uri: requestFriendData?.avatar }
+            } style={{ width: 80, height: 80, borderRadius: 40, borderColor: COMMON_COLOR.GRAY_COLOR_BACKGROUND, borderWidth: 1 }} />
+        </TouchableOpacity>
         <View style={{ justifyContent: 'center', marginLeft: 10, flex: 1 }}>
             <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
                 <Text style={{ fontSize: 17, fontWeight: '600' }}>{requestFriendData?.username}</Text>
@@ -108,7 +113,7 @@ export default function RequestFriend({ navigation, data }) {
                 {status !== undefined
                     ? <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>{status}</Text>
                     : <>
-                        {requestFriendData?.same_friends > 0 && <Text style={{marginTop: 2, color: COMMON_COLOR.GRAY_TEXT_COLOR}}>{`${requestFriendData?.same_friends} bạn chung`}</Text>}
+                        {requestFriendData?.same_friends > 0 && <Text style={{ marginTop: 2, color: COMMON_COLOR.GRAY_TEXT_COLOR }}>{`${requestFriendData?.same_friends} bạn chung`}</Text>}
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
                             <TouchableOpacity onPress={() => handleSendRequestFriend(requestFriendData.id, 1)}
                                 style={{ backgroundColor: COMMON_COLOR.BLUE_COLOR, flex: 1, padding: 10, marginRight: 3, borderRadius: 5 }}>

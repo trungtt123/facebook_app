@@ -57,8 +57,6 @@ function PostInHome({ navigation, postData, userID, avatar }) {
     const LeftContent = () => {
         return (
             <TouchableOpacity onPress={() => {
-                dispatch(resetEmojiSlice());
-                dispatch(setUserID(post?.author?.id));
                 //console.log("userId", post?.author?.id);
                 navigation.navigate("profile", {userId: post?.author?.id})
             }}>
@@ -126,10 +124,7 @@ function PostInHome({ navigation, postData, userID, avatar }) {
                     title={
                         <Text>
                             <TouchableOpacity onPress={() => {
-                                dispatch(resetEmojiSlice());
-                                dispatch(setUserID(post?.author?.id));
-                                console.log("userId", post?.author?.id);
-                                navigation.navigate("profile");
+                                navigation.navigate("profile", {userId: post?.author?.id})
                             }}>
                                 <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>

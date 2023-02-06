@@ -36,8 +36,8 @@ import useKeyBoard from '../Components/UseKeyBoard';
 export default function CreatePostScreen({ route, navigation }) {
     const prevPage = useRef(route.params?.prevPage);
     const dispatch = useDispatch();
-    const { user } = useSelector(
-        (state) => state.auth
+    const { userInfor } = useSelector(
+        (state) => state.user
     );
     const newData = useSelector((state) => state.emoji.newData);
     const aggregateData = useSelector((state) => state.emoji.aggregateData);
@@ -196,10 +196,10 @@ export default function CreatePostScreen({ route, navigation }) {
             <ScrollView style={{ backgroundColor: 'white', flex: 1 }} keyboardShouldPersistTaps='handled'>
                 <View style={{ flexDirection: 'column', flex: 1 }}>
                     <View style={{ flexDirection: 'row', padding: 16, alignItems: 'center' }}>
-                        <Image source={user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }} style={styles.img} />
+                        <Image source={userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }} style={styles.img} />
                         <View style={{ paddingLeft: 8 }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: 'black', fontWeight: '600' }}>{user?.username}</Text>
+                                <Text style={{ color: 'black', fontWeight: '600' }}>{userInfor?.username}</Text>
                                 {(post.checkEmoji) ? (
                                     <View style={{ flexDirection: 'row' }}>
                                         <Image source={{ uri: post.iconEmoji }} style={styles.emoji} />
