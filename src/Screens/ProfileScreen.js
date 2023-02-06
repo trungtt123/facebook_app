@@ -8,7 +8,8 @@ import {
     Image,
     Dimensions,
     ScrollView,
-    ToastAndroid
+    ToastAndroid,
+    RefreshControl
 } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { connect } from 'react-redux';
@@ -27,12 +28,18 @@ import styles from './style/profile';
 import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
+import { async } from 'q';
 
 function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
     const {width} = Dimensions.get('window');
     const { userList, isLoading } = useSelector(
         (state) => state.user
+    );
+
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+        isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
+       (state) => state.post
     );
 
     const userId =  route?.params?.userId;
@@ -45,18 +52,29 @@ function ProfileScreen({ navigation, route }) {
     const { user } = useSelector(
         (state) => state.auth
     );
+    const [refreshing, setRefreshing] = useState(false);
     const [reload, setReload] = useState(false);
     const {userInfor, successChangeAva} = useSelector((state) => state.user);
     const [userInfors, setUserInfors] = useState(userInfor);
+    const onRefresh = async () => {
+        setRefreshing(true);
+        postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
+            setListPost(result.data);
+            console.log(listPost.length);
+            setRefreshing(false);
+        });
+    }
     useEffect(() => {
         const fetchListPost = async () => {
             try {
-                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
-                let resFri = await userService.getUserFriends(userId? userId : user.id, 0, 0);
-                setCntFriend(resFri.data.friends.length);
-                setFriends(resFri.data.friends.slice(0, 6));
-                console.log(friends);
-                setListPost(responese.data);
+                postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
+                    setListPost(result.data);
+                    console.log(listPost.length)
+                });
+                userService.getUserFriends(userId? userId : user.id, 0, 0).then((result) => {
+                    setCntFriend(result.data.friends.length);
+                    setFriends(result.data.friends.slice(0, 6));
+                });
                 if (userId) {
                     userService.getUserInfor(userId).then((result) => {
                         setUserInfors(result.data);
@@ -69,6 +87,50 @@ function ProfileScreen({ navigation, route }) {
 
         fetchListPost();
     }, [reload, userId])
+
+    useEffect(() => {
+        console.log('abc');
+        if (!isPendingCreatePost && newCreatePostData) {
+            let newPostList = [];
+            newPostList.push(newCreatePostData);
+            newPostList = newPostList.concat(listPost);
+            setListPost(newPostList);
+            console.log(listPost.length)
+        }
+        if (isErrorCreatePost) {
+            Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        }
+        else {
+            // popup noti đăng bài thành công
+        }
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
+    useEffect(() => {
+        if (isErrorEditPost) {
+            ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+        }
+        else {
+            // popup noti chỉnh sửa bài thành công
+            if(!isPendingEditPost && messageEditPost){
+                ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                onRefresh();
+                //console.log("refesh", isErrorEditPost, isPendingEditPost);
+            }
+        }
+    }, [isPendingEditPost, isErrorEditPost, messageEditPost])
+    useEffect(() => {
+        if (isErrorDeletePost) {
+            ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+        }
+        else {
+            // popup noti chỉnh sửa bài thành công
+            if(!isPendingDeletePost && messageDeletePost){
+                ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                onRefresh();
+            }
+        }
+    }, [isPendingDeletePost, isErrorDeletePost, messageDeletePost])
 
     const  showModalAvatar = () => {
         setShowModalAva(true);
@@ -162,7 +224,14 @@ function ProfileScreen({ navigation, route }) {
                 </ModalBottom>
                 </>:<></>
             }
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container}
+            refreshControl={
+            <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={["#0f80f7"]}
+            />}
+        >
             <View style={styles.firstView}>
                 <TouchableOpacity
                     onPress={() => setShowModalCover(true)}

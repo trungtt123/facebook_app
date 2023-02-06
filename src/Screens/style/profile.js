@@ -157,7 +157,7 @@ export default styles = StyleSheet.create({
         marginTop: 0.03*width
     },
     imageIcon: {
-        marginTop: 0.04*width,
+        marginTop: 0.03*width,
         marginStart: 0.35*width,
     },
 
