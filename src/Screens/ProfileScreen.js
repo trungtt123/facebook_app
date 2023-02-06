@@ -27,6 +27,7 @@ import styles from './style/profile';
 import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
+import { resetEmojiSlice } from '../Redux/emojiSlice';
 
 function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
@@ -317,7 +318,10 @@ function ProfileScreen({ navigation, route }) {
                     Bài viết
                 </Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('createPost')}
+                    onPress={() => {
+                        dispatch(resetEmojiSlice());
+                        navigation.navigate('createPost');
+                    }}
                 >
                     <View style={styles.thinking}>
                         <Image source={(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} style={styles.postImage}/>
