@@ -125,23 +125,20 @@ function PostInHome({ navigation, postData, userID }) {
                     titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
-                            <View style={{ flexDirection: 'row', width: 200 }}>
-                                <Text>
-                                    <TouchableOpacity onPress={() => {
-                                        dispatch(resetEmojiSlice());
-                                        dispatch(setUserID(post?.author?.id));
-                                        console.log("userId", post?.author?.id);
-                                        navigation.navigate("profile");
-                                    }}>
-                                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
-                                    </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(resetEmojiSlice());
+                                dispatch(setUserID(post?.author?.id));
+                                console.log("userId", post?.author?.id);
+                                navigation.navigate("profile");
+                            }}>
+                                <Text style={{ width: 200 }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
-
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </Text>
                     }
                     titleNumberOfLines={1}
