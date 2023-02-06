@@ -35,8 +35,9 @@ export default function DashBoardScreen({ navigation, socket }) {
         { key: 'six', title: 'me', index: 5 }
     ]);
     const FirstRoute = useCallback(() => (
-        <HomeScreen onSwipeDown={() => setIsShowTopBar(true)}
-            onSwipeUp={() => setIsShowTopBar(false)}
+        <HomeScreen 
+            // onSwipeDown={() => setIsShowTopBar(true)}
+            // onSwipeUp={() => setIsShowTopBar(false)}
             navigation={navigation} />
     ), []);
     const SecondRoute = useCallback(() => (
