@@ -102,6 +102,6 @@ const emojiSlice = createSlice({
 
     }
 });
-export const { showEmoji, hideEmoji, setDescribed, setEdit, resetEmojiSlice: resetEmojiSlice, setNewData, setImage, setVideo, 
+export const { showEmoji, hideEmoji, setDescribed, setEdit, resetEmojiSlice, setNewData, setImage, setVideo, 
     setVideoSize, setAsset, setOriginalData, addImageDel, setVideoDel, setPostID, setUserID } = emojiSlice.actions;
 export default emojiSlice.reducer
