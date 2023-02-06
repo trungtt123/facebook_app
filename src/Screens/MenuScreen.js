@@ -51,7 +51,7 @@ function MenuScreen({ navigation }) {
                 } />
                 <View style={{ flexDirection: 'column', marginLeft: 10 }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{userInfor?.username}</Text>
-                    <TouchableOpacity onPress={() => goToProfile()}>
+                    <TouchableOpacity onPress={() => navigation.navigate("profile")}>
                         <Text style={{ fontSize: 15, color: COMMON_COLOR.GRAY_TEXT_COLOR, top: -2 }}>Xem trang cá nhân của bạn</Text>
                     </TouchableOpacity>
                 </View>

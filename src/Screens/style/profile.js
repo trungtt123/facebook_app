@@ -36,7 +36,7 @@ export default styles = StyleSheet.create({
     name: {
         marginTop: height*0.01,
         fontWeight: 'bold',
-        fontSize: 30
+        fontSize: 24
     },
     addNews: {
         borderRadius: 5,

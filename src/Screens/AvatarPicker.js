@@ -1,8 +1,9 @@
 import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
 import {useDispatch, useSelector} from 'react-redux';
-import {View, TouchableOpacity, Text, ToastAndroid} from 'react-native';
-import {setAvatar} from '../Redux/userSlice';
+import {View, TouchableOpacity, Text, ToastAndroid, Alert} from 'react-native';
+import {resetInforWithData} from '../Redux/userSlice';
 import { useEffect } from "react";
+import userServices from '../Services/Api/userService';
 
 export default function AvatarPicker({navigation}) {
     const dispatch = useDispatch();
@@ -28,14 +29,23 @@ export default function AvatarPicker({navigation}) {
             </TouchableOpacity>
         )
     });
+    const setAva = (assets) => {
+        let formData = new FormData();
+        formData.append("avatar", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
+        userServices.setAvatar({formData: formData, userId: user.id}).then((result) => {
+            dispatch(resetInforWithData(result))
+            showToast('Cập nhật ảnh đại diện thành công!');
+        }).catch((e) => {
+            Alert.alert("Có lỗi xảy ra", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        });
+        navigation.goBack();
+    }
     return <View style={{flex: 1}}>
         <ImagePicker
             onSave={(assets) => {
-                let formData = new FormData();
-                formData.append("avatar", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
-                dispatch(setAvatar({formData: formData, userId: user.id}));
-                navigation.goBack();
-                showToast('Cập nhật ảnh đại diện thành công!')
+                setAva(assets)
             }}
             onCancel={() => console.log('no permissions or user go back')}
         />

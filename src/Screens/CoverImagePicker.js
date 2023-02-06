@@ -1,8 +1,8 @@
 import { ImagePicker, Album, Asset } from "expo-image-multiple-picker";
 import {useDispatch, useSelector} from 'react-redux';
 import {View, TouchableOpacity, Text, ToastAndroid} from 'react-native';
-import {setCoverImage} from '../Redux/userSlice';
-import { useEffect } from "react";
+import userServices from '../Services/Api/userService';
+import {resetInforWithData} from '../Redux/userSlice';
 
 export default function CoverImagePicker({navigation}) {
     const dispatch = useDispatch();
@@ -23,14 +23,23 @@ export default function CoverImagePicker({navigation}) {
             </TouchableOpacity>
         )
     });
+    const setCover = (assets) => {
+        let formData = new FormData();
+        formData.append("cover_image", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
+        userServices.setCoverImage({formData: formData, userId: user.id}).then((result) => {
+            dispatch(resetInforWithData(result))
+            showToast('Cập nhật ảnh bìa thành công!');
+        }).catch((e) => {
+            Alert.alert("Có lỗi xảy ra", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        });
+        navigation.goBack();
+    }
     return <View style={{flex: 1}}>
         <ImagePicker
             onSave={(assets) => {
-                let formData = new FormData();
-                formData.append("cover_image", { name: assets[0].filename, uri: assets[0].uri, type: 'image/' + getType(assets[0].filename) });
-                dispatch(setCoverImage({formData: formData, userId: user.id}));
-                navigation.goBack();
-                showToast('Cập nhật ảnh bìa thành công!')
+               setCover(assets);
             }}
             onCancel={() => console.log('no permissions or user go back')}
         />

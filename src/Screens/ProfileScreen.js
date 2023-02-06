@@ -8,6 +8,7 @@ import {
     Image,
     Dimensions,
     ScrollView,
+    ToastAndroid
 } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { connect } from 'react-redux';
@@ -45,7 +46,7 @@ function ProfileScreen({ navigation, route }) {
         (state) => state.auth
     );
     const [reload, setReload] = useState(false);
-    const {userInfor, isEdit} = useSelector((state) => state.user);
+    const {userInfor, successChangeAva} = useSelector((state) => state.user);
     const [userInfors, setUserInfors] = useState(userInfor);
     useEffect(() => {
         const fetchListPost = async () => {
@@ -57,8 +58,9 @@ function ProfileScreen({ navigation, route }) {
                 console.log(friends);
                 setListPost(responese.data);
                 if (userId) {
-                    let responseInfor = await userService.getUserInfor(userId);
-                    setUserInfors(responseInfor.data);
+                    userService.getUserInfor(userId).then((result) => {
+                        setUserInfors(result.data);
+                    });
                 }
             } catch (e) {
                 console.log('Bug: ',e.response);
@@ -73,89 +75,93 @@ function ProfileScreen({ navigation, route }) {
     }
     return (
         <>
-            <ModalBottom
-                backdropPressToClose={true}
-                isOpen={showModalAva}
-                style={styles.modalBox}
-                onClosed={() => setShowModalAva(false)}
-            >
-                <View style={styles.contentAva}>
-                    <View style = {styles.rowModal}>
-                        <View style={styles.iconModal}>
-                            <MaterialIcons name='filter-frames' size={25}/>
-                        </View>
-                        <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                            Thêm khung
-                        </Text>
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('pickAvatar')}
-                    >
+            {!userId?
+            <>
+                <ModalBottom
+                    backdropPressToClose={true}
+                    isOpen={showModalAva}
+                    style={styles.modalBox}
+                    onClosed={() => setShowModalAva(false)}
+                >
+                    <View style={styles.contentAva}>
                         <View style = {styles.rowModal}>
                             <View style={styles.iconModal}>
-                                <FontAwesome5 name='images' size={25}/>
+                                <MaterialIcons name='filter-frames' size={25}/>
                             </View>
                             <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                                Chọn ảnh đại diện
+                                Thêm khung
                             </Text>
                         </View>
-                    </TouchableOpacity>
-                    <View style = {styles.rowModal}>
-                        <View style={styles.iconModal}>
-                            <FontAwesome5 name='user-circle' size={25}/>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('pickAvatar')}
+                        >
+                            <View style = {styles.rowModal}>
+                                <View style={styles.iconModal}>
+                                    <FontAwesome5 name='images' size={25}/>
+                                </View>
+                                <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
+                                    Chọn ảnh đại diện
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style = {styles.rowModal}>
+                            <View style={styles.iconModal}>
+                                <FontAwesome5 name='user-circle' size={25}/>
+                            </View>
+                            <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
+                                Xem ảnh đại diện
+                            </Text>
                         </View>
-                        <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                            Xem ảnh đại diện
-                        </Text>
                     </View>
-                </View>
-            </ModalBottom>
+                </ModalBottom>
 
-            <ModalBottom
-                backdropPressToClose={true}
-                isOpen={showModalCover}
-                style={styles.modalBox}
-                onClosed={() => setShowModalCover(false)}
-            >
-                <View style={styles.contentCover}>
-                    <View style = {styles.rowModal}>
-                        <View style={styles.iconModal}>
-                            <FontAwesome5 name='image' size={25}/>
-                        </View>
-                        <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                            Xem  ảnh bìa
-                        </Text>
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('pickCover')}
-                    >
+                <ModalBottom
+                    backdropPressToClose={true}
+                    isOpen={showModalCover}
+                    style={styles.modalBox}
+                    onClosed={() => setShowModalCover(false)}
+                >
+                    <View style={styles.contentCover}>
                         <View style = {styles.rowModal}>
                             <View style={styles.iconModal}>
-                                <FontAwesome name='upload' size={25}/>
+                                <FontAwesome5 name='image' size={25}/>
                             </View>
                             <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                                Tải ảnh lên
+                                Xem  ảnh bìa
                             </Text>
                         </View>
-                    </TouchableOpacity>
-                    <View style = {styles.rowModal}>
-                        <View style={styles.iconModal}>
-                            <MaterialCommunityIcons name='facebook' size={25}/>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('pickCover')}
+                        >
+                            <View style = {styles.rowModal}>
+                                <View style={styles.iconModal}>
+                                    <FontAwesome name='upload' size={25}/>
+                                </View>
+                                <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
+                                    Tải ảnh lên
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style = {styles.rowModal}>
+                            <View style={styles.iconModal}>
+                                <MaterialCommunityIcons name='facebook' size={25}/>
+                            </View>
+                            <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
+                                Chọn ảnh trên facebook
+                            </Text>
                         </View>
-                        <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                            Chọn ảnh trên facebook
-                        </Text>
-                    </View>
-                    <View style = {styles.rowModal}>
-                        <View style={styles.iconModal}>
-                            <AntDesign name='appstore1' size={25}/>
+                        <View style = {styles.rowModal}>
+                            <View style={styles.iconModal}>
+                                <AntDesign name='appstore1' size={25}/>
+                            </View>
+                            <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
+                                Tạo nhóm ảnh bìa
+                            </Text>
                         </View>
-                        <Text style={{ fontSize: 20, marginTop: 5, fontWeight: '500' }}>
-                            Tạo nhóm ảnh bìa
-                        </Text>
                     </View>
-                </View>
-            </ModalBottom>
+                </ModalBottom>
+                </>:<></>
+            }
         <ScrollView style={styles.container}>
             <View style={styles.firstView}>
                 <TouchableOpacity
@@ -316,7 +322,7 @@ function ProfileScreen({ navigation, route }) {
                     <View style={styles.thinking}>
                         <Image source={(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} style={styles.postImage}/>
                         <Text style={styles.thinkText}>
-                            Bạn dang nghĩ gì?
+                            Bạn đang nghĩ gì?
                         </Text>
                         <View style={styles.imageIcon}>
                             <FontAwesome5 name='images' size={25} color='#61ec84'/>
@@ -336,7 +342,7 @@ function Friend({data}) {
     return (
         <View style = {styles.friendCard}>
             <Image source={!data?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: data?.avatar }} style={styles.imageFr}/>
-            <Text style={{ fontSize: 18, fontWeight: '500'}}>
+            <Text style={{ marginStart: 5, fontSize: 18, fontWeight: '500'}}>
                 {data?.username}
             </Text>
         </View>
