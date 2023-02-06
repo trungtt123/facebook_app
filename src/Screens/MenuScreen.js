@@ -19,7 +19,7 @@ import { logout, resetAuthSlice } from "../Redux/authSlice";
 import { resetPostSlice } from '../Redux/postSlice';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { COMMON_COLOR } from '../Services/Helper/constant';
-import { resetData } from '../Redux/emojiSlice';
+import { resetEmojiSlice } from '../Redux/emojiSlice';
 import { setUserID } from '../Redux/emojiSlice';
 function MenuScreen({ navigation }) {
     const dispatch = useDispatch();
@@ -30,13 +30,14 @@ function MenuScreen({ navigation }) {
         // reset store
         dispatch(resetPostSlice());
         dispatch(resetAuthSlice());
+        dispatch(resetEmojiSlice());
         dispatch(logout());
     }
     const handleExitApp = () => {
         BackHandler.exitApp();
     }
     const goToProfile = () => {
-        // dispatch(resetData());
+        // dispatch(resetEmojiSlice());
         // dispatch(setUserID(userInfor.id));
         navigation.navigate("profile")
     }

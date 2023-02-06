@@ -31,7 +31,7 @@ import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
 import { Audio } from 'expo-av';
-import { resetData, setUserID } from '../Redux/emojiSlice';
+import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
 function PostInHome({ navigation, postData, userID }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
@@ -57,7 +57,7 @@ function PostInHome({ navigation, postData, userID }) {
     const LeftContent = () => {
         return (
             <TouchableOpacity onPress={() => {
-                dispatch(resetData());
+                dispatch(resetEmojiSlice());
                 dispatch(setUserID(post?.author?.id));
                 //console.log("userId", post?.author?.id);
                 navigation.navigate("profile")
@@ -128,7 +128,7 @@ function PostInHome({ navigation, postData, userID }) {
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
                                     <TouchableOpacity onPress={() => {
-                                        dispatch(resetData());
+                                        dispatch(resetEmojiSlice());
                                         dispatch(setUserID(post?.author?.id));
                                         console.log("userId", post?.author?.id);
                                         navigation.navigate("profile");

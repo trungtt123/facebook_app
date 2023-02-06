@@ -12,7 +12,7 @@ import { _getCache } from "../../Services/Helper/common";
 import { Paragraph } from "react-native-paper";
 import ViewWithIcon from "../ViewWithIcon";
 import { useDispatch } from "react-redux";
-import { setOriginalData, setDescribed, showEmoji, resetData, setEdit, setImage, setVideo, setVideoSize, setPostID } from "../../Redux/emojiSlice";
+import { setOriginalData, setDescribed, showEmoji, resetEmojiSlice, setEdit, setImage, setVideo, setVideoSize, setPostID } from "../../Redux/emojiSlice";
 import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
 
@@ -37,7 +37,7 @@ export default function DotModal({ closeModal, postData, userID, setReportDot, n
                     <Text style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5 }}> Lưu bài viết</Text>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    dispatch(resetData());
+                    dispatch(resetEmojiSlice());
                     dispatch(setEdit());
                     dispatch(setPostID(postData.id))
                     dispatch(setDescribed(postData.described));

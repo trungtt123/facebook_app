@@ -35,7 +35,7 @@ import Slider from '@react-native-community/slider';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
 import { onChangeMute, onChangePlayVideoDetail, onChangePlayVideoTab } from '../Redux/videoSlice';
-import { resetData, setUserID } from '../Redux/emojiSlice';
+import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
 function PostInVideo({ navigation, postData, isPlaying, userID }) {
     const dispatch = useDispatch();
     const video = useRef(null);
@@ -73,7 +73,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
     const LeftContent = () => {
         return (
             <TouchableOpacity onPress={() => {
-                dispatch(resetData());
+                dispatch(resetEmojiSlice());
                 dispatch(setUserID(post?.author?.id));
                 //console.log("userId", post?.author?.id);
                 navigation.navigate("profile")
@@ -168,7 +168,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                             <View style={{ flexDirection: 'row', width: 200 }}>
                                 <Text>
                                     <TouchableOpacity onPress={() => {
-                                        dispatch(resetData());
+                                        dispatch(resetEmojiSlice());
                                         dispatch(setUserID(post?.author?.id));
                                         //console.log("userId", post?.author?.id);
                                         navigation.navigate("profile")

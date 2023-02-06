@@ -9,7 +9,7 @@ import { delay } from '../Services/Helper/common';
 import PostInVideo from "../Components/PostInVideo";
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData } from "../Redux/emojiSlice";
+import { resetEmojiSlice } from "../Redux/emojiSlice";
 import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 //@trungtt123
 function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {

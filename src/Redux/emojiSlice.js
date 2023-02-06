@@ -26,7 +26,7 @@ const emojiSlice = createSlice({
     name: "emoji",
     initialState,
     reducers: {
-        resetData: () => initialState,
+        resetEmojiSlice: () => initialState,
 
         showEmoji: (state, action) => {
             state.checkEmoji = true;
@@ -102,6 +102,6 @@ const emojiSlice = createSlice({
 
     }
 });
-export const { showEmoji, hideEmoji, setDescribed, setEdit, resetData, setNewData, setImage, setVideo, 
+export const { showEmoji, hideEmoji, setDescribed, setEdit, resetEmojiSlice: resetEmojiSlice, setNewData, setImage, setVideo, 
     setVideoSize, setAsset, setOriginalData, addImageDel, setVideoDel, setPostID, setUserID } = emojiSlice.actions;
 export default emojiSlice.reducer

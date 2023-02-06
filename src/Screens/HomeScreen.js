@@ -11,7 +11,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { getUserInfo } from '../Redux/userSlice';
 
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData, setUserID } from "../Redux/emojiSlice";
+import { resetEmojiSlice, setUserID } from "../Redux/emojiSlice";
 //@trungtt123
 function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const defaultCount = 10;
@@ -65,7 +65,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         layoutOffset.current = offsetY;
     }
     const goToCreatePost = () => {
-        dispatch(resetData());
+        dispatch(resetEmojiSlice());
         navigation.navigate('createPost');
     }
     useEffect(() => {
@@ -177,7 +177,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                     return <>
                         <View style={{ flex: 1, height: 70, backgroundColor: 'white', flexDirection: 'row', padding: 15 }}>
                             <TouchableOpacity onPress={()=> {
-                                dispatch(resetData());
+                                dispatch(resetEmojiSlice());
                                 navigation.navigate("profile");
                             }}>
                             <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={

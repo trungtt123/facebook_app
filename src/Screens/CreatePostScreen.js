@@ -110,7 +110,7 @@ export default function CreatePostScreen({ route, navigation }) {
                     }
 
                 }}>
-                    <AntDesign name="close" size={20} color="#DCDCDC" />
+                    <AntDesign name="close" size={20} color="#626262" />
                 </TouchableOpacity>
             </View>
         );
@@ -128,7 +128,9 @@ export default function CreatePostScreen({ route, navigation }) {
                 <TouchableOpacity onPress={() => { navigation.navigate("emoji") }}>
                     <Ionicons name="ios-happy-outline" size={27} color="#FF8C00" />
                 </TouchableOpacity>
+                <TouchableOpacity>
                 <Ionicons name="location-sharp" size={27} color="red" />
+                </TouchableOpacity>
                 <TouchableOpacity>
                     <MaterialCommunityIcons name="dots-horizontal-circle" size={27} color="gray" style={{ marginRight: 40 }} onPress={() => {
                         if (isKeyboardVisible) {
@@ -155,6 +157,7 @@ export default function CreatePostScreen({ route, navigation }) {
                         <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Ảnh/Video</Text>
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity>
                 <View style={{
                     flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
                     borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
@@ -162,6 +165,7 @@ export default function CreatePostScreen({ route, navigation }) {
                     <FontAwesome5 name="user-tag" size={27} color="#4267b2" />
                     <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Gắn thẻ người khác</Text>
                 </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     navigation.navigate("emoji")
                 }}>
@@ -173,6 +177,7 @@ export default function CreatePostScreen({ route, navigation }) {
                         <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Cảm xúc</Text>
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity>
                 <View style={{
                     flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
                     borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
@@ -180,6 +185,7 @@ export default function CreatePostScreen({ route, navigation }) {
                     <Ionicons name="location-sharp" size={27} color="red" />
                     <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Check In</Text>
                 </View>
+                </TouchableOpacity>
 
             </View>
         );
@@ -287,7 +293,7 @@ export default function CreatePostScreen({ route, navigation }) {
                                 dispatch(setAsset([]));
                             }
                         }}>
-                            <AntDesign name="close" size={20} color="#DCDCDC" />
+                            <AntDesign name="close" size={20} color="#626262" />
                         </TouchableOpacity>
                     </View>
                 ) : null}
