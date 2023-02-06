@@ -74,19 +74,21 @@ export default function PostModalOneImage({ navigation, postData, onClose, viewI
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username}</Text>
                         <Text>{seemore ?
                             <><Text>
-                                <ViewWithIcon value={post?.described}
+                                {
+                                post?.described && <ViewWithIcon value={post?.described}
                                     styleText={{ fontSize: 15, color: 'white' }}
                                     styleIcon={{ width: 17, height: 17 }} />
+                                }
                             </Text>
                                 {collapse && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(false)}>{'Thu gọn'}</Text>}
                             </>
-                            : <ViewWithIcon value={post?.described?.slice(0, 50) + "... "}
+                            : post?.described && <ViewWithIcon value={post?.described?.slice(0, 50) + "... "}
                                 styleText={{ fontSize: 15, color: 'white' }}
                                 styleIcon={{ width: 17, height: 17 }} />}
                         </Text>
-                        {!seemore && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
+                        {!seemore && post?.described && <Text style={{ color: '#9c9c9e', fontWeight: '500' }} onPress={() => setSeemore(true)}>Xem thêm</Text>}
 
-                        <Text style={{ color: '#6d6d6d', marginTop: 20, fontSize: 12 }}>{getTimeUpdateDetailPostFromUnixTime(post?.modified)}</Text>
+                        <Text style={{ color: '#ccc', marginTop: 20, fontSize: 12 }}>{getTimeUpdateDetailPostFromUnixTime(post?.modified)}</Text>
                     </View>
                     <View style={{
                         flex: 1,

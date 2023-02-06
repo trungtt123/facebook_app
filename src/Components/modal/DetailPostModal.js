@@ -95,9 +95,11 @@ function DetailPostModal({ navigation, postData, onClose, viewImage, callBackPos
                         />
                         <Card.Content>
                             <Paragraph style={{ fontSize: 15 }}>
-                                <ViewWithIcon value={post?.described}
-                                    styleText={{ fontSize: 15 }}
-                                    styleIcon={{ width: 17, height: 17 }} />
+                                {
+                                    post?.described && <ViewWithIcon value={post?.described}
+                                        styleText={{ fontSize: 15 }}
+                                        styleIcon={{ width: 17, height: 17 }} />
+                                }
                             </Paragraph>
                         </Card.Content>
 

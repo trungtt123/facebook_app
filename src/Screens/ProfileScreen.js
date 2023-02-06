@@ -8,7 +8,9 @@ import {
     Image,
     Dimensions,
     ScrollView,
-    ToastAndroid
+    ToastAndroid,
+    RefreshControl,
+    Alert
 } from 'react-native';
 import { SimpleGrid } from 'react-native-super-grid';
 import { connect } from 'react-redux';
@@ -27,6 +29,7 @@ import styles from './style/profile';
 import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
+import { resetEmojiSlice } from '../Redux/emojiSlice';
 
 function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
@@ -34,6 +37,12 @@ function ProfileScreen({ navigation, route }) {
     const { userList, isLoading } = useSelector(
         (state) => state.user
     );
+
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+        isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
+       (state) => state.post
+    );
+
     let av = "https://phongreviews.com/wp-content/uploads/2022/11/avatar-facebook-mac-dinh-13.jpg";
     const userId =  route?.params?.userId;
 
@@ -45,18 +54,29 @@ function ProfileScreen({ navigation, route }) {
     const { user } = useSelector(
         (state) => state.auth
     );
+    const [refreshing, setRefreshing] = useState(false);
     const [reload, setReload] = useState(false);
     const {userInfor, successChangeAva} = useSelector((state) => state.user);
     const [userInfors, setUserInfors] = useState(userInfor);
+    const onRefresh = async () => {
+        setRefreshing(true);
+        postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
+            setListPost(result.data);
+            setRefreshing(false);
+        }).catch(e => {
+            console.log(e);
+        });
+    }
     useEffect(() => {
         const fetchListPost = async () => {
             try {
-                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
-                let resFri = await userService.getUserFriends(userId? userId : user.id, 0, 0);
-                setCntFriend(resFri.data.friends.length);
-                setFriends(resFri.data.friends.slice(0, 6));
-                console.log(friends);
-                setListPost(responese.data);
+                postService.getListPostByUserId(userId ? userId:user.id).then((result) => {
+                    setListPost(result.data);
+                });
+                userService.getUserFriends(userId? userId : user.id, 0, 0).then((result) => {
+                    setCntFriend(result.data.friends.length);
+                    setFriends(result.data.friends.slice(0, 6));
+                });
                 if (userId) {
                     userService.getUserInfor(userId).then((result) => {
                         setUserInfors(result.data);
@@ -70,9 +90,50 @@ function ProfileScreen({ navigation, route }) {
         fetchListPost();
     }, [reload, userId])
 
+    useEffect(() => {
+        if (!isPendingCreatePost && newCreatePostData) {
+            ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
+            onRefresh();
+        }
+        if (isErrorCreatePost) {
+            Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [
+                { text: "OK", onPress: () => null }
+            ]);
+        }
+        else {
+            // popup noti đăng bài thành công
+        }
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost])
+    useEffect(() => {
+        if (isErrorEditPost) {
+            ToastAndroid.show("Chỉnh sửa không thành công, vui lòng thử lại sau!", ToastAndroid.SHORT);
+        }
+        else {
+            // popup noti chỉnh sửa bài thành công
+            if(!isPendingEditPost && messageEditPost){
+                ToastAndroid.show("Chỉnh sửa bài viết thành công", ToastAndroid.SHORT);
+                onRefresh();
+                //console.log("refesh", isErrorEditPost, isPendingEditPost);
+            }
+        }
+    }, [isPendingEditPost, isErrorEditPost, messageEditPost])
+    useEffect(() => {
+        if (isErrorDeletePost) {
+            ToastAndroid.show("Có lỗi xảy ra, vui lòng thử lại sau!", ToastAndroid.SHORT);
+        }
+        else {
+            // popup noti chỉnh sửa bài thành công
+            if(!isPendingDeletePost && messageDeletePost){
+                ToastAndroid.show("Đã chuyển bài viết vào thùng rác", ToastAndroid.SHORT);
+                onRefresh();
+            }
+        }
+    }, [isPendingDeletePost, isErrorDeletePost, messageDeletePost])
+
     const  showModalAvatar = () => {
         setShowModalAva(true);
     }
+    console.log('length', JSON.stringify(listPost));
     return (
         <>
             {!userId?
@@ -162,7 +223,16 @@ function ProfileScreen({ navigation, route }) {
                 </ModalBottom>
                 </>:<></>
             }
-        <ScrollView style={styles.container}>
+        <ScrollView showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={styles.container}
+            refreshControl={
+            <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={["#0f80f7"]}
+            />}
+        >
             <View style={styles.firstView}>
                 <TouchableOpacity
                     onPress={() => setShowModalCover(true)}
@@ -294,7 +364,7 @@ function ProfileScreen({ navigation, route }) {
                     data={friends}
                     spacing={2}
                     renderItem={({ item }) => (
-                        <Friend data={item}/>
+                        <Friend data={item} navigation={navigation}/>
                     )}
                 />
                 <View style={{
@@ -317,7 +387,10 @@ function ProfileScreen({ navigation, route }) {
                     Bài viết
                 </Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('createPost')}
+                    onPress={() => {
+                        dispatch(resetEmojiSlice());
+                        navigation.navigate('createPost');
+                    }}
                 >
                     <View style={styles.thinking}>
                         <Image source={(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} style={styles.postImage}/>
@@ -331,21 +404,25 @@ function ProfileScreen({ navigation, route }) {
                 </TouchableOpacity>
             </View>
             {listPost?.map((item, index) => {
-                return <PostInHome navigation={navigation} key={index} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}}/>
+                return <PostInHome navigation={navigation} key={item.id} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} userID={user.id}/>
             })}
         </ScrollView>
         </>
     );
 }
 
-function Friend({data}) {
+function Friend({data, navigation}) {
     return (
-        <View style = {styles.friendCard}>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("profile", {userId:data?.id});
+        }}>
+            <View style = {styles.friendCard}>
             <Image source={!data?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: data?.avatar }} style={styles.imageFr}/>
             <Text style={{ marginStart: 5, fontSize: 18, fontWeight: '500'}}>
                 {data?.username}
             </Text>
         </View>
+        </TouchableOpacity>
     );
 }
 

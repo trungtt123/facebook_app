@@ -75,6 +75,7 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
             console.log(newCreatePostData);
             newPostList = newPostList.concat(postListTotal);
             setPostListTotal(newPostList);
+            ToastAndroid.show("Đăng bài viết thành công", ToastAndroid.SHORT);
         }
         if (isErrorCreatePost) {
             Alert.alert("Đăng bài không thành công", "Vui lòng thử lại sau.", [

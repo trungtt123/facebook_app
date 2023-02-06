@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Alert, StyleSheet, Text, Button, View, TextInput, TouchableOpacity, Image, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, Button, View, TextInput, TouchableOpacity, Image, ScrollView, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -16,7 +16,7 @@ import ViewWithIcon from "../ViewWithIcon";
 
 //đây là mỗi phần tử comment, có urlImage, ten và textComment, time
 function ComponentComment(props) {
-    
+
     return (
         <View style={styles.commentContainer}>
             <Image
@@ -107,12 +107,12 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
     }
     //hàm này gọi khi load tiep comment
     const onLoadComment = async () => {
-        index.current = index.current+10;
+        index.current = index.current + 10;
         await getComment(postId);
     }
-    const handleLikeSound = async() => {
+    const handleLikeSound = async () => {
         try {
-            const {sound} = await Audio.Sound.createAsync(require('../../../assets/like_sound.mp3'),{shouldPlay: true});
+            const { sound } = await Audio.Sound.createAsync(require('../../../assets/like_sound.mp3'), { shouldPlay: true });
             await sound.playAsync();
         } catch (e) {
             console.log(e);
@@ -136,7 +136,7 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
             unsubscribe();
         };
     }, [])
-    
+
     const [h, setH] = useState(400);//chieu cao khi cuon
     return (
         <View>
@@ -181,25 +181,35 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                         <View style={styles.comment}>
 
 
-                            <ScrollView
+                            {isConnected ? <FlatList
+                                showsVerticalScrollIndicator={false}
+                                showsHorizontalScrollIndicator={false}
+                                data={comments}
+                                renderItem={(data) => {
+                                    const item = data.item;
+                                    if (item.is_blocked == 0)
+                                            return <ComponentComment time={getTimeUpdateCommentFromUnixTime(item.created)} urlImage={item.poster.avatar} key={data.index} name={item.poster.name} textComment={item.comment} />
+                                }}
+                                // Performance settings
+                                removeClippedSubviews={true} // Unmount components when outside of window 
+                                initialNumToRender={1} // Reduce initial render amount
+                                maxToRenderPerBatch={1} // Reduce number in each render batch
+                                updateCellsBatchingPeriod={100} // Increase time between renders
+                                windowSize={7} // Reduce the window size
+                                onScrollBeginDrag={() => endScroll.current = false}
+                                onScrollEndDrag={() => endScroll.current = true}
                                 onScroll={(e) => {
-                                    
                                     //paddingToBottom += e.nativeEvent.layoutMeasurement.height;
-                                    if(e.nativeEvent.contentOffset.y >= h) {
-                                      //console.log("Load comment ");
-                                      onLoadComment();
-                                      setH(h+400);
+                                    if (e.nativeEvent.contentOffset.y >= h) {
+                                        //console.log("Load comment ");
+                                        onLoadComment();
+                                        setH(h + 400);
                                     }
-                                  }}
-                            >
-                                {/* check xem co internet ko, neu co=>comment, ko thi man hinh error */}
-                                {isConnected ?
-                                    comments?.map((item, index) => {
-                                        if(item.is_blocked == 0)
-                                        return <ComponentComment time={getTimeUpdateCommentFromUnixTime(item.created)} urlImage={item.poster.avatar} key={index} name={item.poster.name} textComment={item.comment} />
-                                    }) : <NetworkError />}
-
-                            </ScrollView>
+                                }}
+                                scrollEventThrottle={400} // kich hoat onScroll trong khung hinh co do dai 400
+                            
+                            />
+                            : <NetworkError />}
                         </View>
 
                         {/* thanh viết bình luận */}
@@ -210,7 +220,7 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                                 value={getTextWithIcon(textComment)}
                                 placeholder=" Viết bình luận..."
                                 keyboardType="default"
-                                onSubmitEditing={async() => {await setComment(postId); }}
+                                onSubmitEditing={async () => { await setComment(postId); }}
                             />
                         </View>
                     </View>
