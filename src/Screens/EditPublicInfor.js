@@ -60,7 +60,7 @@ export default function EditPublicInfor({ navigation }) {
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 5}}>
-                        <View style={{flex: 12}}>
+                        <View style={{flex: 12, paddingBottom: 50}}>
                             <Text style = {styles.textThirddView}>
                                 {'Đã học tại Tôi yêu Yên Mô A'}
                             </Text>

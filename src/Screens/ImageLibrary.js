@@ -35,6 +35,7 @@ export default function ImageLibrary({ navigation }) {
                 } else if (assets[0].duration < 1) {
                   ToastAndroid.show("Không thể upload video quá ngắn!", ToastAndroid.SHORT);
                 } else {
+                  //console.log(assets);
                   dispatch(setNewData([{ filename: assets[0].filename, uri: assets[0].uri, type: 'video/' + getType(assets[0].filename) }]));
                   dispatch(setVideo());
                   dispatch(setAsset(assets));

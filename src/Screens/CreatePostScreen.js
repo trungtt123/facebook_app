@@ -12,22 +12,26 @@ import {
     ScrollView,
     Modal,
     Button,
-    Alert
+    Alert,
+    SafeAreaView,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 import { useRoute } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, } from "react-redux";
 import {
     _getCache,
     _setCache
 } from '../Services/Helper/common';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import axios from '../setups/custom_axios';
 import { createPost, editPost } from '../Redux/postSlice';
 import { getTextWithIcon } from '../Services/Helper/common';
 import { setNewData, setOriginalData, addImageDel, setVideoDel, setAsset } from '../Redux/emojiSlice';
+import useKeyBoard from '../Components/UseKeyBoard';
 
 export default function CreatePostScreen({ route, navigation }) {
     const prevPage = useRef(route.params?.prevPage);
@@ -41,10 +45,10 @@ export default function CreatePostScreen({ route, navigation }) {
     const image_del = useSelector((state) => state.emoji.image_del);
     const post = useSelector((state) => state.emoji);
     const [text, setText] = useState(post.described);
+    const widthLayout = Dimensions.get('window').width;
+    const isKeyboardVisible = useKeyBoard();
+    const [showMenu, setShowMenu] = useState(false);
 
-    const getType = (filename) => {
-        return filename.split('.').pop();
-    }
     useEffect(() => {
         prevPage.current = route.params?.prevPage;
     }, [route])
@@ -79,7 +83,7 @@ export default function CreatePostScreen({ route, navigation }) {
             dispatch(createPost({ described, status, formData, isMedia: (post.checkImage || post.checkVideo), videoWidth: post.videoWidth, videoHeight: post.videoHeight }));
         } else {
             //console.log({ id: post.postID, described, status, formData, isMedia: (newData.length==0), videoWidth: post.videoWidth, videoHeight: post.videoHeight, image_del: JSON.stringify(image_del), video_del: post.video_del});
-            dispatch(editPost({ id: post.postID, described, status, formData, isMedia: !(newData.length==0), videoWidth: post.videoWidth, videoHeight: post.videoHeight, image_del: JSON.stringify(image_del), video_del: post.video_del}))
+            dispatch(editPost({ id: post.postID, described, status, formData, isMedia: !(newData.length == 0), videoWidth: post.videoWidth, videoHeight: post.videoHeight, image_del: JSON.stringify(image_del), video_del: post.video_del }))
         }
     }
     const CustomImage = ({ style, item }) => {
@@ -100,93 +104,180 @@ export default function CreatePostScreen({ route, navigation }) {
                         dispatch(setOriginalData(data));
                     } else {
                         let data = newData.filter(x => x.uri != item.uri);
-                        let assets = post.assets.filter(x=> x.uri != item.uri);
+                        let assets = post.assets.filter(x => x.uri != item.uri);
                         dispatch(setNewData(data));
                         dispatch(setAsset(assets));
                     }
 
                 }}>
-                    <AntDesign name="close" size={20} color="gray" />
+                    <AntDesign name="close" size={20} color="#626262" />
                 </TouchableOpacity>
+            </View>
+        );
+    }
+    const ShowKeyBoardMenu = () => {
+        return (
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', height: 60, borderTopColor: '#DCDCDC', borderTopWidth: 0.2, justifyContent: 'space-between', }}>
+                <TouchableOpacity onPress={() => { navigation.navigate("image") }}>
+                    <Ionicons name="images" size={27} color='#128C7E' style={{ marginLeft: 40 }} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <FontAwesome5 name="user-tag" size={27} color="#4267b2" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { navigation.navigate("emoji") }}>
+                    <Ionicons name="ios-happy-outline" size={27} color="#FF8C00" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                <Ionicons name="location-sharp" size={27} color="red" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <MaterialCommunityIcons name="dots-horizontal-circle" size={27} color="gray" style={{ marginRight: 40 }} onPress={() => {
+                        if (isKeyboardVisible) {
+                            Keyboard.dismiss();
+                            setShowMenu(true);
+                        } else {
+                            setShowMenu(false);
+                        }
+                    }} />
+                </TouchableOpacity>
+            </View>
+
+        );
+    }
+    const HideKeyBoardMenu = () => {
+        return (
+            <View>
+                <TouchableOpacity onPress={() => { navigation.navigate("image") }}>
+                    <View style={{
+                        flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
+                        borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
+                    }}>
+                        <Ionicons name="images" size={27} color='#128C7E' />
+                        <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Ảnh/Video</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                <View style={{
+                    flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
+                    borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
+                }}>
+                    <FontAwesome5 name="user-tag" size={27} color="#4267b2" />
+                    <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Gắn thẻ người khác</Text>
+                </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                    navigation.navigate("emoji")
+                }}>
+                    <View style={{
+                        flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
+                        borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
+                    }}>
+                        <Ionicons name="ios-happy-outline" size={27} color="#FF8C00" />
+                        <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Cảm xúc</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                <View style={{
+                    flexDirection: 'row', height: 50, alignItems: 'center', paddingLeft: 16,
+                    borderTopColor: '#DCDCDC', borderTopWidth: StyleSheet.hairlineWidth
+                }}>
+                    <Ionicons name="location-sharp" size={27} color="red" />
+                    <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Check In</Text>
+                </View>
+                </TouchableOpacity>
+
             </View>
         );
     }
 
     return (
-        <View style={{ backgroundColor: 'white', justifyContent: 'space-between', flex: 1 }}>
-            <View style={{ flexDirection: 'row', padding: 16, alignItems: 'center' }}>
-                <Image source={user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }} style={styles.img} />
-                <View style={{ paddingLeft: 8 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ color: 'black', fontWeight: '600' }}>{user?.username}</Text>
-                        {(post.checkEmoji) ? (
+        <KeyboardAvoidingView style={{ backgroundColor: 'white', justifyContent: 'space-between', flex: 1 }}>
+            <ScrollView style={{ backgroundColor: 'white', flex: 1 }} keyboardShouldPersistTaps='handled'>
+                <View style={{ flexDirection: 'column', flex: 1 }}>
+                    <View style={{ flexDirection: 'row', padding: 16, alignItems: 'center' }}>
+                        <Image source={user?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: user?.avatar }} style={styles.img} />
+                        <View style={{ paddingLeft: 8 }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Image source={{ uri: post.iconEmoji }} style={styles.emoji} />
-                                <Text>{' đang cảm thấy '}</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{post.textEmoji}</Text>
-                            </View>) : null
-                        }
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{
-                            padding: 2, paddingLeft: 4, paddingRight: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-                            marginTop: 4, borderColor: '#D3D6DB', borderWidth: 1, borderRadius: 5
-                        }}>
-                            <Icon name="md-globe" color={'gray'} />
-                            <Text style={{ color: 'gray', marginLeft: 4, marginRight: 4 }}>Công khai</Text>
-                            <Icon name='caret-down' color={'gray'} size={16} />
+                                <Text style={{ color: 'black', fontWeight: '600' }}>{user?.username}</Text>
+                                {(post.checkEmoji) ? (
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Image source={{ uri: post.iconEmoji }} style={styles.emoji} />
+                                        <Text>{' đang cảm thấy '}</Text>
+                                        <Text style={{ fontWeight: 'bold' }}>{post.textEmoji}</Text>
+                                    </View>) : null
+                                }
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{
+                                    padding: 2, paddingLeft: 4, paddingRight: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+                                    marginTop: 4, borderColor: '#D3D6DB', borderWidth: 1, borderRadius: 5
+                                }}>
+                                    <Icon name="md-globe" color={'gray'} />
+                                    <Text style={{ color: 'gray', marginLeft: 4, marginRight: 4 }}>Công khai</Text>
+                                    <Icon name='caret-down' color={'gray'} size={16} />
+                                </View>
+                            </View>
                         </View>
                     </View>
+                    <TextInput multiline style={{ fontSize: 16, padding: 16, paddingTop: 0, textAlignVertical: "top", minHeight: 50 }} selectionColor={'gray'} placeholderTextColor={'gray'}
+                        placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(getTextWithIcon(newText))} autoCorrect={false}
+                         />
                 </View>
-            </View>
 
 
-            <TextInput autoFocus={true} multiline style={{ height: 60, fontSize: 16, padding: 16, paddingTop: 0 }} selectionColor={'gray'} placeholderTextColor={'gray'} placeholder={"Bạn đang nghĩ gì?"} defaultValue={text} onChangeText={newText => setText(getTextWithIcon(newText))} />
-
-
-            <View style={{ justifyContent: 'center', alignContent: 'center', backgroundColor: 'white', height: 400, flexDirection: 'row', }}>
-                {(post.checkImage && aggregateData.length == 1) ? (
-                    <CustomImage style={{
-                        flex: 1, borderWidth: 1,
-                        borderColor: "white",
-                    }} item={aggregateData[0]} />
-                ) : null}
-                {(post.checkImage && aggregateData.length == 2) ? (
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                {post.checkImage && (<View style={{ justifyContent: 'center', alignContent: 'center', height: 400, flexDirection: 'row', }}>
+                    {(post.checkImage && aggregateData.length == 1) ? (
                         <CustomImage style={{
-                            flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
+                            flex: 1, borderWidth: 1,
+                            borderColor: "white",
                         }} item={aggregateData[0]} />
-                        <CustomImage style={{
-                            flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
-                        }} item={aggregateData[1]} />
-                    </View>
-                ) : null}
-                {(post.checkImage && aggregateData.length == 3) ? (
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <CustomImage style={styles.firstImage} item={aggregateData[0]} />
-
-                        <View style={{ flex: 1, width: '50%', flexDirection: 'column' }}>
-                            <CustomImage style={styles.secondImage} item={aggregateData[1]} />
-                            <CustomImage style={styles.secondImage} item={aggregateData[2]} />
+                    ) : null}
+                    {(post.checkImage && aggregateData.length == 2) ? (
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <CustomImage style={{
+                                flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
+                            }} item={aggregateData[0]} />
+                            <CustomImage style={{
+                                flex: 1, width: '50%', height: '100%', borderWidth: 1, borderColor: "white",
+                            }} item={aggregateData[1]} />
                         </View>
-                    </View>
+                    ) : null}
+                    {(post.checkImage && aggregateData.length == 3) ? (
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <CustomImage style={styles.firstImage} item={aggregateData[0]} />
 
-                ) : null}
-                {(post.checkImage && aggregateData.length == 4) ? (
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <CustomImage style={styles.firstImage} item={aggregateData[0]} />
-                        <View style={{ width: '50%' }}>
-                            <CustomImage style={styles.thirdImage} item={aggregateData[1]} />
-                            <CustomImage style={styles.thirdImage} item={aggregateData[2]} />
-                            <CustomImage style={styles.thirdImage} item={aggregateData[3]} />
+                            <View style={{ flex: 1, width: '50%', flexDirection: 'column' }}>
+                                <CustomImage style={styles.secondImage} item={aggregateData[1]} />
+                                <CustomImage style={styles.secondImage} item={aggregateData[2]} />
+                            </View>
                         </View>
-                    </View>
-                ) : null}
+
+                    ) : null}
+                    {(post.checkImage && aggregateData.length == 4) ? (
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <CustomImage style={styles.firstImage} item={aggregateData[0]} />
+                            <View style={{ width: '50%' }}>
+                                <CustomImage style={styles.thirdImage} item={aggregateData[1]} />
+                                <CustomImage style={styles.thirdImage} item={aggregateData[2]} />
+                                <CustomImage style={styles.thirdImage} item={aggregateData[3]} />
+                            </View>
+                        </View>
+                    ) : null}
+                </View>)}
                 {(post.checkVideo) ? (
-                    <View style={{ flex: 1 }}>
-                        <Video source={{ uri: aggregateData[0].uri }} style={{ flex: 1, alignSelf: 'stretch' }}
+                    <View style={{
+                        flex: 1, justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Video source={{ uri: aggregateData[0].uri }}
+                            style={{
+                                alignSelf: 'center',
+                                width: widthLayout,
+                                height: (widthLayout * post.videoHeight / post.videoWidth)
+                            }}
                             useNativeControls={true}
-                            resizeMode='contain'>
+                            resizeMode='cover'>
                         </Video>
                         <TouchableOpacity style={{
                             position: 'absolute',
@@ -202,37 +293,15 @@ export default function CreatePostScreen({ route, navigation }) {
                                 dispatch(setAsset([]));
                             }
                         }}>
-                            <AntDesign name="close" size={20} color="gray" />
+                            <AntDesign name="close" size={20} color="#626262" />
                         </TouchableOpacity>
                     </View>
                 ) : null}
-            </View>
-            <View>
-                <TouchableOpacity onPress={() => { navigation.navigate("image") }}>
-                    <View style={{
-                        flexDirection: 'row', height: 56, alignItems: 'center', paddingLeft: 16,
-                        borderTopColor: '#72757A', borderTopWidth: StyleSheet.hairlineWidth
-                    }}>
-                        <Icon name="md-camera" color='green' size={24} />
-                        <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Ảnh/Video</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
-                    //console.log(JSON.stringify(image_del)); console.log(post.video_del);
-                    navigation.navigate("emoji")
-                }}>
-                    <View style={{
-                        flexDirection: 'row', height: 56, alignItems: 'center', paddingLeft: 16,
-                        borderTopColor: '#72757A', borderTopWidth: StyleSheet.hairlineWidth
-                    }}>
-                        <Icon name="happy-outline" color='#EDC370' size={24} />
-                        <Text style={{ color: 'gray', fontSize: 16, fontWeight: '500', paddingLeft: 16 }}>Cảm xúc</Text>
-                    </View>
-                </TouchableOpacity>
+            </ScrollView>
+            {(isKeyboardVisible || showMenu) && <ShowKeyBoardMenu />}
+            {(!isKeyboardVisible && !showMenu) && <HideKeyBoardMenu />}
 
-            </View>
-
-        </View>
+        </KeyboardAvoidingView>
     );
 
 }

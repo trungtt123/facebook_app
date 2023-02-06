@@ -31,8 +31,8 @@ import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
 import { Audio } from 'expo-av';
-import { resetData, setUserID } from '../Redux/emojiSlice';
-function PostInHome({ navigation, postData, userID }) {
+import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
+function PostInHome({ navigation, postData, userID, avatar }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
     const [showDot, setShowDot] = useState(false);
@@ -43,7 +43,7 @@ function PostInHome({ navigation, postData, userID }) {
     const [post, setPost] = useState(postData);
     const [seemore, setSeemore] = useState(post?.described && post?.described?.length <= 200);
     const [isError, setIsError] = useState(false);
-    const [videoDimension, setVideoDimension] = useState({width: 0, height: 0});
+    const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
     const postUpdated = () => {
@@ -56,28 +56,25 @@ function PostInHome({ navigation, postData, userID }) {
     }
     const LeftContent = () => {
         return (
-            <TouchableOpacity onPress={()=> {
-                dispatch(resetData());
+            <TouchableOpacity onPress={() => {
+                dispatch(resetEmojiSlice());
                 dispatch(setUserID(post?.author?.id));
-                console.log("userId",post?.author?.id);
-                navigation.navigate("profile")
+                //console.log("userId", post?.author?.id);
+                navigation.navigate("profile", {userId: post?.author?.id})
             }}>
                 <Avatar.Image size={45} source={
-                post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
-            } />
+                    avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
+                } />
             </TouchableOpacity>
         );
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={()=> {setShowDot(true)}}>
-            <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
+            <TouchableOpacity onPress={() => { setShowDot(true) }}>
+                <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=> {console.log(post);
-            
-
-            }}>
-            <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            <TouchableOpacity onPress={() => { }}>
+                <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
             </TouchableOpacity>
         </View>
     }
@@ -90,9 +87,9 @@ function PostInHome({ navigation, postData, userID }) {
             setIsError(true);
         });
     }
-    const handleLikeSound = async() => {
+    const handleLikeSound = async () => {
         try {
-            const {sound} = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'),{shouldPlay: true});
+            const { sound } = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'), { shouldPlay: true });
             await sound.playAsync();
         } catch (e) {
             console.log(e);
@@ -120,24 +117,28 @@ function PostInHome({ navigation, postData, userID }) {
 
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
-            {showDot && <DotModal postData={post} userID={userID} closeModal={()=> setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
-            {showReport && <ReportModal closeModal={()=> setShowReport(false)} postID={post?.id}></ReportModal>}
+            {showDot && <DotModal postData={post} userID={userID} closeModal={() => setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
+            {showReport && <ReportModal closeModal={() => setShowReport(false)} postID={post?.id}></ReportModal>}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
             <Card>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
-                            <View style={{ flexDirection: 'row', width: 200 }}>
-                                <Text>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(resetEmojiSlice());
+                                dispatch(setUserID(post?.author?.id));
+                                console.log("userId", post?.author?.id);
+                                navigation.navigate("profile");
+                            }}>
+                                <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
-
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </Text>
                     }
                     titleNumberOfLines={1}

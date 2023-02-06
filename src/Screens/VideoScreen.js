@@ -9,7 +9,7 @@ import { delay } from '../Services/Helper/common';
 import PostInVideo from "../Components/PostInVideo";
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData } from "../Redux/emojiSlice";
+import { resetEmojiSlice } from "../Redux/emojiSlice";
 import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 //@trungtt123
 function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
@@ -23,7 +23,8 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const { user } = useSelector(
         (state) => state.auth
     );
-    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost, isPendingEditPost, isErrorEditPost, isPendingDeletePost, isErrorDeletePost } = useSelector(
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+         isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
         (state) => state.post
     );
     const [postListTotal, setPostListTotal] = useState([]);
@@ -55,15 +56,15 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         handleGetListVideos();
     }, []);
     useEffect(() => {
-            if(!isErrorEditPost && !isPendingEditPost){
+            if(!isErrorEditPost && !isPendingEditPost && messageEditPost){
                 onRefresh();
             }
-    }, [ isPendingEditPost, isErrorEditPost]);
+    }, [ isPendingEditPost, isErrorEditPost, messageEditPost]);
     useEffect(() => {
-        if(!isErrorDeletePost && !isPendingDeletePost){
+        if(!isErrorDeletePost && !isPendingDeletePost && messageDeletePost){
             onRefresh();
         }
-}, [ isPendingDeletePost, isErrorDeletePost]);
+}, [ isPendingDeletePost, isErrorDeletePost, messageDeletePost]);
     return <View style={styles.container}>
         <FlatList
             showsVerticalScrollIndicator={false}

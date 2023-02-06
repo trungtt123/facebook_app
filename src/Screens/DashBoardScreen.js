@@ -13,7 +13,7 @@ import MenuScreen from "./MenuScreen";
 import FriendScreen from "./FriendScreen";
 import ProfileScreen from "./ProfileScreen";
 import * as Animatable from 'react-native-animatable';
-import { resetData } from "../Redux/emojiSlice";
+import { resetEmojiSlice } from "../Redux/emojiSlice";
 import { onChangeCurrentTabIndex } from "../Redux/tabSlice";
 //import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Animated } from "react-native";
@@ -43,7 +43,7 @@ export default function DashBoardScreen({ navigation }) {
         <VideoScreen navigation={navigation} />
     ), []);
     const FourRoute = useCallback(() => (
-        <ProfileScreen navigation={navigation}/>
+        <ProfileScreen navigation={navigation} />
         //userId= {'639315083fa4155480da25f0'}
         //63949ce3c9255942b0c05d76
         //token ={token}
@@ -52,7 +52,7 @@ export default function DashBoardScreen({ navigation }) {
         <NotificationScreen />
     ), []);
     const SixRoute = useCallback(() => (
-        <MenuScreen />
+        <MenuScreen navigation={navigation}/>
     ), []);
     const renderScene = SceneMap({
         first: FirstRoute,
@@ -71,7 +71,7 @@ export default function DashBoardScreen({ navigation }) {
         dispatch(onChangeCurrentTabIndex(currentIndex));
     }
     const goToCreatePost = () => {
-        dispatch(resetData());
+        dispatch(resetEmojiSlice());
         navigation.navigate('createPost');
     }
     let xValue = new Animated.Value(isShowTopBar ? -10 : 30);

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import userService from "../Services/Api/userService";
 export const fetchAllUsers = createAsyncThunk(
   "user/fetchAllUsers",
@@ -26,6 +26,16 @@ export const setUserInfo = createAsyncThunk("user/set_user_info", async (data, t
   try {
     const { userId, des } = data;
     return await userService.setUserDescription(des, userId);
+  } catch (e) {
+    console.log("error", e);
+    return thunkAPI.rejectWithValue("something went wrong");
+  }
+});
+
+export const setUserName = createAsyncThunk("user/set_user_info", async (data, thunkAPI) => {
+  try {
+    const { userName } = data;
+    return await userService.setUserName(userName);
   } catch (e) {
     console.log("error", e);
     return thunkAPI.rejectWithValue("something went wrong");
@@ -75,11 +85,15 @@ export const setUserCountry  = createAsyncThunk(
     }
   }
 )
+export const resetStatusSetUser = createAction('resetStatusSetUser');
+
+export const resetUserInfor = createAction('resetUserInfor')
 
 const initialState = {
   userList: [],
   isLoading: false,
   userInfor: null,
+  isErrorUpdateUserName: null,
   isEdit: false
 };
 
@@ -118,11 +132,30 @@ const userSlice = createSlice({
     [setAvatar.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.userInfor = action?.payload?.data;
-      state.isEdit = !state.isEdit;
     },
     [setAvatar.rejected]: (state, action) => {
       state.isLoading = false;
+      state.isEdit = true;
     },
+    [resetUserInfor]: (state, action) => {
+      state.userInfor = null
+    },
+    [setUserName.pending] : (state) => {
+      state.isLoading = true;
+      state.isErrorUpdateUserName = null;
+    },
+    [setUserName.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.userInfor = action?.payload?.data;
+      state.isErrorUpdateUserName = false;
+    },
+    [setUserName.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.isErrorUpdateUserName = true;
+    },
+    [resetStatusSetUser]: (state, action) => {
+      state.isErrorUpdateUserName = null;
+    }
   },
 });
 

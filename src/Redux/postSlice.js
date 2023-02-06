@@ -55,8 +55,10 @@ const initialState = {
   newCreatePostData: undefined,
   isPendingEditPost: false,
   isErrorEditPost: undefined,
+  messageEditPost: undefined,
   isPendingDeletePost: false,
   isErrorDeletePost: undefined,
+  messageDeletePost: undefined,
 };
 
 const postSlice = createSlice({
@@ -105,6 +107,7 @@ const postSlice = createSlice({
     [editPost.fulfilled]: (state, action) => {
       console.log("editPost actiion ful", action);
       state.isPendingEditPost = false;
+      state.messageEditPost = action?.payload?.message;
       state.isErrorEditPost = false;
     },
     [editPost.rejected]: (state, action) => {
@@ -120,6 +123,7 @@ const postSlice = createSlice({
     [deletePost.fulfilled]: (state, action) => {
       console.log("deletePost actiion ful", action);
       state.isPendingDeletePost = false;
+      state.messageDeletePost = action?.payload?.message;
       state.isErrorDeletePost = false;
     },
     [deletePost.rejected]: (state, action) => {

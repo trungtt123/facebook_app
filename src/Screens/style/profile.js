@@ -50,7 +50,7 @@ export default styles = StyleSheet.create({
         marginBottom: height*0.01
     },
     addNewsText: {
-        fontSize: 20,
+        fontSize: 15,
         color: '#ffffff',
         paddingStart: width*0.02,
         fontWeight: '500'
@@ -69,7 +69,7 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     editText: {
-        fontSize: 18,
+        fontSize: 15,
         color: '#000000',
         paddingStart: width*0.02,
         fontWeight: '500'
@@ -92,7 +92,7 @@ export default styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         marginTop: height*0.02
     },
@@ -104,15 +104,15 @@ export default styles = StyleSheet.create({
         size: 20,
     },
     hardTextAddress: {
-        fontSize: 18,
+        fontSize: 15,
         marginStart: width*0.03
     },
     hardTextCountry: {
-        fontSize: 18,
+        fontSize: 15,
         marginStart: width*0.045
     },
     data: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: 'bold',
         marginStart: 4,
         numberOfLines: 1,
@@ -126,7 +126,7 @@ export default styles = StyleSheet.create({
         justifyContent: 'center',
     },
     textEditPublic: {
-        fontSize: 16,
+        fontSize: 15,
         color: 'blue'
     },
     thirdView: {
@@ -152,7 +152,7 @@ export default styles = StyleSheet.create({
         borderRadius: 0.12*width,
     },
     thinkText: {
-        fontSize:18,
+        fontSize:15,
         marginStart: 0.03*width,
         marginTop: 0.03*width
     },
@@ -213,7 +213,7 @@ export default styles = StyleSheet.create({
         marginTop: 10
     },
     titleButton: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: '400',
         color: 'blue',
         marginTop: height*0.03

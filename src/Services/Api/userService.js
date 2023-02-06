@@ -13,6 +13,10 @@ const setUserDescription = (descrtiption, userId) => {
   return axios.post(`/user/set_user_info?user_id=${userId}&description=${descrtiption}`);
 }
 
+const setUserName = (userName) => {
+  return axios.post(`/user/set_user_info?username=${userName}`);
+}
+
 const setAvatar = async (data) => {
   const {formData, userId} = data;
   return axios.post(`/user/set_user_info?user_id=${userId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -67,6 +71,7 @@ const getUserInforWithToken = (userId, token) =>  {
   return axios.post(`/user/get_user_info?user_id=${userId}&token=${token}`);
 }
 const userService = {
+  setUserName,
   getAllUsers,
   getListFriendRequest,
   setAcceptFriend,

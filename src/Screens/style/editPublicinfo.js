@@ -41,7 +41,7 @@ export default style = StyleSheet.create({
         borderBottomWidth: 0.5
     },
     thirdView: {
-        height: 330,
+        height: 350,
         borderBottomWidth: 0.5,
         paddingHorizontal: 10,
     },
