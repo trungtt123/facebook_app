@@ -196,7 +196,7 @@ export default function CreatePostScreen({ route, navigation }) {
             <ScrollView style={{ backgroundColor: 'white', flex: 1 }} keyboardShouldPersistTaps='handled'>
                 <View style={{ flexDirection: 'column', flex: 1 }}>
                     <View style={{ flexDirection: 'row', padding: 16, alignItems: 'center' }}>
-                        <Image source={userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }} style={styles.img} />
+                        <Image source={!userInfor?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }} style={styles.img} />
                         <View style={{ paddingLeft: 8 }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={{ color: 'black', fontWeight: '600' }}>{userInfor?.username}</Text>
@@ -314,7 +314,9 @@ const styles = StyleSheet.create({
     img: {
         width: 50,
         height: 50,
-        borderRadius: 50
+        borderRadius: 50,
+        borderWidth: 0.5, 
+        borderColor: '#ccc'
     },
     emoji: {
         marginLeft: 5,
