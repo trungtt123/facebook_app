@@ -177,11 +177,10 @@ function HomeScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                     return <>
                         <View style={{ flex: 1, height: 70, backgroundColor: 'white', flexDirection: 'row', padding: 15 }}>
                             <TouchableOpacity onPress={()=> {
-                                dispatch(resetEmojiSlice());
                                 navigation.navigate("profile");
                             }}>
                             <Image style={{ width: 45, height: 45, borderRadius: 45 / 2, borderWidth: 0.5, borderColor: '#ccc' }} source={
-                                userInfor?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }
+                                !userInfor?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: userInfor?.avatar }
                             } />
                             </TouchableOpacity>
                             <TouchableOpacity style={{ flex: 1 }} onPress={() => goToCreatePost()}>

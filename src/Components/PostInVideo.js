@@ -73,10 +73,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
     const LeftContent = () => {
         return (
             <TouchableOpacity onPress={() => {
-                dispatch(resetEmojiSlice());
-                dispatch(setUserID(post?.author?.id));
-                //console.log("userId", post?.author?.id);
-                navigation.navigate("profile")
+                navigation.navigate("profile", {userId: post?.author?.id});
             }}>
                 <Avatar.Image size={45} source={
                     post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
@@ -166,10 +163,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                     title={
                         <Text>
                             <TouchableOpacity onPress={() => {
-                                dispatch(resetEmojiSlice());
-                                dispatch(setUserID(post?.author?.id));
-                                // console.log("userId", post?.author?.id);
-                                navigation.navigate("profile");
+                                navigation.navigate("profile", {userId: post?.author?.id})
                             }}>
                                 <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
