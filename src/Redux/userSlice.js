@@ -137,10 +137,9 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isEdit = true;
     },
-<<<<<<< HEAD
     [resetUserInfor]: (state, action) => {
       state.userInfor = null
-=======
+    },
     [setUserName.pending] : (state) => {
       state.isLoading = true;
       state.isErrorUpdateUserName = null;
@@ -156,7 +155,6 @@ const userSlice = createSlice({
     },
     [resetStatusSetUser]: (state, action) => {
       state.isErrorUpdateUserName = null;
->>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
     }
   },
 });

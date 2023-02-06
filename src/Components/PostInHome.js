@@ -30,13 +30,9 @@ import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
-<<<<<<< HEAD
-function PostInHome({ navigation, postData, userID, avatar }) {
-=======
 import { Audio } from 'expo-av';
 import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
-function PostInHome({ navigation, postData, userID }) {
->>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
+function PostInHome({ navigation, postData, userID, avatar }) {
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
     const [showDot, setShowDot] = useState(false);
@@ -59,11 +55,6 @@ function PostInHome({ navigation, postData, userID }) {
         })
     }
     const LeftContent = () => {
-<<<<<<< HEAD
-        return <Avatar.Image size={45} source={
-            avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
-        } />
-=======
         return (
             <TouchableOpacity onPress={() => {
                 dispatch(resetEmojiSlice());
@@ -72,11 +63,10 @@ function PostInHome({ navigation, postData, userID }) {
                 navigation.navigate("profile")
             }}>
                 <Avatar.Image size={45} source={
-                    post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+                    avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
                 } />
             </TouchableOpacity>
         );
->>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
