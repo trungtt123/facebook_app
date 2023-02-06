@@ -56,10 +56,12 @@ function ProfileScreen({ navigation, route }) {
                 setFriends(resFri.data.friends.slice(0, 6));
                 console.log(friends);
                 setListPost(responese.data);
-                let responseInfor = await userService.getUserInfor(userId);
-                setUserInfors(responseInfor.data);
+                if (userId) {
+                    let responseInfor = await userService.getUserInfor(userId);
+                    setUserInfors(responseInfor.data);
+                }
             } catch (e) {
-                console.log('Bug: ',e);
+                console.log('Bug: ',e.response);
             }
         }
 
