@@ -17,9 +17,12 @@ import { resetEmojiSlice } from "../Redux/emojiSlice";
 import { onChangeCurrentTabIndex } from "../Redux/tabSlice";
 //import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Animated } from "react-native";
-export default function DashBoardScreen({ navigation }) {
-
+export default function DashBoardScreen({ navigation, socket }) {
     const dispatch = useDispatch();
+    const { user } = useSelector(
+        (state) => state.auth
+    );
+    const [totalNewMessage, setTotalNewMessage] = useState(0);
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
     const [isShowTopBar, setIsShowTopBar] = useState(true);
@@ -33,8 +36,8 @@ export default function DashBoardScreen({ navigation }) {
     ]);
     const FirstRoute = useCallback(() => (
         <HomeScreen onSwipeDown={() => setIsShowTopBar(true)}
-        onSwipeUp={() => setIsShowTopBar(false)}
-        navigation={navigation} />
+            onSwipeUp={() => setIsShowTopBar(false)}
+            navigation={navigation} />
     ), []);
     const SecondRoute = useCallback(() => (
         <FriendScreen navigation={navigation} />
@@ -52,7 +55,7 @@ export default function DashBoardScreen({ navigation }) {
         <NotificationScreen />
     ), []);
     const SixRoute = useCallback(() => (
-        <MenuScreen navigation={navigation}/>
+        <MenuScreen navigation={navigation} />
     ), []);
     const renderScene = SceneMap({
         first: FirstRoute,
@@ -95,6 +98,16 @@ export default function DashBoardScreen({ navigation }) {
         //     }).start();
         // }
     }, [isShowTopBar])
+    useEffect(() => {
+        socket?.emit('client_get_list_conversation', {
+            token: user.token,
+            thisUserId: user.id
+        })
+        socket?.on('server_send_list_conversation', (data) => {
+            // console.log('server_send_list_conversation', JSON.stringify(data.totalNewMessage));
+            setTotalNewMessage(data.totalNewMessage);
+        })
+    }, [socket])
     return <>
         <View style={{ position: 'absolute', height: 30, width: '100%', backgroundColor: 'white', zIndex: 10000 }}></View>
         <Animated.View style={{ marginTop: isShowTopBar ? 30 : -10, flex: 1, backgroundColor: 'white' }}>
@@ -103,7 +116,7 @@ export default function DashBoardScreen({ navigation }) {
                     <Text style={styles.textLogoFacebook}>facebook</Text>
                     <View style={styles.viewBtnRight}>
                         <View style={styles.btnRight}>
-                            <Fontisto onPress={() => goToCreatePost() }
+                            <Fontisto onPress={() => goToCreatePost()}
                                 style={{ left: 1, top: 0.5 }} name="plus-a" size={20} color="black" />
                         </View>
                         <View style={styles.btnRight}>
@@ -113,6 +126,17 @@ export default function DashBoardScreen({ navigation }) {
                         <View style={styles.btnRight}>
                             <Fontisto onPress={() => navigation.navigate('message')}
                                 name="messenger" size={22} color="black" />
+                            {
+                                totalNewMessage > 0 && <View style={{
+                                    position: 'absolute', backgroundColor: 'red', padding: 0.5,
+                                    minWidth: 15, maxWidth: 20, justifyContent: 'center', alignItems: 'center', right: 0, borderRadius: 15
+                                }}>
+                                    <Text style={{ fontSize: 10, color: 'white', fontWeight: '700' }}>{
+
+                                        totalNewMessage < 100 ? totalNewMessage : "99+"
+                                    }</Text>
+                                </View>
+                            }
                         </View>
                         {/* </View> */}
                     </View>

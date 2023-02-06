@@ -52,9 +52,6 @@ export default function AppNavigator() {
         const token = await authService.getToken();
         setToken(token);
     }
-    // useEffect(() => {
-    //     dispatch(onChangeSocket(socket));
-    // }, [socket])
     useEffect(() => {
         if (netInfo.isConnected) dispatch(verifyToken());
         getCacheToken();
@@ -70,7 +67,9 @@ export default function AppNavigator() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="saveLoginInfo" component={SaveLoginInfoScreen} options={{ title: 'Lưu thông tin đăng nhập' }} />
-                <Stack.Screen name="dashboard" component={DashBoardScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="dashboard"  options={{ headerShown: false }}>
+                    {(props) => <DashBoardScreen {...props} socket={socket} />}
+                </Stack.Screen>
                 <Stack.Screen name="message" options={{ title: 'Tin nhắn' }} >
                     {(props) => <Messager {...props} socket={socket} />}
                 </Stack.Screen>
