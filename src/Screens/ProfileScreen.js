@@ -37,7 +37,9 @@ function ProfileScreen({ navigation, token, userId }) {
     const [showModalAva, setShowModalAva] = useState(false);
     const [showModalCover, setShowModalCover] = useState(false);
 
-
+    const userId = useSelector((state) => state.emoji.userId);
+    console.log("userId", userId);
+    const currentTabIndex = useSelector((state) => state.tab.currentTabIndex)
     const [listPost, setListPost] = useState([]);
     const [friends, setFriends] = useState([]);
     const [cntFriend, setCntFriend]  = useState(0);
@@ -50,13 +52,14 @@ function ProfileScreen({ navigation, token, userId }) {
     useEffect(() => {
         const fetchListPost = async () => {
             try {
-                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
+//                let responese = await postService.getListPostByUserId(userId ? userId:user.id);
                 let resFri = await userService.getUserFriends(userId? userId : user.id, 0, 0);
                 setCntFriend(resFri.data.friends.length);
                 setFriends(resFri.data.friends.slice(0, 6));
                 console.log(friends);
+                let responese = await postService.getListPostByUserId(currentTabIndex!=3 ? userId:user.id);
                 setListPost(responese.data);
-                if (userId) {
+                if (currentTabIndex!=3) {
                     let responseInfor = await userService.getUserInfor(userId);
                     setUserInfors(responseInfor.data);
                 }

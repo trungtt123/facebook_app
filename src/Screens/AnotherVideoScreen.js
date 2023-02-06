@@ -8,7 +8,7 @@ import postService from '../Services/Api/postService';
 import { delay } from '../Services/Helper/common';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData } from "../Redux/emojiSlice";
+import { resetEmojiSlice } from "../Redux/emojiSlice";
 import VideoDetail from "../Components/VideoDetail";
 //@trungtt123
 function AnotherVideoScreen({ navigation, route }) {

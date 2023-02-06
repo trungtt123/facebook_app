@@ -1,3 +1,4 @@
+import data from "../../Screens/img/emoji";
 import axios from "../../setups/custom_axios";
 import { deepCopy, _getCache, _setCache } from "../Helper/common";
 
@@ -7,6 +8,26 @@ const createPost = (data) => {
     formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   return axios.post(`/post/add_post?&described=${described}&status=${status}`);
 };
+const editPost = (data) => {
+  const { id, described, status, formData, isMedia, videoWidth, videoHeight, image_del, video_del } = data;
+  if (video_del) {
+    if (isMedia) {
+      return axios.post(`/post/edit_post?&id=${id}&described=${described}&status=${status}&videoWidth=${videoWidth}&videoHeight=${videoHeight}&image_del=${image_del}&video_del=${"true"}`,
+        formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    }
+    return axios.post(`/post/edit_post?&id=${id}&described=${described}&status=${status}&video_del=${"true"}`);
+  }
+  if (isMedia) {
+    return axios.post(`/post/edit_post?&id=${id}&described=${described}&status=${status}&videoWidth=${videoWidth}&videoHeight=${videoHeight}&image_del=${image_del}`,
+      formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  }
+  return axios.post(`/post/edit_post?&id=${id}&described=${described}&status=${status}&image_del=${image_del}`);
+
+}
+const deletePost = (data) => {
+  const {id} = data;
+  return axios.post(`/post/delete_post?&id=${id}`);
+}
 const getListPosts = (lastId, index, count) => {
   return axios.post(`post/get_list_posts?last_id=${lastId}&index=${index}&count=${count}`);
 };
@@ -20,7 +41,7 @@ const getPost = (postId) => {
   return axios.post(`post/get_post?id=${postId}`);
 }
 const reportPost = (data) => {
-  const {id, subject, details} = data;
+  const { id, subject, details } = data;
   return axios.post(`post/report_post?id=${id}&subject=${subject}&details=${details}`);
 }
 const getListPostByUserId = (userId) => {
@@ -68,5 +89,7 @@ const postService = {
   getListPostByUserId,
   createPost,
   reportPost,
+  editPost,
+  deletePost,
 };
 export default postService;

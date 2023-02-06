@@ -30,7 +30,13 @@ import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
+<<<<<<< HEAD
 function PostInHome({ navigation, postData, userID, avatar }) {
+=======
+import { Audio } from 'expo-av';
+import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
+function PostInHome({ navigation, postData, userID }) {
+>>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
     const dispatch = useDispatch();
     const [showComment, setShowComment] = useState(false);
     const [showDot, setShowDot] = useState(false);
@@ -41,7 +47,7 @@ function PostInHome({ navigation, postData, userID, avatar }) {
     const [post, setPost] = useState(postData);
     const [seemore, setSeemore] = useState(post?.described && post?.described?.length <= 200);
     const [isError, setIsError] = useState(false);
-    const [videoDimension, setVideoDimension] = useState({width: 0, height: 0});
+    const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
     const postUpdated = () => {
@@ -53,17 +59,32 @@ function PostInHome({ navigation, postData, userID, avatar }) {
         })
     }
     const LeftContent = () => {
+<<<<<<< HEAD
         return <Avatar.Image size={45} source={
             avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
         } />
+=======
+        return (
+            <TouchableOpacity onPress={() => {
+                dispatch(resetEmojiSlice());
+                dispatch(setUserID(post?.author?.id));
+                //console.log("userId", post?.author?.id);
+                navigation.navigate("profile")
+            }}>
+                <Avatar.Image size={45} source={
+                    post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+                } />
+            </TouchableOpacity>
+        );
+>>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={()=> {setShowDot(true)}}>
-            <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
+            <TouchableOpacity onPress={() => { setShowDot(true) }}>
+                <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=> {}}>
-            <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            <TouchableOpacity onPress={() => { }}>
+                <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
             </TouchableOpacity>
         </View>
     }
@@ -75,6 +96,14 @@ function PostInHome({ navigation, postData, userID, avatar }) {
             console.log(e);
             setIsError(true);
         });
+    }
+    const handleLikeSound = async () => {
+        try {
+            const { sound } = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'), { shouldPlay: true });
+            await sound.playAsync();
+        } catch (e) {
+            console.log(e);
+        }
     }
     const uriEmoji = () => {
         return data.find(x => x.name === (post?.state)).img;
@@ -98,24 +127,28 @@ function PostInHome({ navigation, postData, userID, avatar }) {
 
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
             {viewImage && <ViewImage images={post?.image} index={indexViewImage} onClose={() => setViewImage(false)} />}
-            {showDot && <DotModal postUserId={post?.author?.id} userID={userID} closeModal={()=> setShowDot(false)} postID={post?.id} setReportDot={setShowReport}></DotModal>}
-            {showReport && <ReportModal closeModal={()=> setShowReport(false)} postID={post?.id}></ReportModal>}
+            {showDot && <DotModal postData={post} userID={userID} closeModal={() => setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
+            {showReport && <ReportModal closeModal={() => setShowReport(false)} postID={post?.id}></ReportModal>}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
             <Card>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
-                            <View style={{ flexDirection: 'row', width: 200 }}>
-                                <Text>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(resetEmojiSlice());
+                                dispatch(setUserID(post?.author?.id));
+                                console.log("userId", post?.author?.id);
+                                navigation.navigate("profile");
+                            }}>
+                                <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
-
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </Text>
                     }
                     titleNumberOfLines={1}
@@ -212,7 +245,7 @@ function PostInHome({ navigation, postData, userID, avatar }) {
                             flexDirection: "row",
                             justifyContent: "space-between",
                         }}>
-                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore) }}>
+                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore); handleLikeSound() }}>
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                 <Text style={{ top: 4, left: 3, color: "#626262" }}>Thích</Text>
                             </TouchableOpacity>

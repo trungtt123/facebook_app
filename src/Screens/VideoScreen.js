@@ -9,7 +9,7 @@ import { delay } from '../Services/Helper/common';
 import PostInVideo from "../Components/PostInVideo";
 import { useNetInfo } from '@react-native-community/netinfo';
 import { COMMON_COLOR } from "../Services/Helper/constant";
-import { resetData } from "../Redux/emojiSlice";
+import { resetEmojiSlice } from "../Redux/emojiSlice";
 import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 //@trungtt123
 function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
@@ -22,6 +22,10 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     const endScroll = useRef(true);
     const { user } = useSelector(
         (state) => state.auth
+    );
+    const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
+         isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
+        (state) => state.post
     );
     const [postListTotal, setPostListTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -51,6 +55,16 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
     useEffect(() => {
         handleGetListVideos();
     }, []);
+    useEffect(() => {
+            if(!isErrorEditPost && !isPendingEditPost && messageEditPost){
+                onRefresh();
+            }
+    }, [ isPendingEditPost, isErrorEditPost, messageEditPost]);
+    useEffect(() => {
+        if(!isErrorDeletePost && !isPendingDeletePost && messageDeletePost){
+            onRefresh();
+        }
+}, [ isPendingDeletePost, isErrorDeletePost, messageDeletePost]);
     return <View style={styles.container}>
         <FlatList
             showsVerticalScrollIndicator={false}
@@ -96,7 +110,7 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                             </View>
                         </View>
                         <PostInVideo
-                            isPlaying={currentVideo === data.index}
+                            isPlaying={currentVideo === data.index} userID={user.id}
                             navigation={navigation} key={data.item.id} postData={data.item} />
                     </>
                 }

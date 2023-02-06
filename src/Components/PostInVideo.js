@@ -30,11 +30,12 @@ import { COMMON_COLOR } from '../Services/Helper/constant';
 import ViewWithIcon from './ViewWithIcon';
 import CommentModal from './modal/CommentModal';
 import data from '../Screens/img/emoji';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import { Video, AVPlaybackStatus, Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import DotModal from './modal/DotModal';
 import ReportModal from './modal/ReportModal';
 import { onChangeMute, onChangePlayVideoDetail, onChangePlayVideoTab } from '../Redux/videoSlice';
+import { resetEmojiSlice, setUserID } from '../Redux/emojiSlice';
 function PostInVideo({ navigation, postData, isPlaying, userID }) {
     const dispatch = useDispatch();
     const video = useRef(null);
@@ -70,16 +71,27 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
         })
     }
     const LeftContent = () => {
-        return <Avatar.Image size={45} source={
-            post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
-        } />
+        return (
+            <TouchableOpacity onPress={() => {
+                dispatch(resetEmojiSlice());
+                dispatch(setUserID(post?.author?.id));
+                //console.log("userId", post?.author?.id);
+                navigation.navigate("profile")
+            }}>
+                <Avatar.Image size={45} source={
+                    post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: post?.author?.avatar }
+                } />
+            </TouchableOpacity>
+        );
     }
     const RightContent = () => {
         return <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={()=> {setShowDot(true)}}>
-            <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
+            <TouchableOpacity onPress={() => { setShowDot(true) }}>
+                <Entypo style={{ top: -10, right: 20 }} name="dots-three-horizontal" size={18} color="#626262" />
             </TouchableOpacity>
-            <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            <TouchableOpacity onPress={() => { console.log(post.id); console.log(post) }}>
+                <Ionicons style={{ top: -15, right: 10 }} name="md-close" size={25} color="#626262" />
+            </TouchableOpacity>
         </View>
     }
     const handleLikePost = () => {
@@ -90,6 +102,14 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
             console.log(e);
             setIsError(true);
         });
+    }
+    const handleLikeSound = async () => {
+        try {
+            const { sound } = await Audio.Sound.createAsync(require('../../assets/like_sound.mp3'), { shouldPlay: true });
+            await sound.playAsync();
+        } catch (e) {
+            console.log(e);
+        }
     }
     const uriEmoji = () => {
         return data.find(x => x.name === (post?.state)).img;
@@ -137,24 +157,28 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
     return (
         <View style={{ flex: 1, marginBottom: 10 }}>
             {isError && <CenterModal onClose={() => setIsError(false)} body={"Đã có lỗi xảy ra \n Hãy thử lại sau."} />}
-            {showDot && <DotModal postUserId={post?.author?.id} userID={userID} closeModal={()=> setShowDot(false)} postID={post?.id} setReportDot={setShowReport}></DotModal>}
-            {showReport && <ReportModal closeModal={()=> setShowReport(false)} postID={post?.id}></ReportModal>}
+            {showDot && <DotModal postData={post} userID={userID} closeModal={() => setShowDot(false)} setReportDot={setShowReport} navigation={navigation}></DotModal>}
+            {showReport && <ReportModal closeModal={() => setShowReport(false)} postID={post?.id}></ReportModal>}
             {showComment && <CommentModal postUpdated={() => postUpdated()} navigation={navigation} postId={post.id} closeModal={() => setShowComment(false)} />}
             <Card style={{ backgroundColor: 'white' }}>
                 <Card.Title
                     titleStyle={{ flexDirection: 'row' }}
                     title={
                         <Text>
-                            <View style={{ flexDirection: 'row', width: 200 }}>
-                                <Text>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(resetEmojiSlice());
+                                dispatch(setUserID(post?.author?.id));
+                                // console.log("userId", post?.author?.id);
+                                navigation.navigate("profile");
+                            }}>
+                                <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
                                     {post?.state && <Image source={{ uri: uriEmoji() }} style={styles.emoji} />}
                                     {post?.state && <Text style={{ fontWeight: 'normal', fontSize: 15 }}>
                                         {` đang cảm thấy ${post?.state}`}
                                     </Text>}
-
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </Text>
                     }
                     titleNumberOfLines={1}
@@ -268,7 +292,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                         <View style={{ position: 'absolute', fontSize: 14, top: -45, right: 110 }}>
                             <Ionicons
                                 onPress={() => {
-                                   
+
                                 }} color="white" name="settings-sharp" size={20} />
                         </View>
                         {
@@ -277,8 +301,8 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                                     onPress={() => {
                                         showVideoOption.current = true;
                                         dispatch(onChangeMute(true));
-                                    }} color="white" name="volume-2" size={22} 
-                                    onTouchEnd={() => showVideoOption.current = false}    
+                                    }} color="white" name="volume-2" size={22}
+                                    onTouchEnd={() => showVideoOption.current = false}
                                 />
                             </View>
                         }
@@ -288,16 +312,16 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                                     onPress={() => {
                                         showVideoOption.current = true;
                                         dispatch(onChangeMute(false));
-                                    }} color="white" name="volume-off" size={22} 
-                                    onTouchEnd={() => showVideoOption.current = false}    
+                                    }} color="white" name="volume-off" size={22}
+                                    onTouchEnd={() => showVideoOption.current = false}
                                 />
                             </View>
                         }
-                        
+
                         <View style={{ position: 'absolute', fontSize: 14, top: -42, right: 10 }}>
                             <AntDesign
                                 onPress={() => {
-                                   
+
                                 }} color="white" name="arrowsalt" size={16} />
                         </View>
                     </View>
@@ -333,7 +357,7 @@ function PostInVideo({ navigation, postData, isPlaying, userID }) {
                             justifyContent: "space-between",
                         }}>
 
-                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore) }}>
+                            <TouchableOpacity activeOpacity={.75} style={{ flexDirection: "row", }} onPress={() => { handleLikePost(); console.log("seemore", seemore); handleLikeSound() }}>
                                 <AntDesign name={+post?.is_liked === 1 ? 'like1' : 'like2'} size={22} color={+post?.is_liked === 1 ? COMMON_COLOR.LIKE_BLUE_COLOR : '#626262'} />
                                 <Text style={{ top: 4, left: 3, color: '#626262' }}>Thích</Text>
                             </TouchableOpacity>

@@ -32,6 +32,16 @@ export const setUserInfo = createAsyncThunk("user/set_user_info", async (data, t
   }
 });
 
+export const setUserName = createAsyncThunk("user/set_user_info", async (data, thunkAPI) => {
+  try {
+    const { userName } = data;
+    return await userService.setUserName(userName);
+  } catch (e) {
+    console.log("error", e);
+    return thunkAPI.rejectWithValue("something went wrong");
+  }
+});
+
 export const setAvatar  = createAsyncThunk(
   "user/set_user_info", async (data, thunkAPI) => {
     try {
@@ -75,6 +85,7 @@ export const setUserCountry  = createAsyncThunk(
     }
   }
 )
+export const resetStatusSetUser = createAction('resetStatusSetUser');
 
 export const resetUserInfor = createAction('resetUserInfor')
 
@@ -82,6 +93,7 @@ const initialState = {
   userList: [],
   isLoading: false,
   userInfor: null,
+  isErrorUpdateUserName: null,
   isEdit: false
 };
 
@@ -125,8 +137,26 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isEdit = true;
     },
+<<<<<<< HEAD
     [resetUserInfor]: (state, action) => {
       state.userInfor = null
+=======
+    [setUserName.pending] : (state) => {
+      state.isLoading = true;
+      state.isErrorUpdateUserName = null;
+    },
+    [setUserName.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.userInfor = action?.payload?.data;
+      state.isErrorUpdateUserName = false;
+    },
+    [setUserName.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.isErrorUpdateUserName = true;
+    },
+    [resetStatusSetUser]: (state, action) => {
+      state.isErrorUpdateUserName = null;
+>>>>>>> ac556a6f0d87d035677dc1f82d0688a2eb95dfe8
     }
   },
 });

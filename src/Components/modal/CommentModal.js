@@ -8,7 +8,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { getTextWithIcon, getTimeUpdateCommentFromUnixTime } from '../../Services/Helper/common';
 //import {Picker} from "@react-native-picker/picker";
 
-
+import { Audio } from "expo-av";
 import axios from "../../setups/custom_axios";
 import { _getCache } from "../../Services/Helper/common";
 import { Paragraph } from "react-native-paper";
@@ -110,6 +110,14 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
         index.current = index.current+10;
         await getComment(postId);
     }
+    const handleLikeSound = async() => {
+        try {
+            const {sound} = await Audio.Sound.createAsync(require('../../../assets/like_sound.mp3'),{shouldPlay: true});
+            await sound.playAsync();
+        } catch (e) {
+            console.log(e);
+        }
+    }
     useEffect(() => {
         onScreenLoad();
     }, [])
@@ -160,7 +168,7 @@ export default function CommentModal({ navigation, closeModal, postId, postUpdat
                                 <Ionicons style={{}} name="chevron-forward-outline" size={33} color="black" />
                             </TouchableOpacity>
 
-                            <AntDesign name={like} size={22} color={'#216fdb'} onPress={() => { if (like == "like1") setLike("like2"); else setLike("like1") }} />
+                            <AntDesign name={like} size={22} color={'#216fdb'} onPress={() => { if (like == "like1") setLike("like2"); else setLike("like1"); handleLikeSound(); }} />
                         </View>
 
                         {/* thanh phù hợp nhất */}
