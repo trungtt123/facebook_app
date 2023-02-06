@@ -24,9 +24,9 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         (state) => state.auth
     );
     const { postList, isPostListLoading, isPendingCreatePost, newCreatePostData, isErrorCreatePost,
-         isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
-        (state) => state.post
-    );
+        isPendingEditPost, isErrorEditPost, messageEditPost, isPendingDeletePost, isErrorDeletePost, messageDeletePost } = useSelector(
+            (state) => state.post
+        );
     const [postListTotal, setPostListTotal] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [currentVideo, setCurrentVideo] = useState(0);
@@ -56,15 +56,20 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
         handleGetListVideos();
     }, []);
     useEffect(() => {
-            if(!isErrorEditPost && !isPendingEditPost && messageEditPost){
-                onRefresh();
-            }
-    }, [ isPendingEditPost, isErrorEditPost, messageEditPost]);
-    useEffect(() => {
-        if(!isErrorDeletePost && !isPendingDeletePost && messageDeletePost){
+        if (!isErrorCreatePost && !isPendingCreatePost && newCreatePostData) {
             onRefresh();
         }
-}, [ isPendingDeletePost, isErrorDeletePost, messageDeletePost]);
+    }, [isPendingCreatePost, newCreatePostData, isErrorCreatePost]);
+    useEffect(() => {
+        if (!isErrorEditPost && !isPendingEditPost && messageEditPost) {
+            onRefresh();
+        }
+    }, [isPendingEditPost, isErrorEditPost, messageEditPost]);
+    useEffect(() => {
+        if (!isErrorDeletePost && !isPendingDeletePost && messageDeletePost) {
+            onRefresh();
+        }
+    }, [isPendingDeletePost, isErrorDeletePost, messageDeletePost]);
     return <View style={styles.container}>
         <FlatList
             showsVerticalScrollIndicator={false}
@@ -87,23 +92,31 @@ function VideoScreen({ route, onSwipeUp, onSwipeDown, navigation }) {
                                     </View>
                                 </View>
                             </View>
-                            <View style={{ flexDirection: 'row', marginVertical: 10, 
-                            marginHorizontal: 20, justifyContent: 'space-between'}}>
-                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
-                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
-                                    <Entypo style={{top: 5, marginRight: 5}}
+                            <View style={{
+                                flexDirection: 'row', marginVertical: 10,
+                                marginHorizontal: 20, justifyContent: 'space-between'
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10
+                                }}>
+                                    <Entypo style={{ top: 5, marginRight: 5 }}
                                         color='black' name='video-camera' size={10} />
                                     <Text style={{ fontWeight: 'bold' }}>Trực tiếp</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
-                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
-                                    <MaterialCommunityIcons style={{top: 4, marginRight: 5}}
+                                <View style={{
+                                    flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10
+                                }}>
+                                    <MaterialCommunityIcons style={{ top: 4, marginRight: 5 }}
                                         color='black' name='silverware-fork-knife' size={12} />
                                     <Text style={{ fontWeight: 'bold' }}>Ẩm thực</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', width: 100, justifyContent: 'center',
-                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10 }}>
-                                    <Entypo style={{top: 5, marginRight: 5}}
+                                <View style={{
+                                    flexDirection: 'row', width: 100, justifyContent: 'center',
+                                    height: 30, backgroundColor: '#ccc', borderRadius: 25, padding: 5, paddingHorizontal: 10
+                                }}>
+                                    <Entypo style={{ top: 5, marginRight: 5 }}
                                         color='black' name='game-controller' size={10} />
                                     <Text style={{ fontWeight: 'bold' }}>Chơi game</Text>
                                 </View>
