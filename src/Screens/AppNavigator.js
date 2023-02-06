@@ -88,7 +88,6 @@ export default function AppNavigator() {
                 <Stack.Screen name="anothervideo" component={AnotherVideoScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="suggestfriend" component={SuggestFriendScreen} options={{ title: 'Gợi ý' }} />
                 <Stack.Screen name="search" component={SearchScreen} options={{ title: 'Tìm kiếm' }} />
-                <Stack.Screen name="deletesearch" component={DeleteSearchScreen} options={{ title: 'Nhật ký hoạt động' }} />
                 <Stack.Screen name="accountSetting" component={AccountSetting} options={{ title: 'Cài đặt' }} />
                 <Stack.Screen name="nameSetting" component={NameSetting} options={{ title: 'Tên' }} />
                 <Stack.Screen name="passwordSetting" component={PasswordSetting} options={{ title: 'Đổi mật khẩu' }} />
@@ -97,6 +96,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
                     {(props) => <ChatScreen {...props} socket={socket} />}
                 </Stack.Screen>
+                <Stack.Screen name="deleteSearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />
             </Stack.Navigator>
         </NavigationContainer>
         {netInfo.isConnected && <SystemModal icon={'wifi'} body={COMMON_MESSAGE.INTERNET_CONNECTION_SUCCESS} />}
