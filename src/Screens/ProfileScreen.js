@@ -335,7 +335,7 @@ function ProfileScreen({ navigation, route }) {
                 </TouchableOpacity>
             </View>
             {listPost?.map((item, index) => {
-                return <PostInHome navigation={navigation} key={index} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}}/>
+                return <PostInHome navigation={navigation} key={index} postData={item} avatar = {(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} userID={user.id}/>
             })}
         </ScrollView>
         </>
