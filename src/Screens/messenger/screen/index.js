@@ -58,7 +58,8 @@ function Messager({ navigation, socket }) {
                         keyExtractor={(item) => item.id } // tránh trùng các item với nhau
                     /> */}
                     {listConversation.map((e, index) =>
-                        <Item item={e} navigation={navigation} keyExtractor={(e) => e.id} />
+                        <Item key={index}
+                        item={e} navigation={navigation} keyExtractor={(e) => e.id} />
                     )}
                 </View>
             </ScrollView>

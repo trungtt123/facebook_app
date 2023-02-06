@@ -115,6 +115,7 @@ function NotificationScreen() {
                                 <FontAwesome name="search" size={22} color="black" />
                                 </View>
                             </View>
+                                <TouchableOpacity>
                                 <View style={{ flexDirection: 'row', height: 90, justifyContent: 'space-between', backgroundColor: item.backgroundColor }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                         <Image source={{ uri: item.avatar }} style={{ width: 50, height: 50, borderRadius: 50 }}></Image>
@@ -129,11 +130,13 @@ function NotificationScreen() {
                                     </View>
                                     <Entypo name="dots-three-horizontal" size={18} color="black" style={{ marginRight: 15, marginTop: 17 }} />
                                 </View>
+                                </TouchableOpacity>
                             </>
                         );
                     }
                     return (
-                        <View style={{ flexDirection: 'row', height: 90, justifyContent: 'space-between', backgroundColor: item.backgroundColor }}>
+                        <TouchableOpacity>
+                            <View style={{ flexDirection: 'row', height: 90, justifyContent: 'space-between', backgroundColor: item.backgroundColor }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
                                 <Image source={{ uri: item.avatar }} style={{ width: 50, height: 50, borderRadius: 50 }}></Image>
                                 <View style={{ flexDirection: 'column', width: 270, marginLeft: 10 }}>
@@ -147,6 +150,7 @@ function NotificationScreen() {
                             </View>
                             <Entypo name="dots-three-horizontal" size={18} color="black" style={{ marginRight: 15, marginTop: 17 }} />
                         </View>
+                        </TouchableOpacity>
                     );
                 }}>
 
