@@ -89,7 +89,7 @@ export const resetStatusSetUser = createAction('resetStatusSetUser');
 
 export const resetUserInfor = createAction('resetUserInfor');
 export const resetInforWithData = createAction('reset');
-
+export const resetUserSlice = createAction('resetUserSlice');
 const initialState = {
   userList: [],
   isLoading: false,
@@ -158,7 +158,8 @@ const userSlice = createSlice({
     },
     [resetInforWithData]: (state, action) => {
       state.userInfor = action?.payload?.data;
-    }
+    },
+    [resetUserSlice]: () => initialState
   },
 });
 

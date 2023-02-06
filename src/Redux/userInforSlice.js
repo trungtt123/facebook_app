@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import userService from "../Services/Api/userService";
 
 export const getUserInfo = createAsyncThunk("user/get_user_info", async (data, thunkAPI) => {
@@ -10,7 +10,7 @@ export const getUserInfo = createAsyncThunk("user/get_user_info", async (data, t
     return thunkAPI.rejectWithValue("something went wrong");
   }
 });
-
+export const resetUserInfoSlice = createAction('resetUserInfoSlice');
 
 const initialState = {
   infor: null,
@@ -32,6 +32,7 @@ const userInforSlice = createSlice({
     [getUserInfo.rejected]: (state, action) => {
       state.isLoading = false;
     },
+    [resetUserInfoSlice]: () => initialState
   },
 });
 

@@ -133,7 +133,6 @@ function ProfileScreen({ navigation, route }) {
     const showModalAvatar = () => {
         setShowModalAva(true);
     }
-    console.log('length', JSON.stringify(listPost));
     return (
         <>
             {!userId ?
@@ -261,7 +260,7 @@ function ProfileScreen({ navigation, route }) {
                                 style={styles.editInfor}
                             >
                                 <View style={styles.editInfor}>
-                                    {userId ? <FontAwesome5 name="user-check" size={20} color="#ffffff" /> : <MaterialCommunityIcons name="pencil" size={20} color='#000000' />}
+                                    {userId ? <FontAwesome5 name="user-check" size={20} color="black" /> : <MaterialCommunityIcons name="pencil" size={20} color='#000000' />}
                                     <Text style={styles.editText}>
                                         {userId ? 'Bạn bè' : 'Chỉnh sửa trang cá nhân'}
                                     </Text>

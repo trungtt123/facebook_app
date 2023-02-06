@@ -17,11 +17,14 @@ import {
 } from '../Services/Helper/common';
 import { logout, resetAuthSlice } from "../Redux/authSlice";
 import { resetPostSlice } from '../Redux/postSlice';
-import {resetUserInfor} from '../Redux/userSlice'
+import {resetUserInfor, resetUserSlice} from '../Redux/userSlice'
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { COMMON_COLOR } from '../Services/Helper/constant';
 import { resetEmojiSlice } from '../Redux/emojiSlice';
 import { setUserID } from '../Redux/emojiSlice';
+import { resetTabSlice } from '../Redux/tabSlice';
+import { resetUserInfoSlice } from '../Redux/userInforSlice';
+import { resetVideoSlice } from '../Redux/videoSlice';
 function MenuScreen({ navigation }) {
     const dispatch = useDispatch();
     const { userInfor } = useSelector(state => state.user);
@@ -32,8 +35,11 @@ function MenuScreen({ navigation }) {
         dispatch(resetPostSlice());
         dispatch(resetAuthSlice());
         dispatch(resetEmojiSlice());
+        dispatch(resetTabSlice());
+        dispatch(resetUserSlice());
+        dispatch(resetUserInfoSlice());
+        dispatch(resetVideoSlice());
         dispatch(logout());
-        dispatch(resetUserInfor());
     }
     const handleExitApp = () => {
         BackHandler.exitApp();

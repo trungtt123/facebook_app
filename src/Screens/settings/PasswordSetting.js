@@ -19,10 +19,15 @@ import {
 } from '../../Services/Helper/common';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { COMMON_COLOR } from '../../Services/Helper/constant';
-import { resetStatusSetUser, setUserName } from '../../Redux/userSlice';
+import { resetStatusSetUser, resetUserSlice, setUserName } from '../../Redux/userSlice';
 import authService from '../../Services/Api/authService';
-import { logout } from '../../Redux/authSlice';
+import { logout, resetAuthSlice } from '../../Redux/authSlice';
 import LoadingApiModal from '../../Components/modal/LoadingApiModal';
+import { resetPostSlice } from '../../Redux/postSlice';
+import { resetEmojiSlice } from '../../Redux/emojiSlice';
+import { resetTabSlice } from '../../Redux/tabSlice';
+import { resetUserInfoSlice } from '../../Redux/userInforSlice';
+import { resetVideoSlice } from '../../Redux/videoSlice';
 function PasswordSetting({ navigation }) {
     const dispatch = useDispatch();
     const { userInfor } = useSelector(state => state.user);
@@ -52,6 +57,13 @@ function PasswordSetting({ navigation }) {
                     text: "OK", onPress: async () => {
                         console.log(user);
                         await authService.removeLoginInfo({phonenumber: user.phoneNumber});
+                        dispatch(resetPostSlice());
+                        dispatch(resetAuthSlice());
+                        dispatch(resetEmojiSlice());
+                        dispatch(resetTabSlice());
+                        dispatch(resetUserSlice());
+                        dispatch(resetUserInfoSlice());
+                        dispatch(resetVideoSlice());
                         dispatch(logout());
                     }
                 }
