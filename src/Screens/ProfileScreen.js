@@ -27,6 +27,7 @@ import styles from './style/profile';
 import postService from '../Services/Api/postService';
 import userService from '../Services/Api/userService';
 import PostInHome from "../Components/PostInHome";
+import { resetEmojiSlice } from '../Redux/emojiSlice';
 
 function ProfileScreen({ navigation, route }) {
     const dispatch = useDispatch();
@@ -294,7 +295,7 @@ function ProfileScreen({ navigation, route }) {
                     data={friends}
                     spacing={2}
                     renderItem={({ item }) => (
-                        <Friend data={item}/>
+                        <Friend data={item} navigation={navigation}/>
                     )}
                 />
                 <View style={{
@@ -317,7 +318,10 @@ function ProfileScreen({ navigation, route }) {
                     Bài viết
                 </Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('createPost')}
+                    onPress={() => {
+                        dispatch(resetEmojiSlice());
+                        navigation.navigate('createPost');
+                    }}
                 >
                     <View style={styles.thinking}>
                         <Image source={(userId?!userInfors?.avatar:!userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId? userInfors?.avatar: userInfor?.avatar}} style={styles.postImage}/>
@@ -338,14 +342,18 @@ function ProfileScreen({ navigation, route }) {
     );
 }
 
-function Friend({data}) {
+function Friend({data, navigation}) {
     return (
-        <View style = {styles.friendCard}>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("profile", {userId:data?.id});
+        }}>
+            <View style = {styles.friendCard}>
             <Image source={!data?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: data?.avatar }} style={styles.imageFr}/>
             <Text style={{ marginStart: 5, fontSize: 18, fontWeight: '500'}}>
                 {data?.username}
             </Text>
         </View>
+        </TouchableOpacity>
     );
 }
 
