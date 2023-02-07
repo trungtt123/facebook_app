@@ -91,12 +91,12 @@ export default function SignupScreen({ navigation }) {
             }
         }
         validate.current = dataTmp;
-        setFirstName(e.trim());
+        setFirstName(e);
         setCheckValidate(checkValidate + 1);
     }
     const handleSetLastName = (e) => {
         let dataTmp = deepCopy(validate.current);
-        setLastName(e.trim());
+        setLastName(e);
         var regLastName = /[0-9]+/g;
         if (e === undefined || e === "") {
             dataTmp['lastName'] = {
@@ -247,7 +247,7 @@ export default function SignupScreen({ navigation }) {
     }
     const handleSignUp = () => {
         let date = dataBirthDay.getFullYear() + '-' + (dataBirthDay.getMonth() + 1) + '-' + dataBirthDay.getDate();
-        authService.signup(phoneNumber, password, firstName + ' ' + lastName, date).then((result) => {
+        authService.signup(phoneNumber, password, firstName.trim() + ' ' + lastName.trim(), date).then((result) => {
             console.log(result);
             setVerifyCodeServer(result.data.verifyCode);
             handleNextStep();

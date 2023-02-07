@@ -245,13 +245,13 @@ function ProfileScreen({ navigation, route }) {
                     <TouchableOpacity
                         onPress={() => setShowModalCover(true)}
                     >
-                        <Image source={(userId ? !userInfors?.cover_image : !userInfor.cover_image) ? require('../../assets/images/default_avatar.jpg') : { uri: userId ? userInfors?.cover_image : userInfor?.cover_image }} style={styles.coverImage} />
+                        <Image source={(userId ? !userInfors?.cover_image : !userInfor?.cover_image) ? require('../../assets/images/default_avatar.jpg') : { uri: userId ? userInfors?.cover_image : userInfor?.cover_image }} style={styles.coverImage} />
                     </TouchableOpacity>
                     <View style={styles.avatar}>
                         <TouchableOpacity
                             onPress={() => showModalAvatar()}
                         >
-                            <Image source={(userId ? !userInfors?.avatar : !userInfor.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId ? userInfors?.avatar : userInfor?.avatar }} style={styles.avatarImg} />
+                            <Image source={(userId ? !userInfors?.avatar : !userInfor?.avatar) ? require('../../assets/images/default_avatar.jpg') : { uri: userId ? userInfors?.avatar : userInfor?.avatar }} style={styles.avatarImg} />
                         </TouchableOpacity>
                         <Text style={styles.name}>
                             {userInfors?.username}
