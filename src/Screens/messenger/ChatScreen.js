@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTextWithIcon } from "../../Services/Helper/common";
 //đây là mỗi phần tử tin nhắn, props gồm mess, avt, role(của ai)
 import useKeyBoard from '../../Components/UseKeyBoard';
+import ViewWithIcon from "../../Components/ViewWithIcon";
 function MessageItem(props) {
   // const {socket} = props;
 
@@ -45,7 +46,9 @@ function MessageItem(props) {
         />
         {/* //nội dung tin nhắn */}
         <View style={styles.messItemLeft}>
-          <Text style={{ color: "#0b0b0b", fontSize: 16 }}>{props.mess}</Text>
+          <ViewWithIcon value={props.mess}
+            styleText={{ color: "#0b0b0b", fontSize: 16 }}
+            styleIcon={{ width: 17, height: 17 }} />
         </View>
       </View>
     );
@@ -67,7 +70,9 @@ function MessageItem(props) {
             }
           />
           <View style={styles.messItemRight}>
-            <Text style={{ color: "white", fontSize: 16 }}>{props.mess}</Text>
+            <ViewWithIcon value={props.mess}
+              styleText={{ color: "white", fontSize: 16 }}
+              styleIcon={{ width: 17, height: 17 }} />
           </View>
 
         </View>
@@ -96,7 +101,7 @@ export default function ChatScreen({ navigation, socket, route }) {
       token: user.token,
       senderId: user.id,
       targetUserId: userId,
-      content: mess
+      content: getTextWithIcon(mess + " ")
     })
   }
   const isKeyboardVisible = useKeyBoard();
@@ -111,7 +116,10 @@ export default function ChatScreen({ navigation, socket, route }) {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
-      () => handleBack()
+      () => {
+        handleBack();
+        return true;
+      }
     );
     return () => backHandler.remove();
   }, []);
