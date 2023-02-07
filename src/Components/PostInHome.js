@@ -46,6 +46,9 @@ function PostInHome({ navigation, postData, userID, avatar }) {
     const [videoDimension, setVideoDimension] = useState({ width: 0, height: 0 });
     const widthLayout = Dimensions.get('window').width;
     const heightLayout = Dimensions.get('window').height;
+    const { user } = useSelector(
+        (state) => state.auth
+    );
     const postUpdated = () => {
         postService.getPost(post.id).then(async (result) => {
             setPost(result.data);
@@ -58,7 +61,11 @@ function PostInHome({ navigation, postData, userID, avatar }) {
         return (
             <TouchableOpacity onPress={() => {
                 //console.log("userId", post?.author?.id);
-                navigation.navigate("profile", {userId: post?.author?.id})
+                if(post?.author?.id == user?.id) {
+                    navigation.navigate("profile");
+                }else{
+                    navigation.navigate("profile", {userId: post?.author?.id})
+                }
             }}>
                 <Avatar.Image size={45} source={
                     avatar ? avatar : post?.author?.avatar === null ? require('../../assets/images/default_avatar.jpg') : { uri: avatar ? avatar : post?.author?.avatar }
@@ -127,7 +134,11 @@ function PostInHome({ navigation, postData, userID, avatar }) {
                     title={
                         <Text>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("profile", {userId: post?.author?.id})
+                                if(post?.author?.id == user?.id) {
+                                    navigation.navigate("profile");
+                                }else{
+                                    navigation.navigate("profile", {userId: post?.author?.id})
+                                }
                             }}>
                                 <Text style={{ width: 200 }}>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{post?.author?.username + ' '}</Text>
