@@ -7,6 +7,9 @@ import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather } from '@e
 import { useSelector } from "react-redux";
 
 function ModalExpand({ navigation, friendData, closeModal, updateListFriends, unFriendFisished }) {
+    const { user } = useSelector(
+        (state) => state.auth
+    );
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -82,7 +85,9 @@ function ModalExpand({ navigation, friendData, closeModal, updateListFriends, un
         <View style={styles.container}>
             <View style={styles.modalView}>
                 <TouchableOpacity onPress={() => {
-                    navigation.navigate("profile", { userId: friendData?.id });
+                    if(user?.id != friendData?.id){
+                        navigation.navigate("profile", { userId: friendData?.id });
+                    }
                 }}
                     style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 15 }}>
                     <View style={{ flexDirection: 'column', flex: 2, justifyContent: 'center' }}>
@@ -305,7 +310,9 @@ export default function MyFriend({ navigation, data, updateListFriends }) {
             friendData={friendData} acceptFriendFisished={(accept) => handleAcceptFriend(accept)}
             closeModal={() => setIsShowModalAcceptFriend(false)} />}
         <TouchableOpacity onPress={() => {
-            navigation.navigate("profile", { userId: friendData?.id });
+            if(user?.id != friendData?.id ){
+                navigation.navigate("profile", { userId: friendData?.id });
+            }
         }}>
             <Image source={
                 !friendData?.avatar ? require('../../assets/images/default_avatar.jpg')

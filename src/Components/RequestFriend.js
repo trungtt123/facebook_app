@@ -4,6 +4,7 @@ import { COMMON_COLOR } from "../Services/Helper/constant";
 import { getTimeSendRequestFriend } from "../Services/Helper/common";
 import userService from "../Services/Api/userService";
 import { Ionicons, Entypo, MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
 
 function ModalExpand({ requestFriendData, closeModal }) {
     const styles = StyleSheet.create({
@@ -74,6 +75,9 @@ export default function RequestFriend({ navigation, data }) {
     const [requestFriendData, setRequestFriendData] = useState(data);
     const [status, setStatus] = useState(undefined);
     const [isShowModalExpand, setIsShowModalExpand] = useState(false);
+    const { user } = useSelector(
+        (state) => state.auth
+    );
     const handleSendRequestFriend = (userId, isAccept) => {
         userService.setAcceptFriend(userId, isAccept).then((result) => {
             if (isAccept === 1) setStatus('Các bạn đã là bạn bè');
@@ -93,7 +97,9 @@ export default function RequestFriend({ navigation, data }) {
         {isShowModalExpand && <ModalExpand requestFriendData={requestFriendData} closeModal={() => setIsShowModalExpand(false)} />}
         <TouchableOpacity onPress={() => {
             console.log(requestFriendData);
-            navigation.navigate("profile", { userId: requestFriendData?.id });
+            if(requestFriendData?.id != user?.id){
+                navigation.navigate("profile", { userId: requestFriendData?.id });
+            }
         }}>
             <Image source={
                 !requestFriendData?.avatar ? require('../../assets/images/default_avatar.jpg')

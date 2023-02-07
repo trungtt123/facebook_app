@@ -68,7 +68,7 @@ export default function CreatePostScreen({ route, navigation }) {
 
         let formData = new FormData();
         let status = post.textEmoji;
-        let described = getTextWithIcon(text);
+        let described = getTextWithIcon(text+" ");
 
         if (newData.length > 0 && post.checkImage) {
             for (let i = 0; i < newData.length; i++) {

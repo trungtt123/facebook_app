@@ -256,7 +256,11 @@ function ProfileScreen({ navigation, route }) {
                         <Text style={styles.name}>
                             {userInfors?.username}
                         </Text>
-                        <TouchableOpacity onPress={() => { navigation.navigate('chatscreen', { userId: userId, userName: userInfors?.username, avatar: userInfors?.avatar }) }}
+                        <TouchableOpacity onPress={() => { 
+                            if(userId){
+                                navigation.navigate('chatscreen', { userId: userId, userName: userInfors?.username, avatar: userInfors?.avatar })
+                            }
+                         }}
                             style={styles.addNews}>
                             {userId ? <Fontisto name="messenger" size={20} color="#ffffff" /> : <Icon name="add-circle-sharp" size={20} color="#ffffff" />}
 
@@ -264,17 +268,33 @@ function ProfileScreen({ navigation, route }) {
 
                         </TouchableOpacity>
                         <View style={{ flexDirection: 'row', width: 0.9 * width }}>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('editProfile')}
+                        {userId ? (
+                                <TouchableOpacity
+                                onPress={() => {}}
                                 style={styles.editInfor}
                             >
                                 <View style={styles.editInfor}>
-                                    {userId ? <FontAwesome5 name="user-check" size={20} color="black" /> : <MaterialCommunityIcons name="pencil" size={20} color='#000000' />}
+                                <FontAwesome5 name="user-check" size={20} color="black" />
                                     <Text style={styles.editText}>
-                                        {userId ? 'Bạn bè' : 'Chỉnh sửa trang cá nhân'}
+                                        {'Bạn bè'}
                                     </Text>
                                 </View>
                             </TouchableOpacity>
+                            ): (
+                                <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate('editProfile');
+                                }}
+                                style={styles.editInfor}
+                            >
+                                <View style={styles.editInfor}>
+                                <MaterialCommunityIcons name="pencil" size={20} color='#000000' />
+                                    <Text style={styles.editText}>
+                                        {'Chỉnh sửa trang cá nhân'}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            )}
                             <TouchableOpacity
                                 style={styles.setting}
                                 onPress={() => navigation.navigate('setting')}
@@ -376,7 +396,7 @@ function ProfileScreen({ navigation, route }) {
                         data={friends}
                         spacing={2}
                         renderItem={({ item }) => (
-                            <Friend data={item} navigation={navigation} />
+                            <Friend data={item} navigation={navigation} userId={user?.id}/>
                         )}
                     />
                     <TouchableOpacity onPress={() => navigation.navigate('allfriend', {
@@ -427,10 +447,12 @@ function ProfileScreen({ navigation, route }) {
     );
 }
 
-function Friend({ data, navigation }) {
+function Friend({ data, navigation, userId }) {
     return (
         <TouchableOpacity onPress={() => {
-            navigation.navigate("profile", { userId: data?.id });
+            if(userId != data?.id){
+                navigation.navigate("profile", { userId: data?.id });
+            }
         }}>
             <View style={styles.friendCard}>
                 <Image source={!data?.avatar ? require('../../assets/images/default_avatar.jpg') : { uri: data?.avatar }} style={styles.imageFr} />
