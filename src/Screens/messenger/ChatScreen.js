@@ -208,7 +208,7 @@ export default function ChatScreen({ navigation, socket, route }) {
           <Text style={{ fontSize: 15, marginTop: 5, color: "grey" }}>{info}</Text>
           <Text style={{ fontSize: 15, marginTop: 35, color: "grey", marginBottom: 25 }}>{time}</Text>
           {conversation.map((e, index) =>
-            <MessageItem key={index} lastSend={index === conversation.length - 1} lastSeenMessage={lastSeenMessage == e._id}
+            <MessageItem key={e._id} lastSend={index === conversation.length - 1} lastSeenMessage={lastSeenMessage == e._id}
               mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
           )}
         </View>

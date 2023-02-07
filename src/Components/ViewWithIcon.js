@@ -50,7 +50,7 @@ function ViewWithIcon({ value, styleText, styleIcon }) {
                 return <Text style={styleText} key={index}>{item}</Text>
             }
             else {
-                return <Text><Image style={styleIcon} key={index} source={{ uri: data_icon_no_code[item] }} /> </Text>
+                return <Text key={index}><Image style={styleIcon}  source={{ uri: data_icon_no_code[item] }} /> </Text>
             }
         });
         setViewElm(elm);
