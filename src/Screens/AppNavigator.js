@@ -92,7 +92,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="passwordSetting" component={PasswordSetting} options={{ title: 'Đổi mật khẩu' }} />
                 <Stack.Screen name="profile" component={ProfileScreen} options={{ title: 'Trang cá nhân' }}/>
                 {/* //chat */}
-                <Stack.Screen name="chatscreen" options={{ title: 'Tin nhắn' }}>
+                <Stack.Screen name="chatscreen">
                     {(props) => <ChatScreen {...props} socket={socket} />}
                 </Stack.Screen>
                 <Stack.Screen name="deleteSearch" component={DeleteSearchScreen} options={{title: 'Nhật ký hoạt động'}} />

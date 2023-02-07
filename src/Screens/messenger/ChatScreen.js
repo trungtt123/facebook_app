@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, View, Button, Touchable, TouchableOpacity, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, TextInput, View, Button, Touchable, TouchableOpacity, Image, ScrollView, BackHandler } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
@@ -32,7 +32,7 @@ function MessageItem(props) {
   //   })
   // }, [])
 
-  
+
   if (props.idSender != props.idUser)
     return (
       <View style={[styles.messContainer, { alignSelf: "flex-start" }]}>
@@ -58,12 +58,12 @@ function MessageItem(props) {
             style={{ width: 16, height: 16, borderRadius: 100, top: -2 }}
             source={
               props.unread == 0 ?
-              props.lastSeenMessage ? {
-                uri: props.avt,
-              }
-              : {uri: 'no'}
-              
-              : require('../../../assets/icons/tich-xanh.png')
+                props.lastSeenMessage ? {
+                  uri: props.avt,
+                }
+                  : { uri: 'no' }
+
+                : require('../../../assets/icons/tich-xanh.png')
             }
           />
           <View style={styles.messItemRight}>
@@ -100,6 +100,21 @@ export default function ChatScreen({ navigation, socket, route }) {
     })
   }
   const isKeyboardVisible = useKeyBoard();
+  const handleBack = () => {
+    socket?.emit('client_leave_conversation', {
+      token: user.token,
+      thisUserId: user.id,
+      targetUserId: userId
+    })
+    navigation.goBack();
+  }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => handleBack()
+    );
+    return () => backHandler.remove();
+  }, []);
   useEffect(() => {
     mess.current.scrollToEnd({ animated: true })
   }, [isKeyboardVisible])
@@ -111,11 +126,11 @@ export default function ChatScreen({ navigation, socket, route }) {
       targetUserId: userId
     })
     socket?.on('server_send_conversation', (data) => {
-      console.log('server_send_conversation', JSON.stringify(data.data.dialog));
+      if (data.message != "OK") return;
       setCoversation(data.data.dialog);
       let list = data.data.dialog;
-      for (let i = list.length - 1; i >= 0; i--){
-        if (list[i].unread == "0" && list[i].sender == user.id){
+      for (let i = list.length - 1; i >= 0; i--) {
+        if (list[i].unread == "0" && list[i].sender == user.id) {
           setLastSeenMessage(list[i]._id);
           break;
         }
@@ -124,15 +139,23 @@ export default function ChatScreen({ navigation, socket, route }) {
     })
     //set option cho thanh tren cung
     navigation.setOptions({
-      headerTitle: () => (
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20 }}
-            source={(!avatar) ? require('../../../assets/images/default_avatar.jpg'): {uri: avatar}}
-          />
-          <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8, marginLeft: 5 }}>{userName}</Text>
-        </View>
+      headerLeft: () => (
+        <>
+          <TouchableOpacity
+            style={{ marginRight: 10, marginTop: 5 }}
+            onPress={() => handleBack()}>
+            <AntDesign name="arrowleft" size={25} />
+          </TouchableOpacity>
+          <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
+            <Image
+              style={{ width: 40, height: 40, borderRadius: 100, marginLeft: -20 }}
+              source={(!avatar) ? require('../../../assets/images/default_avatar.jpg') : { uri: avatar }}
+            />
+            <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 8, marginLeft: 5 }}>{userName}</Text>
+          </View>
+        </>
       ),
+      headerTitle: () => null,
       headerRight: () => (
         <View style={{ flexDirection: "row", height: 50, alignItems: "center" }}>
           <Ionicons name="call" size={24} color="#0099ff" style={{ marginLeft: 5 }} />
@@ -171,14 +194,14 @@ export default function ChatScreen({ navigation, socket, route }) {
         onContentSizeChange={() => mess.current.scrollToEnd({ animated: true })}
         style={{ width: "100%" }}>
         <View style={{ alignItems: "center", marginLeft: 5, marginRight: 2 }}>
-          <Image source={(!avatar) ? require('../../../assets/images/default_avatar.jpg'): {uri: avatar}} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
+          <Image source={(!avatar) ? require('../../../assets/images/default_avatar.jpg') : { uri: avatar }} style={{ width: 110, height: 110, borderRadius: 500, marginTop: 50 }} />
           <Text style={{ fontWeight: "bold", fontSize: 22, marginTop: 5 }}>{userName}</Text>
           <Text style={{ fontSize: 15, marginTop: 10 }}>Các bạn là bạn bè trên Facebook</Text>
           <Text style={{ fontSize: 15, marginTop: 5, color: "grey" }}>{info}</Text>
           <Text style={{ fontSize: 15, marginTop: 35, color: "grey", marginBottom: 25 }}>{time}</Text>
           {conversation.map((e, index) =>
             <MessageItem key={index} lastSend={index === conversation.length - 1} lastSeenMessage={lastSeenMessage == e._id}
-            mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
+              mess={e.content} avt={avatar} idSender={e.sender} idUser={user.id} unread={e.unread} keyExtractor={(e) => e._id} />
           )}
         </View>
       </ScrollView>
